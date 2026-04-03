@@ -21,7 +21,7 @@ const CITY_MAP = {
 // Budget string uit quiz → min/max in euro's
 function parseBudget(budgetStr) {
   if (!budgetStr) return { min: 0, max: 99000000 };
-  const clean = budgetStr.replace(/V€.\s]/g, '').replace(',', '');
+  const clean = budgetStr.replace(/[€.\s]/g, '').replace(',', '');
   // Formats: "500000", "2000000", "10000000+"
   const isPlus = budgetStr.includes('+');
   const num = parseInt(clean.replace('+', '')) || 0;
@@ -68,7 +68,7 @@ function formatListing(p) {
   const name = p.name
     .replace(/&#8211;/g, '–')
     .replace(/&#8217;/g, "'")
-    .replace(/France/g, '&')
+    .replace(/&amp;/g, '&')
     .trim();
 
   return {
@@ -106,25 +106,28 @@ export default async (req) => {
   try {
     const body = await req.json();
     const {
-      destination,
-      property_type,
-      budget,
-      area
+      destination,    // 'cotedazur' | 'curacao' | 'both'
+      property_type,  // 'villa' | 'apartment' | 'estate' | 'open'
+      budget,         // '€ 2.000.000' (string uit quiz)
+      area            // 'nice' | 'cannes' | 'monaco' | 'hinterland'
     } = body;
 
+    // Alleen CdA listings voor nu — Curaçao volgt later
     if (destination === 'curacao') {
       return new Response(JSON.stringify({
         listings: [],
         total: 0,
-        message: 'Curaçao listings komen binnenkort beschikbaar.'
+        message: 'Curaçao listings komen binnenkort beschikbaar via At Home Curaçao.'
       }), { status: 200, headers });
     }
 
     const category = CATEGORY_MAP[property_type] || null;
     const { min: minPrice, max: maxPrice } = parseBudget(budget);
 
+    // Haal listings op — probeer eerst gefilterd, val terug op breder
     let { listings, total } = await fetchListings({ category, minPrice, maxPrice, limit: 9 });
 
+    // Als minder dan 3 resultaten: verbreed budget filter
     if (listings.length < 3) {
       const wider = await fetchListings({
         category,
@@ -136,6 +139,7 @@ export default async (req) => {
       total = wider.total;
     }
 
+    // Filter optioneel op stad als area opgegeven
     let filtered = listings;
     if (area && CITY_MAP[area] && listings.length > 3) {
       const preferredCities = CITY_MAP[area];
@@ -146,6 +150,7 @@ export default async (req) => {
       if (cityFiltered.length >= 2) filtered = cityFiltered;
     }
 
+    // Neem max 5 listings
     const results = filtered.slice(0, 5).map(formatListing);
 
     return new Response(JSON.stringify({
