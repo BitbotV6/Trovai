@@ -339,18 +339,10 @@ function recalc(){
     <div class="calc-row"><span class="calc-label" style="color:var(--gold);font-weight:500">Your commission (${yoursPct}%)</span><span class="calc-val" style="color:var(--gold);font-size:20px">${fmt(yourEarning)}</span></div>`;
 }
 
-// Seed with example leads if empty
-if(leads.length===0){
-  leads=[
-    {id:1,name:'Familie Van den Berg',dest:'cotedazur',budget:3500000,model:'25',status:'warm',email:'vandenBerg@email.nl',phone:'+31 6 1234 5678',notes:'Villa met zeezicht, Cannes regio',date:'02-04-2026',commission:calcCommission(3500000,25)},
-    {id:2,name:'Peter Smeets',dest:'curacao',budget:450000,model:'25',status:'new',email:'psmeets@gmail.com',phone:'+31 6 8765 4321',notes:'Resort villa, investering',date:'01-04-2026',commission:calcCommission(450000,25)},
-    {id:3,name:'Mw. De Boer',dest:'cotedazur',budget:1800000,model:'10',status:'viewing',email:'deboer@hotmail.com',phone:'',notes:'Nice omgeving, appartement',date:'28-03-2026',commission:calcCommission(1800000,10)},
-    {id:4,name:'Mark & Lisa Jansen',dest:'both',budget:600000,model:'25',status:'closed',email:'jansen@bedrijf.nl',phone:'+31 6 5555 9999',notes:'Curaçao villa gekocht!',date:'15-03-2026',commission:calcCommission(600000,25)},
-  ];
-  save();
-}
+// Leads loaded from API via tracker-live.js
+// No mock data - all leads come from /api/get-leads
 render();
 </script>
-<script src="leads-api.js"></script>
+<script src="tracker-live.js"></script>
 </body>
 </html>
