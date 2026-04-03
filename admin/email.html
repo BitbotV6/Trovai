@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Nurture Sequence — Sunny Destinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A96E;--dark:#0C1219;--dark2:#111820;--dark3:#161F2A;--border:rgba(255,255,255,0.07);--text:#E0D9CC;--muted:rgba(224,217,204,0.5)}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh}
+header{background:var(--dark2);border-bottom:0.5px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+main{display:grid;grid-template-columns:280px 1fr;height:calc(100vh - 57px)}
+aside{background:var(--dark2);border-right:0.5px solid var(--border);overflow-y:auto;padding:20px 0}
+.aside-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);padding:0 20px;margin-bottom:10px}
+.email-item{padding:14px 20px;cursor:pointer;border-bottom:0.5px solid rgba(255,255,255,0.04);transition:background 0.15s;position:relative}
+.email-item:hover{background:rgba(255,255,255,0.03)}
+.email-item.active{background:rgba(201,169,110,0.07);border-left:2px solid var(--gold)}
+.email-item.active .ei-num{color:var(--gold)}
+.ei-num{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:4px}
+.ei-subject{font-size:13px;color:var(--text);line-height:1.4;margin-bottom:4px}
+.ei-timing{font-size:11px;color:var(--muted)}
+.ei-dest{display:inline-block;font-size:9px;letter-spacing:0.1em;text-transform:uppercase;padding:2px 7px;border-radius:1px;margin-top:5px}
+.ei-dest.cda{background:rgba(27,107,156,0.2);color:#7BC4F0}
+.ei-dest.cur{background:rgba(14,123,107,0.2);color:#5FD4C0}
+.ei-dest.both{background:rgba(201,169,110,0.15);color:var(--gold)}
+.content{padding:40px 48px;overflow-y:auto;max-width:760px}
+.email-header{margin-bottom:32px;padding-bottom:24px;border-bottom:0.5px solid var(--border)}
+.email-timing-badge{display:inline-block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(201,169,110,0.3);padding:4px 12px;border-radius:2px;margin-bottom:16px}
+.email-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:400;color:#F0EAE0;margin-bottom:8px;line-height:1.3}
+.email-meta{font-size:13px;color:var(--muted);line-height:1.6}
+.email-meta strong{color:var(--text);font-weight:500}
+.copy-btn{display:inline-flex;align-items:center;gap:8px;background:rgba(201,169,110,0.1);border:0.5px solid rgba(201,169,110,0.35);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:9px 18px;border-radius:2px;cursor:pointer;transition:all 0.18s;margin-top:16px}
+.copy-btn:hover{background:rgba(201,169,110,0.2)}
+.email-body{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:36px;margin-top:24px;font-size:14px;line-height:1.85;color:var(--text)}
+.email-body h4{font-family:'Playfair Display',serif;font-size:16px;color:#F0EAE0;margin:20px 0 8px;font-weight:400}
+.email-body p{margin-bottom:14px;color:rgba(224,217,204,0.8)}
+.email-body .salutation{font-family:'Playfair Display',serif;font-size:15px;color:#F0EAE0;margin-bottom:16px}
+.email-body .sign{margin-top:28px;padding-top:20px;border-top:0.5px solid rgba(255,255,255,0.07)}
+.email-body .sign p{font-size:13px;margin-bottom:4px}
+.var{background:rgba(201,169,110,0.15);color:var(--gold);padding:1px 5px;border-radius:2px;font-size:13px}
+.tips{background:rgba(255,255,255,0.03);border:0.5px solid rgba(255,255,255,0.08);border-radius:3px;padding:20px;margin-top:24px}
+.tips h4{font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.tip{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:8px;padding-left:14px;position:relative}
+.tip::before{content:'→';position:absolute;left:0;color:var(--gold);font-size:11px}
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">Sunny Destinations — <span style="font-style:italic">Email Nurture Sequence</span></div>
+  <div style="font-size:12px;color:var(--muted)">8 emails · 6 months · Both destinations</div>
+</header>
+<main>
+<aside>
+  <div class="aside-label" style="margin-top:8px">Email sequence</div>
+  <div id="email-list"></div>
+</aside>
+<div class="content" id="email-content"></div>
+</main>
+
+<script>
+const emails = [
+  {
+    id:1, timing:'Direct na aanmelding', dest:'both',
+    subject:'Uw persoonlijke woningselectie is klaar, {{naam}}',
+    preview:'Binnen 24 uur · beide bestemmingen',
+    purpose:'Welcome + deliver the promise',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Hartelijk dank voor uw interesse — ik heb uw profiel ontvangen en ga direct voor u aan de slag.</p>
+
+<p>Op basis van uw wensen ({{bestemming}}, budget {{budget}}) heb ik een eerste selectie samengesteld. U ontvangt deze selectie binnen 24 uur, inclusief een aantal woningen die <em>niet</em> online staan — off-market objecten waartoe ik via mijn lokale partners toegang heb.</p>
+
+<h4>Wat u kunt verwachten</h4>
+<p>Ik werk met twee van de beste makelaarsnetwerken in hun regio: <strong>Living on the Côte d'Azur</strong> (5.000+ panden, 19 jaar expertise, 9.9/10 beoordeling) en <strong>At Home Curaçao</strong> (volledig marktoverzicht, Nederlandstalig team). Mijn service is volledig gratis voor u als koper — de verkopende makelaar deelt zijn commissie.</p>
+
+<p>Heeft u vragen of wilt u direct contact? Bel of app mij gerust op <strong>{{telefoon}}</strong>.</p>
+
+<p>Tot spoedig,</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong></p>
+<p style="color:var(--muted)">Independent Property Consultant</p>
+<p style="color:var(--muted)">Côte d'Azur · Curaçao</p>
+<p style="color:var(--gold)">{{telefoon}} · {{email}}</p>
+</div>`
+  },
+  {
+    id:2, timing:'Dag 3', dest:'both',
+    subject:'3 woningen die ik voor u heb geselecteerd — {{bestemming}}',
+    preview:'Persoonlijke selectie + uitnodiging voor gesprek',
+    purpose:'Deliver curated selection + soft call to action',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Zoals beloofd heb ik drie woningen voor u geselecteerd die aansluiten bij uw wensen. Deze selectie is persoonlijk — niet een generieke lijst, maar objecten die ik speciaal voor u heb uitgekozen op basis van uw profiel.</p>
+
+<h4>Selectie voor u — {{bestemming}}</h4>
+<p><strong>1. {{woning_1_type}} in {{woning_1_locatie}}</strong><br>
+{{woning_1_omschrijving}} · Vraagprijs: {{woning_1_prijs}}</p>
+
+<p><strong>2. {{woning_2_type}} in {{woning_2_locatie}}</strong><br>
+{{woning_2_omschrijving}} · Vraagprijs: {{woning_2_prijs}}</p>
+
+<p><strong>3. Off-market: {{woning_3_type}} in {{woning_3_locatie}}</strong><br>
+{{woning_3_omschrijving}} · Prijs op aanvraag</p>
+
+<p>Wilt u meer informatie over één van deze woningen, of zal ik een bezichtiging inplannen? Ik coördineer alles — u hoeft alleen maar te zeggen welke u aanspreekt.</p>
+
+<p>Een korte videocall (20 min) is ook mogelijk als u wilt bespreken wat uw ideale woning is. Ik denk graag met u mee.</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong> · {{telefoon}}</p>
+<p style="color:var(--muted)">Sunny Destinations · Côte d'Azur & Curaçao</p>
+</div>`
+  },
+  {
+    id:3, timing:'Week 2', dest:'cotedazur',
+    subject:'De Côte d\'Azur markt in 2026 — wat u moet weten als koper',
+    preview:'Marktupdate + koopadvies · positioneert u als expert',
+    purpose:'Authority building — market insight',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>De vastgoedmarkt aan de Côte d'Azur laat in 2026 een interessant beeld zien. Ik stuur u graag een korte update — zodat u als potentiële koper optimaal gepositioneerd bent.</p>
+
+<h4>Wat speelt er op de Riviera?</h4>
+<p>Transactievolumes zijn met 12% gestegen ten opzichte van vorig jaar, gedreven door stabielere hypotheekrente en herstel van het consumentenvertrouwen. Prijzen zijn licht gestegen (0,3–0,4% nationaal), maar de echt gewilde locaties — Cap d'Antibes, Saint-Jean-Cap-Ferrat, Mougins — blijven schaars en in prijs stabiel tot stijgend.</p>
+
+<p><strong>Goed nieuws voor kopers:</strong> De huidige hypotheekrente in Frankrijk (circa 3,04% voor 10 jaar) is aanzienlijk lager dan de piek van de afgelopen jaren. Voor niet-ingezetenen zijn er aantrekkelijke structuren mogelijk via een SCI (familiale holding) of door te kopen op naam van kinderen — fiscaal zeer interessant.</p>
+
+<h4>Mijn advies voor uw budget van {{budget}}</h4>
+<p>In uw prijsklasse zijn er momenteel bijzonder goede kansen in {{regio_advies}}. Ik heb twee objecten in het oog die waarschijnlijk snel weg zijn. Zal ik deze toesturen?</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong> · {{telefoon}}</p>
+<p style="color:var(--muted)">Living on the Côte d'Azur Partner · Sunny Destinations</p>
+</div>`
+  },
+  {
+    id:4, timing:'Week 2', dest:'curacao',
+    subject:'Waarom Curaçao slim is in 2026 — voor de koper die vooruit denkt',
+    preview:'Investering, belasting, levensstijl · marktupdate Curaçao',
+    purpose:'Authority building — Curaçao market insight',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Curaçao wordt door steeds meer Nederlandse en Belgische kopers ontdekt als een van de slimste vastgoedinvesteringen van dit moment. Laat me u uitleggen waarom.</p>
+
+<h4>De cijfers achter het paradijs</h4>
+<p>Het eiland kent een stabiele juridische omgeving (het Koninkrijk der Nederlanden), geen vermogensbelasting, gunstige huurrendementen van gemiddeld 6–8% per jaar, en een groeiend toerisme dat de vraag naar vakantieverhuur stijmt. Het klimaat is vrijwel constant — 27°C, buiten de Atlantische orkaanzone.</p>
+
+<p><strong>Voor u als koper:</strong> Villa's met zwembad beginnen vanaf circa €200.000. Resort-appartementen met beheer en zeezicht zijn beschikbaar vanaf €150.000. Het juridisch proces is vergelijkbaar met Nederland — u voelt zich thuis.</p>
+
+<h4>Uw profiel — {{woning_type}} voor {{budget}}</h4>
+<p>Op basis van uw wensen heb ik momenteel drie objecten die ik graag met u bespreek. Twee zijn niet openbaar te zien. Interesse om de details te ontvangen?</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong> · {{telefoon}}</p>
+<p style="color:var(--muted)">At Home Curaçao Partner · Sunny Destinations</p>
+</div>`
+  },
+  {
+    id:5, timing:'Week 4', dest:'both',
+    subject:'Leven aan de zon — wat onze klanten zeggen',
+    preview:'Social proof + lifestyle inspiratie · houdt relatie warm',
+    purpose:'Social proof + lifestyle warm-up',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Ik stuur u graag een paar verhalen mee van mensen die de stap hebben gezet — en nooit hebben teruggekeken.</p>
+
+<h4>"We hadden het 10 jaar eerder moeten doen"</h4>
+<p>Een Amsterdams gezin kocht via mij een villa in de buurt van Mougins, Côte d'Azur. Budget: €2,2 miljoen. Bijzonder: de woning stond niet online — ik kende de makelaar persoonlijk. Ze betaalden netto minder dan de vraagprijs dankzij de onderhandelingen van ons lokale team. "De kinderen komen nu elke zomer. Het huis verdient zichzelf terug via verhuur in mei en september."</p>
+
+<h4>Van Amsterdam naar Willemstad</h4>
+<p>Een Rotterdams stel, vroegpensioen, zocht iets anders dan de Europese winter. Ze kochten een resort-villa op Jan Thiel, Curaçao — €380.000. Verhuurd via Airbnb in de maanden dat ze er zelf niet zijn: netto circa €22.000 per jaar aan huurinkomsten. "We leven van de zon en de zee, en het huis betaalt voor zichzelf."</p>
+
+<p>Dit is exact wat ik voor u wil realiseren, {{naam}}. Wilt u even bellen of appen? Ik vertel u graag meer over wat momenteel mogelijk is binnen uw budget.</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong> · {{telefoon}}</p>
+</div>`
+  },
+  {
+    id:6, timing:'Week 6', dest:'both',
+    subject:'Nieuwe listings deze week — speciaal voor u',
+    preview:'Verse listings + urgentie · nieuw aanbod melding',
+    purpose:'New listings alert — creates urgency',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Er zijn deze week een paar interessante objecten op de markt gekomen die ik direct aan uw profiel heb gelinkt. Ik stuur ze u graag door.</p>
+
+<h4>Nieuw deze week — {{bestemming}}</h4>
+<p><strong>Nieuw op de markt:</strong> {{listing_1}} · {{listing_1_prijs}}<br>
+<em>Reden waarom dit bij u past:</em> {{listing_1_reden}}</p>
+
+<p><strong>Off-market tip:</strong> {{listing_2}} · Prijs op aanvraag<br>
+<em>Staat nergens online</em> — ik heb dit exclusief via mijn netwerk. Interesse?</p>
+
+<p>Goede objecten in de gewenste categorieën worden gemiddeld binnen 3–6 weken verkocht in dit segment. Als u wilt dat ik een bezichtiging reserveer — of in elk geval meer informatie opvraag — laat het me weten.</p>
+
+<p>Helemaal vrijblijvend, natuurlijk.</p>
+
+<div class="sign">
+<p><strong>{{consultantnaam}}</strong> · {{telefoon}}</p>
+<p style="color:var(--muted)">Reageer op deze mail of WhatsApp mij direct</p>
+</div>`
+  },
+  {
+    id:7, timing:'Maand 3', dest:'both',
+    subject:'Een vraag, {{naam}} — wat is er veranderd?',
+    preview:'Re-engagement check-in · persoonlijk en kort',
+    purpose:'Re-engagement — check in personally',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>Het is alweer een paar maanden geleden dat u uw profiel bij mij achterliet. Ik wilde even persoonlijk inchecken — helemaal zonder druk.</p>
+
+<p>Zijn uw plannen nog hetzelfde? Of is er iets veranderd in uw situatie of tijdlijn? Het is ook mogelijk dat u simpelweg nog aan het oriënteren bent — dat is prima. Mijn service blijft beschikbaar, en de markt verandert voortdurend.</p>
+
+<p>Wat ik u wil laten weten: ik heb momenteel een aantal objecten in uw segment die ik nog niet breed heb gedeeld. Als uw interesse nog actueel is, stuur ik u die graag toe.</p>
+
+<p>Eén antwoord is genoeg — ja, nee, of "bel me even" is prima.</p>
+
+<div class="sign">
+<p>Met vriendelijke groet,</p>
+<p><strong>{{consultantnaam}}</strong></p>
+<p style="color:var(--muted)">{{telefoon}} · Antwoord gewoon op deze mail</p>
+</div>`
+  },
+  {
+    id:8, timing:'Maand 6', dest:'both',
+    subject:'Halverwege het jaar — en de markt beweegt',
+    preview:'Halfjaarlijkse marktupdate · re-activatie poging',
+    purpose:'6-month market update — final re-activation',
+    to:'{{naam}}', from:'Your Name | Sunny Destinations',
+    body:`<div class="salutation">Beste {{naam}},</div>
+
+<p>We zijn halverwege het jaar. Ik stuur u een korte update over de markt — en een vriendelijke vraag aan het einde.</p>
+
+<h4>Côte d'Azur — stand van zaken</h4>
+<p>Prijzen in het topsegment (€1,5M+) zijn licht gestegen. De vraag blijft sterk, met name vanuit Nederlandstalige kopers. Off-market transacties nemen toe — steeds meer verkopers kiezen voor stille verkoop boven publicatie. Dit maakt een goed netwerk essentieel.</p>
+
+<h4>Curaçao — momentum</h4>
+<p>Het toerisme op het eiland is op recordniveau. Vakantieverhuur rendeert sterk. Nieuwe resortprojecten in Vredenberg en Jan Thiel trekken internationale kopers aan. Prijzen zijn in 18 maanden gemiddeld 8% gestegen in het populaire segment.</p>
+
+<h4>Mijn vraag aan u</h4>
+<p>Is de droom nog steeds levend, {{naam}}? Als u ooit een goed gesprek wilt — zonder verplichtingen, puur informatief — sta ik voor u klaar. Soms helpt het gewoon om hardop te denken met iemand die de markt kent.</p>
+
+<p>Tot dan, en geniet van de zomer.</p>
+
+<div class="sign">
+<p>Hartelijk groeten,</p>
+<p><strong>{{consultantnaam}}</strong></p>
+<p style="color:var(--muted)">Sunny Destinations · Côte d'Azur & Curaçao</p>
+<p style="color:var(--gold)">{{telefoon}} · {{email}}</p>
+</div>`
+  }
+];
+
+let current = 0;
+
+function renderList(){
+  const list = document.getElementById('email-list');
+  list.innerHTML = emails.map((e,i)=>`
+    <div class="email-item${i===current?' active':''}" onclick="select(${i})">
+      <div class="ei-num">Email ${e.id} of ${emails.length}</div>
+      <div class="ei-subject">${e.subject.replace('{{naam}}','[naam]')}</div>
+      <div class="ei-timing">${e.timing}</div>
+      <div><span class="ei-dest ${e.dest==='cotedazur'?'cda':e.dest==='curacao'?'cur':'both'}">${e.dest==='cotedazur'?'Côte d\'Azur':e.dest==='curacao'?'Curaçao':'Beide'}</span></div>
+    </div>`).join('');
+}
+
+function renderContent(){
+  const e = emails[current];
+  const tipMap = {
+    1:'Send within minutes of quiz submission. Use their actual name and destination from quiz answers.',
+    2:'Personalise the 3 property slots with real listings from Ab or At Home. Off-market = high perceived value.',
+    3:'Send only to Côte d\'Azur leads. Update the market stats monthly from your SEMrush + news research.',
+    4:'Send only to Curaçao leads. The rental yield numbers are real and compelling — keep them updated.',
+    5:'Swap in real client stories when you have them. Until then, these illustrative examples are fine.',
+    6:'Send when you have a genuinely new listing. Urgency must be real — don\'t fake scarcity.',
+    7:'Keep this one short. The personal, low-pressure tone is what gets replies after months of silence.',
+    8:'This is your final automated email. After this, either move them to a quarterly newsletter or archive.'
+  };
+  document.getElementById('email-content').innerHTML = `
+    <div class="email-header">
+      <div class="email-timing-badge">${e.timing}</div>
+      <div class="email-title">${e.subject}</div>
+      <div class="email-meta">
+        <strong>Doel:</strong> ${e.purpose}<br>
+        <strong>Bestemming:</strong> ${e.dest==='cotedazur'?'Côte d\'Azur leads':e.dest==='curacao'?'Curaçao leads':'Alle leads'}<br>
+        <strong>Van:</strong> ${e.from}
+      </div>
+      <button class="copy-btn" onclick="copyEmail(${current})">Copy email body</button>
+    </div>
+    <div class="email-body">${e.body}</div>
+    <div class="tips">
+      <h4>Usage tip</h4>
+      <div class="tip">${tipMap[e.id]||''}</div>
+      <div class="tip">Replace all <span class="var">{{variabelen}}</span> with real data before sending. Use your CRM or the lead tracker to pull the right info.</div>
+      <div class="tip">Send from a personal email address (yourname@yourdomain.com), not a bulk tool, for the first 3 emails. Feels more human.</div>
+    </div>`;
+}
+
+function select(i){current=i;renderList();renderContent();}
+
+function copyEmail(i){
+  const body = emails[i].body.replace(/<[^>]+>/g,'').replace(/\n{3,}/g,'\n\n').trim();
+  navigator.clipboard.writeText(body).then(()=>{
+    const btn = document.querySelector('.copy-btn');
+    btn.textContent='Copied ✓';
+    setTimeout(()=>btn.textContent='Copy email body',2000);
+  });
+}
+
+renderList();
+renderContent();
+</script>
+</body>
+</html>

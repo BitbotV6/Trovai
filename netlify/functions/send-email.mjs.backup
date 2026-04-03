@@ -107,13 +107,6 @@ export default async (req) => {
   };
 
   try {
-    // Save lead to storage
-    await fetch('https://trovai.nl/api/save-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, phone, destination, budget, property_type, form_type })
-    }).catch(err => console.error('Failed to save lead:', err));
-
     // Stuur beide emails via Resend
     await fetch('https://api.resend.com/emails', {
       method: 'POST',

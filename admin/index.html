@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lead Tracker — Sunny Destinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --gold:#C9A96E;--dark:#0C1219;--dark2:#111820;--dark3:#161F2A;
+  --border:rgba(255,255,255,0.07);--text:#E0D9CC;--muted:rgba(224,217,204,0.5);
+  --azure:#1B6B9C;--teal:#0E7B6B;--green:#1A8A4A;--amber:#C47A15;--red:#9B3030;
+}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh}
+header{background:var(--dark2);border-bottom:0.5px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center}
+.logo{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.logo span{font-style:italic}
+.header-right{display:flex;gap:12px;align-items:center}
+.btn{background:rgba(201,169,110,0.1);border:0.5px solid rgba(201,169,110,0.35);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:8px 18px;border-radius:2px;cursor:pointer;transition:all 0.18s}
+.btn:hover{background:rgba(201,169,110,0.2)}
+.btn.ghost{background:transparent;border-color:var(--border);color:var(--muted)}
+.btn.ghost:hover{border-color:rgba(255,255,255,0.2);color:var(--text)}
+main{padding:32px;max-width:1400px;margin:0 auto}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(6,1fr);gap:10px;margin-bottom:28px}
+.stat{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:18px 20px}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:0.08em;margin-bottom:6px}
+.stat-val{font-family:'Playfair Display',serif;font-size:24px;color:var(--text)}
+.stat-val.gold{color:var(--gold)}
+.stat-val.green{color:#4CAF7A}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* ADD LEAD */
+.add-section{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:24px;margin-bottom:24px}
+.add-title{font-size:14px;font-weight:500;color:var(--text);margin-bottom:18px;display:flex;align-items:center;gap:10px}
+.form-grid{display:grid;grid-template-columns:repeat(5,1fr) auto;gap:10px;align-items:end}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted)}
+.form-input,.form-select{background:rgba(255,255,255,0.04);border:0.5px solid var(--border);border-radius:2px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:300;padding:9px 12px;outline:none;transition:border-color 0.18s;width:100%}
+.form-input:focus,.form-select:focus{border-color:rgba(201,169,110,0.45)}
+.form-input::placeholder{color:rgba(224,217,204,0.2)}
+.form-select option{background:var(--dark3);color:var(--text)}
+
+/* TABLE */
+.table-section{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;overflow:hidden}
+.table-header{padding:16px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid var(--border)}
+.table-title{font-size:13px;font-weight:500;color:var(--text)}
+.filters{display:flex;gap:8px}
+.filter-btn{background:transparent;border:0.5px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 14px;border-radius:1px;cursor:pointer;transition:all 0.18s}
+.filter-btn:hover,.filter-btn.active{background:rgba(201,169,110,0.08);border-color:rgba(201,169,110,0.35);color:var(--gold)}
+table{width:100%;border-collapse:collapse}
+th{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:12px 16px;text-align:left;border-bottom:0.5px solid var(--border);background:rgba(255,255,255,0.02)}
+td{padding:13px 16px;font-size:13px;color:var(--text);border-bottom:0.5px solid rgba(255,255,255,0.04);vertical-align:middle}
+tr:hover td{background:rgba(255,255,255,0.02)}
+tr:last-child td{border-bottom:none}
+.badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:0.06em;padding:3px 9px;border-radius:1px}
+.badge-azure{background:rgba(27,107,156,0.2);color:#7BC4F0;border:0.5px solid rgba(27,107,156,0.35)}
+.badge-teal{background:rgba(14,123,107,0.2);color:#5FD4C0;border:0.5px solid rgba(14,123,107,0.35)}
+.badge-new{background:rgba(201,169,110,0.12);color:var(--gold);border:0.5px solid rgba(201,169,110,0.3)}
+.badge-warm{background:rgba(196,122,21,0.15);color:#F4A93A;border:0.5px solid rgba(196,122,21,0.35)}
+.badge-viewing{background:rgba(27,107,156,0.15);color:#7BC4F0;border:0.5px solid rgba(27,107,156,0.3)}
+.badge-offer{background:rgba(100,60,180,0.15);color:#B39EF0;border:0.5px solid rgba(100,60,180,0.3)}
+.badge-closed{background:rgba(26,138,74,0.15);color:#4CAF7A;border:0.5px solid rgba(26,138,74,0.3)}
+.badge-lost{background:rgba(155,48,48,0.15);color:#E07070;border:0.5px solid rgba(155,48,48,0.3)}
+.commission{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold)}
+.commission.earned{color:#4CAF7A}
+.commission.potential{color:rgba(201,169,110,0.55)}
+.del-btn{background:none;border:none;color:rgba(224,217,204,0.2);cursor:pointer;font-size:14px;transition:color 0.18s;padding:4px}
+.del-btn:hover{color:#E07070}
+.empty{padding:60px 20px;text-align:center;color:var(--muted);font-size:14px}
+.empty-icon{font-size:40px;margin-bottom:12px;opacity:0.4}
+
+/* MODAL */
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.2s}
+.modal-backdrop.open{opacity:1;pointer-events:all}
+.modal{background:var(--dark2);border:0.5px solid rgba(201,169,110,0.2);border-radius:4px;padding:32px;width:100%;max-width:480px}
+.modal h3{font-family:'Playfair Display',serif;font-size:20px;margin-bottom:6px;color:var(--text)}
+.modal p{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.6}
+.modal-calc{background:rgba(201,169,110,0.06);border:0.5px solid rgba(201,169,110,0.2);border-radius:3px;padding:20px;margin-bottom:20px}
+.calc-row{display:flex;justify-content:space-between;align-items:center;font-size:13px;padding:5px 0;border-bottom:0.5px solid rgba(255,255,255,0.06)}
+.calc-row:last-child{border-bottom:none;font-size:15px;color:var(--gold);padding-top:12px;margin-top:4px}
+.calc-label{color:var(--muted)}
+.calc-val{font-weight:500;color:var(--text)}
+.modal-actions{display:flex;gap:10px}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sunny Destinations — <span>Lead Tracker</span></div>
+  <div class="header-right">
+    <button class="btn ghost" onclick="exportCSV()">Export CSV</button>
+    <button class="btn" onclick="openCalc()">Commission calculator</button>
+  </div>
+</header>
+
+<main>
+  <!-- STATS -->
+  <div class="stats" id="stats-bar"></div>
+
+  <!-- ADD LEAD -->
+  <div class="add-section">
+    <div class="add-title">+ Add new lead</div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Name</label>
+        <input class="form-input" id="f-name" placeholder="Jan de Vries">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Destination</label>
+        <select class="form-select" id="f-dest">
+          <option value="cotedazur">🇫🇷 Côte d'Azur</option>
+          <option value="curacao">🌊 Curaçao</option>
+          <option value="both">✨ Both</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Budget (€)</label>
+        <input class="form-input" id="f-budget" type="number" placeholder="2000000">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Model</label>
+        <select class="form-select" id="f-model">
+          <option value="10">Remote intro (10%)</option>
+          <option value="25" selected>Active remote (25%)</option>
+          <option value="50">With viewings (50%)</option>
+          <option value="custom">Custom %</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Status</label>
+        <select class="form-select" id="f-status">
+          <option value="new">New</option>
+          <option value="warm">Warm</option>
+          <option value="viewing">Viewing</option>
+          <option value="offer">Offer</option>
+          <option value="closed">Closed ✓</option>
+          <option value="lost">Lost</option>
+        </select>
+      </div>
+      <button class="btn" onclick="addLead()">Add lead</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:10px">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input class="form-input" id="f-email" placeholder="jan@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">WhatsApp</label>
+        <input class="form-input" id="f-phone" placeholder="+31 6 ...">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Notes</label>
+        <input class="form-input" id="f-notes" placeholder="Villa, pool, 3 slaapkamers...">
+      </div>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="table-section">
+    <div class="table-header">
+      <div class="table-title">All leads</div>
+      <div class="filters">
+        <button class="filter-btn active" onclick="setFilter('all',this)">All</button>
+        <button class="filter-btn" onclick="setFilter('cotedazur',this)">🇫🇷 Côte d'Azur</button>
+        <button class="filter-btn" onclick="setFilter('curacao',this)">🌊 Curaçao</button>
+        <button class="filter-btn" onclick="setFilter('closed',this)">Closed ✓</button>
+        <button class="filter-btn" onclick="setFilter('active',this)">Active</button>
+      </div>
+    </div>
+    <div id="table-body"></div>
+  </div>
+</main>
+
+<!-- CALC MODAL -->
+<div class="modal-backdrop" id="calc-modal">
+  <div class="modal">
+    <h3>Commission calculator</h3>
+    <p>Calculate your expected earnings for any deal scenario.</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
+      <div class="form-group"><label class="form-label">Sale price (€)</label><input class="form-input" id="calc-price" type="number" value="2000000" oninput="recalc()"></div>
+      <div class="form-group"><label class="form-label">Total commission %</label><input class="form-input" id="calc-commission" type="number" value="5" step="0.5" oninput="recalc()"></div>
+      <div class="form-group"><label class="form-label">Agency split (their share %)</label><input class="form-input" id="calc-split" type="number" value="50" oninput="recalc()"></div>
+      <div class="form-group"><label class="form-label">Your % of agency share</label><input class="form-input" id="calc-yours" type="number" value="25" oninput="recalc()"></div>
+    </div>
+    <div class="modal-calc" id="calc-result"></div>
+    <div class="modal-actions">
+      <button class="btn ghost" onclick="closeCalc()" style="flex:1">Close</button>
+      <button class="btn" onclick="recalc()" style="flex:1">Recalculate</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let leads = JSON.parse(localStorage.getItem('sd_leads')||'[]');
+let currentFilter = 'all';
+
+const DEST_LABELS = {cotedazur:'🇫🇷 Côte d\'Azur', curacao:'🌊 Curaçao', both:'✨ Both'};
+const STATUS_CLASS = {new:'badge-new',warm:'badge-warm',viewing:'badge-viewing',offer:'badge-offer',closed:'badge-closed',lost:'badge-lost'};
+const STATUS_LABEL = {new:'New',warm:'Warm',viewing:'Viewing',offer:'Offer made',closed:'Closed ✓',lost:'Lost'};
+
+function calcCommission(budget, model){
+  if(!budget || budget <= 0) return 0;
+  const totalComm = budget * 0.05;
+  const agencyShare = totalComm * 0.5;
+  return agencyShare * (parseFloat(model)/100);
+}
+
+function fmt(n){
+  if(!n||n===0) return '—';
+  return '€ '+Math.round(n).toLocaleString('nl-NL');
+}
+
+function addLead(){
+  const name = document.getElementById('f-name').value.trim();
+  if(!name){alert('Please enter a name');return;}
+  const model = document.getElementById('f-model').value;
+  const budget = parseFloat(document.getElementById('f-budget').value)||0;
+  const lead = {
+    id: Date.now(),
+    name,
+    dest: document.getElementById('f-dest').value,
+    budget,
+    model: model==='custom'?'25':model,
+    status: document.getElementById('f-status').value,
+    email: document.getElementById('f-email').value,
+    phone: document.getElementById('f-phone').value,
+    notes: document.getElementById('f-notes').value,
+    date: new Date().toLocaleDateString('nl-NL'),
+    commission: calcCommission(budget, model==='custom'?25:parseFloat(model))
+  };
+  leads.unshift(lead);
+  save();
+  ['f-name','f-budget','f-email','f-phone','f-notes'].forEach(id=>document.getElementById(id).value='');
+  render();
+}
+
+function deleteLead(id){
+  if(confirm('Remove this lead?')){
+    leads = leads.filter(l=>l.id!==id);
+    save();render();
+  }
+}
+
+function updateStatus(id, val){
+  const lead = leads.find(l=>l.id===id);
+  if(lead){lead.status=val;save();render();}
+}
+
+function save(){
+  localStorage.setItem('sd_leads', JSON.stringify(leads));
+}
+
+function setFilter(f, btn){
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  render();
+}
+
+function getFiltered(){
+  if(currentFilter==='all') return leads;
+  if(currentFilter==='active') return leads.filter(l=>!['closed','lost'].includes(l.status));
+  if(currentFilter==='closed') return leads.filter(l=>l.status==='closed');
+  return leads.filter(l=>l.dest===currentFilter||l.dest==='both');
+}
+
+function render(){
+  const filtered = getFiltered();
+  const tbody = document.getElementById('table-body');
+
+  if(filtered.length===0){
+    tbody.innerHTML=`<div class="empty"><div class="empty-icon">📋</div><div>No leads yet — add your first one above</div></div>`;
+  } else {
+    tbody.innerHTML=`<table>
+      <thead><tr>
+        <th>Date</th><th>Name</th><th>Destination</th><th>Budget</th><th>Model</th>
+        <th>Status</th><th>Potential commission</th><th>Contact</th><th>Notes</th><th></th>
+      </tr></thead>
+      <tbody>
+      ${filtered.map(l=>`
+        <tr>
+          <td style="color:var(--muted);font-size:12px">${l.date}</td>
+          <td style="font-weight:500">${l.name}</td>
+          <td><span class="badge ${l.dest==='cotedazur'?'badge-azure':l.dest==='curacao'?'badge-teal':'badge-new'}">${DEST_LABELS[l.dest]||l.dest}</span></td>
+          <td>${l.budget?'€ '+Math.round(l.budget).toLocaleString('nl-NL'):'—'}</td>
+          <td style="font-size:12px;color:var(--muted)">${l.model}% of agency share</td>
+          <td>
+            <select onchange="updateStatus(${l.id},this.value)" style="background:transparent;border:none;color:inherit;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;outline:none">
+              ${['new','warm','viewing','offer','closed','lost'].map(s=>`<option value="${s}" ${l.status===s?'selected':''}>${STATUS_LABEL[s]}</option>`).join('')}
+            </select>
+          </td>
+          <td class="${l.status==='closed'?'commission earned':'commission potential'}">${l.commission?fmt(l.commission):'—'}</td>
+          <td style="font-size:12px;color:var(--muted)">${l.email||'—'}<br>${l.phone||''}</td>
+          <td style="font-size:12px;color:var(--muted);max-width:160px">${l.notes||'—'}</td>
+          <td><button class="del-btn" onclick="deleteLead(${l.id})">✕</button></td>
+        </tr>`).join('')}
+      </tbody>
+    </table>`;
+  }
+
+  // Stats
+  const total = leads.length;
+  const active = leads.filter(l=>!['closed','lost'].includes(l.status)).length;
+  const closed = leads.filter(l=>l.status==='closed').length;
+  const pipeline = leads.filter(l=>!['closed','lost'].includes(l.status)).reduce((s,l)=>s+(l.commission||0),0);
+  const earned = leads.filter(l=>l.status==='closed').reduce((s,l)=>s+(l.commission||0),0);
+  const cda = leads.filter(l=>l.dest==='cotedazur'||l.dest==='both').length;
+
+  document.getElementById('stats-bar').innerHTML=`
+    <div class="stat"><div class="stat-label">Total leads</div><div class="stat-val">${total}</div></div>
+    <div class="stat"><div class="stat-label">Active</div><div class="stat-val">${active}</div></div>
+    <div class="stat"><div class="stat-label">Closed deals</div><div class="stat-val green">${closed}</div></div>
+    <div class="stat"><div class="stat-label">Côte d'Azur leads</div><div class="stat-val" style="color:#7BC4F0">${cda}</div></div>
+    <div class="stat"><div class="stat-label">Pipeline (potential)</div><div class="stat-val gold" style="font-size:18px">${fmt(pipeline)}</div></div>
+    <div class="stat"><div class="stat-label">Earned (closed)</div><div class="stat-val green" style="font-size:18px">${fmt(earned)}</div></div>`;
+}
+
+// Calc modal
+function openCalc(){document.getElementById('calc-modal').classList.add('open');recalc();}
+function closeCalc(){document.getElementById('calc-modal').classList.remove('open');}
+document.getElementById('calc-modal').addEventListener('click',function(e){if(e.target===this)closeCalc();});
+
+function recalc(){
+  const price = parseFloat(document.getElementById('calc-price').value)||0;
+  const commPct = parseFloat(document.getElementById('calc-commission').value)||5;
+  const splitPct = parseFloat(document.getElementById('calc-split').value)||50;
+  const yoursPct = parseFloat(document.getElementById('calc-yours').value)||25;
+  const totalComm = price * commPct/100;
+  const agencyShare = totalComm * splitPct/100;
+  const yourEarning = agencyShare * yoursPct/100;
+  document.getElementById('calc-result').innerHTML=`
+    <div class="calc-row"><span class="calc-label">Sale price</span><span class="calc-val">${fmt(price)}</span></div>
+    <div class="calc-row"><span class="calc-label">Total commission (${commPct}%)</span><span class="calc-val">${fmt(totalComm)}</span></div>
+    <div class="calc-row"><span class="calc-label">Agency's share (${splitPct}%)</span><span class="calc-val">${fmt(agencyShare)}</span></div>
+    <div class="calc-row"><span class="calc-label" style="color:var(--gold);font-weight:500">Your commission (${yoursPct}%)</span><span class="calc-val" style="color:var(--gold);font-size:20px">${fmt(yourEarning)}</span></div>`;
+}
+
+// Seed with example leads if empty
+if(leads.length===0){
+  leads=[
+    {id:1,name:'Familie Van den Berg',dest:'cotedazur',budget:3500000,model:'25',status:'warm',email:'vandenBerg@email.nl',phone:'+31 6 1234 5678',notes:'Villa met zeezicht, Cannes regio',date:'02-04-2026',commission:calcCommission(3500000,25)},
+    {id:2,name:'Peter Smeets',dest:'curacao',budget:450000,model:'25',status:'new',email:'psmeets@gmail.com',phone:'+31 6 8765 4321',notes:'Resort villa, investering',date:'01-04-2026',commission:calcCommission(450000,25)},
+    {id:3,name:'Mw. De Boer',dest:'cotedazur',budget:1800000,model:'10',status:'viewing',email:'deboer@hotmail.com',phone:'',notes:'Nice omgeving, appartement',date:'28-03-2026',commission:calcCommission(1800000,10)},
+    {id:4,name:'Mark & Lisa Jansen',dest:'both',budget:600000,model:'25',status:'closed',email:'jansen@bedrijf.nl',phone:'+31 6 5555 9999',notes:'Curaçao villa gekocht!',date:'15-03-2026',commission:calcCommission(600000,25)},
+  ];
+  save();
+}
+render();
+</script>
+</body>
+</html>

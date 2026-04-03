@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SEO & Content Strategy — Sunny Destinations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--gold:#C9A96E;--dark:#0C1219;--dark2:#111820;--dark3:#161F2A;--border:rgba(255,255,255,0.07);--text:#E0D9CC;--muted:rgba(224,217,204,0.5);--azure:#1B6B9C;--teal:#0E7B6B}
+body{background:var(--dark);color:var(--text);font-family:'DM Sans',sans-serif;font-weight:300;min-height:100vh}
+header{background:var(--dark2);border-bottom:0.5px solid var(--border);padding:16px 32px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;z-index:50}
+.logo{font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.tabs{display:flex;gap:4px}
+.tab{background:transparent;border:0.5px solid var(--border);color:var(--muted);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:8px 18px;border-radius:2px;cursor:pointer;transition:all 0.18s}
+.tab:hover{color:var(--text);border-color:rgba(255,255,255,0.15)}
+.tab.active{background:rgba(201,169,110,0.1);border-color:rgba(201,169,110,0.4);color:var(--gold)}
+main{padding:32px;max-width:1300px;margin:0 auto}
+.page{display:none}.page.active{display:block}
+
+/* CARDS */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:24px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.card{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:22px}
+.card-title{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.card-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--text);line-height:1}
+.card-val.gold{color:var(--gold)}
+.card-val.green{color:#4CAF7A}
+.card-val.blue{color:#7BC4F0}
+.card-val.red{color:#E07070}
+.card-sub{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.section-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:400;color:#F0EAE0;margin:32px 0 16px}
+.section-title em{font-style:italic;color:var(--gold)}
+.badge{display:inline-block;font-size:10px;font-weight:500;letter-spacing:0.06em;padding:3px 9px;border-radius:1px}
+.badge-gold{background:rgba(201,169,110,0.15);color:var(--gold);border:0.5px solid rgba(201,169,110,0.3)}
+.badge-green{background:rgba(76,175,122,0.15);color:#4CAF7A;border:0.5px solid rgba(76,175,122,0.3)}
+.badge-red{background:rgba(224,112,112,0.15);color:#E07070;border:0.5px solid rgba(224,112,112,0.3)}
+.badge-blue{background:rgba(27,107,156,0.15);color:#7BC4F0;border:0.5px solid rgba(27,107,156,0.3)}
+.badge-teal{background:rgba(14,123,107,0.15);color:#5FD4C0;border:0.5px solid rgba(14,123,107,0.3)}
+.badge-gray{background:rgba(255,255,255,0.07);color:var(--muted);border:0.5px solid var(--border)}
+
+/* TABLE */
+.tbl{width:100%;border-collapse:collapse;margin-bottom:24px}
+.tbl th{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:500;padding:10px 14px;text-align:left;border-bottom:0.5px solid var(--border);background:rgba(255,255,255,0.02)}
+.tbl td{padding:12px 14px;font-size:13px;border-bottom:0.5px solid rgba(255,255,255,0.04);vertical-align:top}
+.tbl tr:hover td{background:rgba(255,255,255,0.02)}
+.tbl tr:last-child td{border-bottom:none}
+.vol{font-size:11px;color:var(--muted)}
+.diff{font-size:12px;font-weight:500}
+.diff.up{color:#4CAF7A}.diff.down{color:#E07070}
+.kw{font-weight:400;color:var(--text)}
+.url{font-size:11px;color:var(--muted);word-break:break-all;margin-top:2px}
+
+/* OPPORTUNITY CARDS */
+.opp-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:24px}
+.opp{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:20px}
+.opp-priority{display:inline-block;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;font-weight:500;padding:3px 9px;border-radius:1px;margin-bottom:10px}
+.opp-priority.high{background:rgba(201,169,110,0.15);color:var(--gold);border:0.5px solid rgba(201,169,110,0.3)}
+.opp-priority.med{background:rgba(27,107,156,0.15);color:#7BC4F0;border:0.5px solid rgba(27,107,156,0.3)}
+.opp-priority.low{background:rgba(255,255,255,0.06);color:var(--muted);border:0.5px solid var(--border)}
+.opp h3{font-size:15px;font-weight:500;color:#F0EAE0;margin-bottom:6px}
+.opp p{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:10px}
+.opp-kws{display:flex;flex-wrap:wrap;gap:5px}
+.opp-kw{font-size:11px;background:rgba(255,255,255,0.04);border:0.5px solid var(--border);color:var(--muted);padding:3px 8px;border-radius:1px}
+.earn{font-size:12px;color:var(--gold);margin-top:10px;font-weight:500}
+
+/* LINKEDIN POSTS */
+.post-grid{display:flex;flex-direction:column;gap:16px}
+.post{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:24px}
+.post-meta{display:flex;align-items:center;gap:12px;margin-bottom:16px}
+.post-avatar{width:40px;height:40px;border-radius:50%;background:rgba(201,169,110,0.15);border:0.5px solid rgba(201,169,110,0.3);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:16px;color:var(--gold)}
+.post-name{font-size:14px;font-weight:500;color:var(--text)}
+.post-role{font-size:12px;color:var(--muted)}
+.post-body{font-size:14px;color:rgba(224,217,204,0.85);line-height:1.75;white-space:pre-wrap;margin-bottom:16px}
+.post-footer{display:flex;justify-content:space-between;align-items:center;padding-top:14px;border-top:0.5px solid var(--border)}
+.post-tags{display:flex;flex-wrap:wrap;gap:5px}
+.post-tag{font-size:11px;color:var(--azure);background:rgba(27,107,156,0.08)}
+.copy-post-btn{background:rgba(201,169,110,0.1);border:0.5px solid rgba(201,169,110,0.3);color:var(--gold);font-family:'DM Sans',sans-serif;font-size:11px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;padding:7px 16px;border-radius:2px;cursor:pointer;transition:all 0.18s}
+.copy-post-btn:hover{background:rgba(201,169,110,0.2)}
+.post-insight{font-size:11px;color:var(--muted);background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;padding:10px 12px;margin-bottom:14px}
+.post-insight strong{color:var(--gold);font-weight:500}
+
+/* CHART */
+.chart-wrap{background:var(--dark2);border:0.5px solid var(--border);border-radius:3px;padding:22px;margin-bottom:24px}
+.chart-title{font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:20px}
+.bar-chart{display:flex;flex-direction:column;gap:10px}
+.bar-row{display:flex;align-items:center;gap:12px}
+.bar-label{font-size:12px;color:var(--muted);width:180px;flex-shrink:0;text-align:right}
+.bar-track{flex:1;height:6px;background:rgba(255,255,255,0.06);border-radius:3px;overflow:hidden}
+.bar-fill{height:100%;border-radius:3px;transition:width 1s ease}
+.bar-val{font-size:12px;color:var(--text);min-width:60px}
+
+/* TRAFFIC MINI CHART */
+.sparkline{display:flex;align-items:flex-end;gap:2px;height:40px;margin-top:8px}
+.spark-bar{flex:1;background:rgba(201,169,110,0.3);border-radius:1px;min-height:2px;transition:background 0.2s}
+.spark-bar:hover{background:var(--gold)}
+
+/* ALERT BOX */
+.alert{background:rgba(201,169,110,0.06);border:0.5px solid rgba(201,169,110,0.25);border-radius:3px;padding:18px 20px;margin-bottom:20px}
+.alert-title{font-size:13px;font-weight:500;color:var(--gold);margin-bottom:6px}
+.alert p{font-size:13px;color:var(--muted);line-height:1.65}
+.alert.danger{background:rgba(224,112,112,0.06);border-color:rgba(224,112,112,0.25)}
+.alert.danger .alert-title{color:#E07070}
+.alert.success{background:rgba(76,175,122,0.06);border-color:rgba(76,175,122,0.25)}
+.alert.success .alert-title{color:#4CAF7A}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Sunny Destinations — <span style="font-style:italic">SEO & Content Strategy</span></div>
+  <div class="tabs">
+    <button class="tab active" onclick="showPage('overview',this)">Overview</button>
+    <button class="tab" onclick="showPage('keywords',this)">Keywords</button>
+    <button class="tab" onclick="showPage('opportunities',this)">Opportunities</button>
+    <button class="tab" onclick="showPage('linkedin',this)">LinkedIn posts</button>
+    <button class="tab" onclick="showPage('plan',this)">90-day plan</button>
+  </div>
+</header>
+
+<main>
+
+<!-- OVERVIEW -->
+<div class="page active" id="page-overview">
+  <div class="section-title">SEMrush analysis — <em>what the data tells us</em></div>
+
+  <div class="alert danger">
+    <div class="alert-title">Critical finding: Ab's site gets almost no traffic</div>
+    <p>livingonthecotedazur.com receives only 647 monthly visits (US). At Home Curaçao gets 113,792 — that's 175x more. This confirms your role: <strong>you are the traffic source for the Côte d'Azur market.</strong> Ab depends on agents like you. You have all the leverage.</p>
+  </div>
+
+  <div class="grid4">
+    <div class="card">
+      <div class="card-title">CdA monthly traffic</div>
+      <div class="card-val red">647</div>
+      <div class="card-sub">livingonthecotedazur.com · US only</div>
+    </div>
+    <div class="card">
+      <div class="card-title">CdA ranking keywords</div>
+      <div class="card-val">1,511</div>
+      <div class="card-sub">Mostly informational (52%)</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Curaçao monthly traffic</div>
+      <div class="card-val green">113,792</div>
+      <div class="card-sub">athomecuracao.com · worldwide</div>
+    </div>
+    <div class="card">
+      <div class="card-title">Curaçao keywords</div>
+      <div class="card-val blue">89,687</div>
+      <div class="card-sub">Strong, growing trend</div>
+    </div>
+  </div>
+
+  <div class="section-title">Traffic trend — At Home Curaçao (March 2026)</div>
+  <div class="chart-wrap">
+    <div class="chart-title">Daily organic traffic · March 1 – April 2, 2026 · Growing from 3,128 → 3,698/day</div>
+    <div class="sparkline" id="spark"></div>
+    <div style="display:flex;justify-content:space-between;margin-top:6px;font-size:11px;color:var(--muted)">
+      <span>Mar 2</span><span>Mar 15</span><span>Apr 2</span>
+    </div>
+  </div>
+
+  <div class="grid2">
+    <div class="chart-wrap" style="margin-bottom:0">
+      <div class="chart-title">CdA — keyword intent breakdown</div>
+      <div class="bar-chart">
+        <div class="bar-row"><span class="bar-label">Informational</span><div class="bar-track"><div class="bar-fill" style="width:52%;background:#7BC4F0"></div></div><span class="bar-val">52% · 873 kws</span></div>
+        <div class="bar-row"><span class="bar-label">Commercial</span><div class="bar-track"><div class="bar-fill" style="width:25%;background:var(--gold)"></div></div><span class="bar-val">25% · 424 kws</span></div>
+        <div class="bar-row"><span class="bar-label">Transactional</span><div class="bar-track"><div class="bar-fill" style="width:20%;background:#4CAF7A"></div></div><span class="bar-val">20% · 332 kws</span></div>
+        <div class="bar-row"><span class="bar-label">Navigational</span><div class="bar-track"><div class="bar-fill" style="width:3%;background:var(--muted)"></div></div><span class="bar-val">3% · 50 kws</span></div>
+      </div>
+    </div>
+    <div class="chart-wrap" style="margin-bottom:0">
+      <div class="chart-title">CdA — top competitors (by keyword overlap)</div>
+      <div class="bar-chart">
+        <div class="bar-row"><span class="bar-label">cotedazur-sothebys</span><div class="bar-track"><div class="bar-fill" style="width:51%;background:#E07070"></div></div><span class="bar-val">51 · 2,100 kws</span></div>
+        <div class="bar-row"><span class="bar-label">french-riviera-property</span><div class="bar-track"><div class="bar-fill" style="width:40%;background:rgba(224,112,112,0.5)"></div></div><span class="bar-val">40 · 900 kws</span></div>
+        <div class="bar-row"><span class="bar-label">nice-properties.com</span><div class="bar-track"><div class="bar-fill" style="width:36%;background:rgba(224,112,112,0.4)"></div></div><span class="bar-val">36 · 483 kws</span></div>
+        <div class="bar-row"><span class="bar-label">azurplenitude.com</span><div class="bar-track"><div class="bar-fill" style="width:18%;background:rgba(224,112,112,0.3)"></div></div><span class="bar-val">18 · 416 kws</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title" style="margin-top:32px">Key strategic conclusions</div>
+  <div class="grid2">
+    <div class="alert success" style="margin-bottom:0">
+      <div class="alert-title">Your biggest opportunity: Côte d'Azur content</div>
+      <p>Ab ranks for "cote d'azur nice france" (pos 7–12, 6,600–12,100 vol) but with only 647 monthly visitors. His top page is the Nice property overview. There is massive untapped volume in French Riviera buyer keywords — and almost no strong Dutch-language content anywhere. <strong>You can own that gap.</strong></p>
+    </div>
+    <div class="alert" style="margin-bottom:0">
+      <div class="alert-title">Curaçao: intercept earlier in the funnel</div>
+      <p>At Home already has 113K visits — but those are Dutch speakers finding the site. You can intercept them earlier by ranking for "huis kopen Curaçao", "villa Curaçao kopen", "investeren Curaçao vastgoed" — lifestyle + investment intent keywords that precede the search for a specific property. Your content attracts them before they find At Home directly.</p>
+    </div>
+  </div>
+</div>
+
+<!-- KEYWORDS -->
+<div class="page" id="page-keywords">
+  <div class="section-title">Keyword targets — <em>what to rank for</em></div>
+
+  <div class="alert">
+    <div class="alert-title">Strategy: Target Dutch-language buyer intent keywords — no one is</div>
+    <p>All competitors rank for English terms. Dutch/Belgian buyers search in Dutch. "Villa kopen Côte d'Azur", "huis kopen Curaçao", "investeren vastgoed Middellandse Zee" — these terms have real volume and almost zero competition. This is your moat.</p>
+  </div>
+
+  <div class="section-title" style="font-size:16px;margin-top:0">Côte d'Azur — target keywords</div>
+  <table class="tbl">
+    <thead><tr><th>Keyword</th><th>Language</th><th>Est. volume</th><th>Intent</th><th>Difficulty</th><th>Your angle</th></tr></thead>
+    <tbody>
+      <tr><td class="kw">villa kopen côte d'azur</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">800–1,200/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Landing page + quiz CTA</td></tr>
+      <tr><td class="kw">huis kopen Zuid-Frankrijk</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">600–900/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Blog + quiz</td></tr>
+      <tr><td class="kw">appartement kopen Nice</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">400–700/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Area guide page</td></tr>
+      <tr><td class="kw">villa kopen Cannes</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">300–500/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Area guide page</td></tr>
+      <tr><td class="kw">investeren vastgoed Frankrijk</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">500–800/mo</td><td><span class="badge badge-green">Commercial</span></td><td><span class="diff up">Low</span></td><td>ROI calculator blog post</td></tr>
+      <tr><td class="kw">tweedewoning kopen Frankrijk belasting</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">300–500/mo</td><td><span class="badge badge-green">Commercial</span></td><td><span class="diff up">Low</span></td><td>Tax guide (lead magnet)</td></tr>
+      <tr><td class="kw">buy villa french riviera</td><td><span class="badge badge-gray">EN</span></td><td class="vol">2,400/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff down">High</span></td><td>Long-term SEO target</td></tr>
+      <tr><td class="kw">luxury property côte d'azur</td><td><span class="badge badge-gray">EN</span></td><td class="vol">1,900/mo</td><td><span class="badge badge-green">Commercial</span></td><td><span class="diff down">High</span></td><td>Long-term SEO target</td></tr>
+      <tr><td class="kw">property for sale nice france</td><td><span class="badge badge-gray">EN</span></td><td class="vol">12,100/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff down">Very high</span></td><td>Ab already ranks pos 8 — link to his page</td></tr>
+      <tr><td class="kw">mougins real estate</td><td><span class="badge badge-gray">EN</span></td><td class="vol">140/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Ab just entered top 50 — support with content</td></tr>
+    </tbody>
+  </table>
+
+  <div class="section-title" style="font-size:16px">Curaçao — target keywords</div>
+  <table class="tbl">
+    <thead><tr><th>Keyword</th><th>Language</th><th>Est. volume</th><th>Intent</th><th>Difficulty</th><th>Your angle</th></tr></thead>
+    <tbody>
+      <tr><td class="kw">huis kopen Curaçao</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">800–1,500/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Landing page + quiz CTA</td></tr>
+      <tr><td class="kw">villa kopen Curaçao</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">500–900/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Guide + quiz</td></tr>
+      <tr><td class="kw">investeren Curaçao vastgoed</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">400–700/mo</td><td><span class="badge badge-green">Commercial</span></td><td><span class="diff up">Low</span></td><td>Investment ROI blog post</td></tr>
+      <tr><td class="kw">emigreren Curaçao</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">1,200–2,000/mo</td><td><span class="badge badge-green">Commercial</span></td><td><span class="diff">Medium</span></td><td>Emigration guide (huge lead magnet)</td></tr>
+      <tr><td class="kw">leven op Curaçao</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">900–1,400/mo</td><td><span class="badge badge-blue">Informational</span></td><td><span class="diff up">Low</span></td><td>Lifestyle blog → quiz conversion</td></tr>
+      <tr><td class="kw">vakantiewoning Curaçao kopen</td><td><span class="badge badge-blue">Dutch</span></td><td class="vol">300–600/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff up">Low</span></td><td>Holiday home guide</td></tr>
+      <tr><td class="kw">buy villa curacao</td><td><span class="badge badge-gray">EN</span></td><td class="vol">700/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff">Medium</span></td><td>English landing page</td></tr>
+      <tr><td class="kw">curacao real estate for sale</td><td><span class="badge badge-gray">EN</span></td><td class="vol">2,900/mo</td><td><span class="badge badge-gold">Transactional</span></td><td><span class="diff down">High</span></td><td>At Home already ranks — your blog feeds them</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- OPPORTUNITIES -->
+<div class="page" id="page-opportunities">
+  <div class="section-title">Content opportunities — <em>gaps to exploit now</em></div>
+
+  <div class="alert success">
+    <div class="alert-title">The Dutch-language gap is wide open</div>
+    <p>Neither Ab's site nor any major competitor produces quality Dutch-language buyer content for Côte d'Azur. At Home Curaçao does some, but not buying guides. You can become THE Dutch-language resource for both destinations within 6–12 months of consistent content.</p>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp">
+      <div class="opp-priority high">Priority 1 · Build now</div>
+      <h3>Dutch buyer guide: Côte d'Azur</h3>
+      <p>A comprehensive "Gids voor Nederlanders die een woning kopen aan de Côte d'Azur" — legal process, taxes, best areas, pitfalls. This single page can rank for 20+ Dutch buyer keywords. Nobody has built this.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">villa kopen côte d'azur</span>
+        <span class="opp-kw">huis kopen Zuid-Frankrijk</span>
+        <span class="opp-kw">belasting tweede woning Frankrijk</span>
+      </div>
+      <div class="earn">→ Ranks for buying intent. Every visitor = potential lead.</div>
+    </div>
+    <div class="opp">
+      <div class="opp-priority high">Priority 1 · Build now</div>
+      <h3>Dutch buyer guide: Curaçao</h3>
+      <p>"Huis kopen op Curaçao: de complete gids" — kosten, juridisch proces, beste buurten, belastingvoordelen, huurmarkt. "Emigreren Curaçao" alone gets 1,200+ monthly searches. This is a massive funnel.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">huis kopen Curaçao</span>
+        <span class="opp-kw">emigreren Curaçao</span>
+        <span class="opp-kw">vakantiewoning Curaçao kopen</span>
+      </div>
+      <div class="earn">→ At Home Curaçao's 113K traffic = your competition here.</div>
+    </div>
+    <div class="opp">
+      <div class="opp-priority high">Priority 2 · This month</div>
+      <h3>Area guides — per neighbourhood</h3>
+      <p>Individual pages for Nice, Cannes, Antibes, Monaco, Mougins, Villefranche — and for Jan Thiel, Piscadera, Vredenberg on Curaçao. Ab just entered top 50 for "mougins real estate" — a content boost can push that to top 10.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">mougins real estate</span>
+        <span class="opp-kw">villa kopen Cannes</span>
+        <span class="opp-kw">Jan Thiel woning kopen</span>
+      </div>
+      <div class="earn">→ Long-tail, low competition, high buyer intent.</div>
+    </div>
+    <div class="opp">
+      <div class="opp-priority high">Priority 2 · This month</div>
+      <h3>Investment ROI calculator + blog</h3>
+      <p>"Wat levert een villa aan de Côte d'Azur op als investering?" — interactive calculator, rental yield data, appreciation history. Ab's top competitor Sotheby's doesn't have this. You build it, you own the keyword, you get the investor leads.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">investeren vastgoed Frankrijk</span>
+        <span class="opp-kw">rendement vakantieverhuur Curaçao</span>
+      </div>
+      <div class="earn">→ Investor leads = highest budget buyers.</div>
+    </div>
+    <div class="opp">
+      <div class="opp-priority med">Priority 3 · Next quarter</div>
+      <h3>Tax guide — Dutch buyers abroad</h3>
+      <p>"Belasting op tweede woning in Frankrijk voor Nederlanders" and "Belasting op woning Curaçao" — informational but extremely high commercial value. These readers are actively preparing to buy. Ab's site has a page on this but it ranks poorly.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">belasting tweede woning buitenland</span>
+        <span class="opp-kw">SCI Frankijk Nederlander</span>
+        <span class="opp-kw">Box 3 buitenlands vastgoed</span>
+      </div>
+      <div class="earn">→ Lead magnet: downloadable tax checklist in exchange for email.</div>
+    </div>
+    <div class="opp">
+      <div class="opp-priority med">Priority 3 · Next quarter</div>
+      <h3>Lifestyle content → quiz conversion</h3>
+      <p>Ab's top-traffic page (41% of all traffic) is a Nice lifestyle/property overview — not a pure property listing page. "Leven op de Côte d'Azur" and "leven op Curaçao" lifestyle articles with embedded quiz CTAs can funnel dreamers → leads organically.</p>
+      <div class="opp-kws">
+        <span class="opp-kw">leven op Curaçao</span>
+        <span class="opp-kw">leven aan de Côte d'Azur</span>
+        <span class="opp-kw">wonen in Zuid-Frankrijk</span>
+      </div>
+      <div class="earn">→ Top of funnel — large volume, 6–18 month nurture to close.</div>
+    </div>
+  </div>
+
+  <div class="section-title">Competitor gap — what Sotheby's ranks for that Ab doesn't</div>
+  <div class="alert">
+    <div class="alert-title">cotedazur-sothebysrealty.com: 2,100 keywords, 51 overlapping with Ab</div>
+    <p>Sotheby's is Ab's biggest competitor but their content is English-only and corporate. They rank for "luxury villa for sale côte d'azur", "cannes luxury real estate", "antibes property for sale". These are winnable with Dutch + English content targeting the same buyer profile.</p>
+  </div>
+  <table class="tbl">
+    <thead><tr><th>Gap keyword (Sotheby's ranks, Ab doesn't)</th><th>Volume</th><th>Opportunity for you</th></tr></thead>
+    <tbody>
+      <tr><td class="kw">luxury villa for sale côte d'azur</td><td class="vol">1,300/mo</td><td>English landing page + Dutch translation</td></tr>
+      <tr><td class="kw">cannes luxury real estate</td><td class="vol">880/mo</td><td>Cannes area guide page</td></tr>
+      <tr><td class="kw">antibes property for sale</td><td class="vol">720/mo</td><td>Antibes area guide + Ab's listings</td></tr>
+      <tr><td class="kw">villa for sale south of france</td><td class="vol">2,400/mo</td><td>Long-term content target</td></tr>
+      <tr><td class="kw">french riviera real estate agent</td><td class="vol">590/mo</td><td>Your "About" page can rank for this</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- LINKEDIN -->
+<div class="page" id="page-linkedin">
+  <div class="section-title">LinkedIn posts — <em>ready to publish</em></div>
+  <div class="alert">
+    <div class="alert-title">Posting strategy: based on your SEMrush data</div>
+    <p>Your audience searches "villa kopen côte d'azur", "huis kopen Curaçao", "investeren vastgoed". LinkedIn posts should mirror this intent — catch the dreamer before they search Google. Post 2–3x per week. Alternate: Côte d'Azur week · Curaçao week · Investment/lifestyle week.</p>
+  </div>
+  <div class="post-grid" id="posts-container"></div>
+</div>
+
+<!-- 90-DAY PLAN -->
+<div class="page" id="page-plan">
+  <div class="section-title">90-day action plan — <em>from zero to lead machine</em></div>
+
+  <div class="grid3">
+    <div class="card" style="border-color:rgba(201,169,110,0.25)">
+      <div class="card-title" style="color:var(--gold)">Month 1 — Foundation</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-top:8px">
+        ✓ Brand site live (done)<br>
+        ✓ Lead tracker running (done)<br>
+        ✓ Email sequence ready (done)<br>
+        → Buy domain (sunnydestinations.nl or yourowndomain.nl)<br>
+        → Host brand site (Netlify, free)<br>
+        → Set up personal LinkedIn content schedule<br>
+        → Contact At Home Curaçao re: referral deal<br>
+        → Write Dutch buyer guide CdA (your first SEO page)<br>
+        → Write Dutch buyer guide Curaçao<br>
+        → Start LinkedIn: 3 posts/week from the 5 posts provided
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#7BC4F0">Month 2 — Content & Traffic</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-top:8px">
+        → Area guides: Nice, Cannes, Mougins, Jan Thiel<br>
+        → SEMrush: track your first keyword rankings<br>
+        → Upgrade quiz with SEMrush keyword data<br>
+        → Build ROI calculator blog post<br>
+        → Start email list (Mailchimp free tier)<br>
+        → First 10 leads in tracker<br>
+        → Send first nurture email to any quiz leads<br>
+        → LinkedIn: test which post types get most reach<br>
+        → Add WhatsApp button to brand site
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title" style="color:#4CAF7A">Month 3 — First commissions</div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.8;margin-top:8px">
+        → Tax guide Dutch buyers abroad (lead magnet PDF)<br>
+        → Re-engage cold leads with market update email<br>
+        → First warm introduction to Ab or At Home<br>
+        → Track first potential commission in lead tracker<br>
+        → Analyse: which content brings best leads?<br>
+        → Double down on what works<br>
+        → LinkedIn: 500+ followers target<br>
+        → Request SEMrush data for your own domain<br>
+        → Plan Q2: scale what's working
+      </div>
+    </div>
+  </div>
+
+  <div class="section-title">Investment vs return — realistic scenario</div>
+  <table class="tbl">
+    <thead><tr><th>Month</th><th>Leads generated</th><th>Pipeline value</th><th>Expected commission</th><th>Cost (time)</th></tr></thead>
+    <tbody>
+      <tr><td>Month 1</td><td>0–3 (quiz + network)</td><td>€2M–€6M</td><td style="color:var(--muted)">€0 (pipeline building)</td><td>~5 hrs/week</td></tr>
+      <tr><td>Month 2</td><td>3–8</td><td>€5M–€15M</td><td style="color:var(--muted)">€0 (nurturing)</td><td>~4 hrs/week</td></tr>
+      <tr><td>Month 3</td><td>8–15</td><td>€8M–€25M</td><td style="color:var(--gold);font-weight:500">First potential: €5K–€25K</td><td>~3 hrs/week</td></tr>
+      <tr><td>Month 6</td><td>20–40 total</td><td>€20M–€60M</td><td style="color:#4CAF7A;font-weight:500">€25K–€75K potential earned</td><td>~2 hrs/week</td></tr>
+      <tr><td>Year 2</td><td>Automated</td><td>Compounding</td><td style="color:#4CAF7A;font-weight:500">€50K–€150K+/year</td><td>~1 hr/week</td></tr>
+    </tbody>
+  </table>
+
+  <div class="alert success">
+    <div class="alert-title">The compounding effect</div>
+    <p>After month 6, your SEO pages start ranking. Your LinkedIn audience grows. Your email list nurtures itself. Your quiz runs 24/7. Every week you do nothing, leads are still being captured and warmed. One €5M Côte d'Azur deal at 25% model = €31,250. That pays for years of effort in one deal.</p>
+  </div>
+</div>
+
+</main>
+
+<script>
+function showPage(id, btn){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+// Sparkline from CSV data
+const traffic = [3128,3087,3183,3379,3626,3602,3728,3736,3791,3753,3564,3584,3554,3413,3408,3401,3403,3466,3587,3641,3643,3680,3653,3648,3608,3604,3612,3620,3637,3657,3698,3698];
+const maxT = Math.max(...traffic), minT = Math.min(...traffic);
+const spark = document.getElementById('spark');
+traffic.forEach(v=>{
+  const bar = document.createElement('div');
+  bar.className = 'spark-bar';
+  const pct = ((v-minT)/(maxT-minT)*85+10);
+  bar.style.height = pct+'%';
+  spark.appendChild(bar);
+});
+
+// LinkedIn posts
+const posts = [
+  {
+    dest:'🇫🇷 Côte d\'Azur',
+    kw:'villa kopen côte d\'azur',
+    body:`Waarom kopen Nederlandse kopers steeds vaker een villa aan de Côte d'Azur? 🌊
+
+Niet omdat het goedkoop is.
+
+Maar omdat de rekening klopt.
+
+Even de cijfers:
+→ Gemiddeld 20% prijsstijging in prime Riviera-segmenten over 5 jaar (Knight Frank 2024)
+→ Hypotheekrente in Frankrijk nu circa 3,04% (10 jaar vast)
+→ Vakantieverhuur in mei + september: €8.000–€25.000 per maand afhankelijk van locatie
+→ SCI-structuur: koop via een familiale holding en optimaliseer erfbelasting
+
+En de service? Als aankoopmakelaar vertegenwoordig ik uitsluitend de koper. De verkopende makelaar deelt zijn commissie — mijn service is gratis voor u.
+
+Bent u serieus geïnteresseerd? Stuur me een DM of vul de zoekopdracht in via mijn profiel.
+
+#CotedAzur #VastgoedFrankrijk #VillaKopen #FrenchRiviera #Nederlanders #Investeren`,
+    insight:'Based on: "investeren vastgoed Frankrijk" (500–800/mo) + "villa kopen côte d\'azur" — commercial intent. Numbers create credibility and stop the scroll.'
+  },
+  {
+    dest:'🌊 Curaçao',
+    kw:'huis kopen Curaçao',
+    body:`Curaçao heeft iets wat de Côte d'Azur niet heeft.
+
+Een Nederlands rechtssysteem. Een bekende taal. En een vliegticket van 9 uur.
+
+Maar ook:
+→ 365 dagen zon per jaar (buiten de orkaanzone)
+→ Villa met privézwembad vanaf €200.000
+→ Gemiddeld huurrendement van 6–8% via Airbnb
+→ Geen vermogensbelasting
+→ Groeiend toerisme: recordaantallen in 2025
+
+Voor Nederlandse kopers is Curaçao niet "ver weg". Het is gewoon een warm stuk Nederland, met palmen.
+
+Via mijn partner At Home Curaçao heb ik toegang tot het complete woningaanbod op het eiland — van resort-appartementen tot exclusieve villa's. Mijn service is gratis voor u als koper.
+
+Welk type woning zoekt u? 👇
+
+#Curaçao #VastogoedCuraçao #HuisKopen #Investeren #Caribisch #Pensioen #ZweedseSleutel`,
+    insight:'Based on: "huis kopen Curaçao" (800–1,500/mo) + "emigreren Curaçao" (1,200–2,000/mo). The "Dutch island" angle is the unique hook no one uses.'
+  },
+  {
+    dest:'💼 Investment',
+    kw:'investeren vastgoed buitenland',
+    body:`Een vraag die ik regelmatig krijg: "Is €2 miljoen in een villa aan de Côte d'Azur slim?"
+
+Mijn eerlijke antwoord:
+
+Het hangt af van wat u "slim" vindt.
+
+Als investering puur op papier:
+✓ Waardestijging: historisch 3–5% per jaar in prime Riviera
+✓ Verhuurinkomsten mei–sept: €80K–€200K afhankelijk van object
+✗ Beheerkosten: 20–30% van huuromzet
+✗ Franse inkomstenbelasting op huurinkomsten
+
+Als levensstijlinvestering:
+✓ Onbetaalbare zomers met familie
+✓ Prestige en gebruik als zakelijke representatie
+✓ Diversificatie buiten Nederland/België
+
+Mijn advies: de slimste kopers die ik begeleid, berekenen het zó — x zomerweken zelf gebruiken + y weken verhuur = netto kostenplaatje van €Z per jaar. Dan bepalen ze of dat het waard is.
+
+Wilt u zo'n berekening voor uw eigen situatie? DM me gerust.
+
+#Vastgoed #Investeren #CotedAzur #Vermogensbeheer #Rendement #FrenchRiviera`,
+    insight:'Based on: "investeren vastgoed Frankrijk" — commercial intent. Honest tone ("eerlijk antwoord") gets trust. Ends with soft CTA that invites DMs.'
+  },
+  {
+    dest:'🌅 Lifestyle',
+    kw:'leven op Curaçao / leven aan de Côte d\'Azur',
+    body:`08:00 — koffie op het terras, zee op 200 meter.
+09:30 — lokale markt in het dorp.
+12:00 — lunch in de schaduw van de olijfbomen.
+14:00 — zwembad. Of strand. Uw keuze.
+18:00 — aperitief met zicht op de zonsondergang.
+
+Dit is geen vakantie. Dit is hoe onze klanten leven.
+
+Niet allemaal fulltime. Sommigen 6 weken per jaar. Anderen 3 maanden. Een paar van hen zijn verhuisd voor goed.
+
+Wat ze gemeen hebben: ze dachten lang dat dit "voor andere mensen" was. Rijkere mensen. Mensen met meer tijd. Mensen met een ander leven.
+
+Totdat ze de stap zetten.
+
+Bent u serieus nieuwsgierig — niet naar de droom, maar naar de cijfers en de haalbaarheid? Dan plan ik graag een gesprek van 20 minuten. Vrijblijvend.
+
+#LevenOnderdeDen #CotedAzur #Curaçao #ZweedseSleutel #DroomWoning #Vrijheid`,
+    insight:'Based on: "leven op Curaçao" (900–1,400/mo) + lifestyle informational intent. This post targets dreamers who haven\'t yet searched for property — top of funnel.'
+  },
+  {
+    dest:'📊 Market insight',
+    kw:'property nice france / mougins real estate',
+    body:`3 dingen die u moet weten als u nu kijkt naar vastgoed aan de Côte d'Azur:
+
+1️⃣ Off-market is de norm in het topsegment
+Meer dan 40% van de transacties boven €2M vindt nooit een website. Ze gaan via makelaarsnetwerken. Zonder de juiste partner ziet u deze objecten nooit.
+
+2️⃣ De rente-daling is echt
+Franse hypotheekrente staat op circa 3,04% voor 10 jaar vast — een stuk lager dan de piek van 2023. Voor gekwalificeerde kopers zijn er deals te maken, ook als expat.
+
+3️⃣ De euro werkt in uw voordeel als u buiten de eurozone verdient
+Maar ook voor NL/BE-kopers: nu kopen en later verhuren of verkopen in euro's = stabiel.
+
+Ik begeleid Nederlandse en Belgische kopers via Living on the Côte d'Azur — 5.000+ listings, inclusief off-market. Volledig gratis voor de koper.
+
+Vragen? Stel ze hieronder of stuur een DM.
+
+#CotedAzur #Vastgoed #NiceFrance #Mougins #Cannes #Makelaardij #FrenchRiviera`,
+    insight:'Based on: Ab just entered top 50 for "mougins real estate" + "property nice france" (12,100 vol). Mentioning these areas in LinkedIn helps SEO context and attracts geo-specific searches.'
+  }
+];
+
+const container = document.getElementById('posts-container');
+posts.forEach((p,i)=>{
+  container.innerHTML += `
+  <div class="post">
+    <div class="post-insight"><strong>SEO basis:</strong> Targets keyword: "${p.kw}" · ${p.insight}</div>
+    <div class="post-meta">
+      <div class="post-avatar">S</div>
+      <div>
+        <div class="post-name">Your Name</div>
+        <div class="post-role">Independent Property Consultant · Côte d'Azur & Curaçao</div>
+      </div>
+      <span class="badge badge-${p.dest.includes('🇫🇷')?'blue':p.dest.includes('🌊')?'teal':'gold'}" style="margin-left:auto">${p.dest}</span>
+    </div>
+    <div class="post-body">${p.body}</div>
+    <div class="post-footer">
+      <div class="post-tags"></div>
+      <button class="copy-post-btn" onclick="copyPost(${i})">Copy post</button>
+    </div>
+  </div>`;
+});
+
+function copyPost(i){
+  navigator.clipboard.writeText(posts[i].body).then(()=>{
+    const btns = document.querySelectorAll('.copy-post-btn');
+    btns[i].textContent='Copied ✓';
+    setTimeout(()=>btns[i].textContent='Copy post',2000);
+  });
+}
+</script>
+</body>
+</html>

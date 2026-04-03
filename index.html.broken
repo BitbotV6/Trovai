@@ -1,0 +1,1617 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trovai Ã¢ÂÂ AI finds your perfect property</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080A0F'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='20' font-style='italic' fill='%23C8A96A'>T</text><circle cx='23' cy='20' r='2.5' fill='%23C8A96A'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080A0F;
+  --black2:#0C0E14;
+  --black3:#11141C;
+  --white:#F4F2EE;
+  --gold:#C8A96A;
+  --gold2:#A8853A;
+  --muted:rgba(244,242,238,0.45);
+  --border:rgba(244,242,238,0.08);
+  --border2:rgba(244,242,238,0.14);
+  --azure:#2B7EC4;
+  --teal:#1A9B7F;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Geist',sans-serif;font-weight:300;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid transparent;transition:all 0.3s}
+nav.scrolled{background:rgba(8,10,15,0.92);border-color:var(--border);backdrop-filter:blur(12px)}
+.nav-logo{display:flex;align-items:baseline;gap:2px}
+.nav-logo-t{font-family:'Instrument Serif',serif;font-size:22px;color:var(--white);letter-spacing:-0.02em}
+.nav-logo-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:1px;margin-bottom:3px}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:transparent;border:0.5px solid rgba(200,169,106,0.45);color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:9px 22px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.nav-cta:hover{background:rgba(200,169,106,0.1)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:140px 48px 80px}
+.hero-grid{position:absolute;inset:0;opacity:0.03;background-image:linear-gradient(var(--border2) 1px,transparent 1px),linear-gradient(90deg,var(--border2) 1px,transparent 1px);background-size:60px 60px}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(200,169,106,0.06) 0%,transparent 70%);pointer-events:none}
+.hero-glow2{position:absolute;top:40%;right:-100px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(43,126,196,0.05) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,169,106,0.08);border:0.5px solid rgba(200,169,106,0.25);border-radius:100px;padding:6px 14px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:36px;opacity:0;animation:fadeUp 0.8s 0.1s both}
+.hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(48px,6.5vw,88px);font-weight:400;line-height:1.05;letter-spacing:-0.02em;color:var(--white);margin-bottom:6px;opacity:0;animation:fadeUp 0.9s 0.25s both}
+.hero-title-2{font-family:'Instrument Serif',serif;font-size:clamp(48px,6.5vw,88px);font-weight:400;line-height:1.05;letter-spacing:-0.02em;font-style:italic;color:var(--gold);margin-bottom:32px;opacity:0;animation:fadeUp 0.9s 0.35s both}
+.hero-sub{font-size:17px;font-weight:300;color:var(--muted);line-height:1.75;max-width:520px;margin-bottom:52px;opacity:0;animation:fadeUp 0.9s 0.5s both}
+.hero-sub strong{color:var(--white);font-weight:400}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:72px;opacity:0;animation:fadeUp 0.9s 0.65s both}
+.btn-gold{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;border:none;padding:14px 28px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:13px;letter-spacing:0.06em;padding:14px 28px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.btn-ghost:hover{border-color:rgba(244,242,238,0.3);color:var(--white)}
+.hero-stats{display:flex;gap:0;opacity:0;animation:fadeUp 0.9s 0.8s both}
+.stat{padding:20px 36px;border-left:0.5px solid var(--border)}
+.stat:first-child{padding-left:0;border-left:none}
+.stat-n{font-family:'Instrument Serif',serif;font-size:32px;color:var(--white)}
+.stat-l{font-size:12px;color:var(--muted);margin-top:3px;letter-spacing:0.05em}
+
+/* TROVAI MARK */
+.trovai-mark{position:absolute;right:48px;top:50%;transform:translateY(-50%);opacity:0;animation:fadeUp 0.9s 0.9s both}
+.mark-circle{width:320px;height:320px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.12);display:flex;align-items:center;justify-content:center;position:relative}
+.mark-circle::before{content:'';position:absolute;inset:20px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.07)}
+.mark-circle::after{content:'';position:absolute;inset:50px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.04)}
+.mark-t{font-family:'Instrument Serif',serif;font-size:120px;color:rgba(200,169,106,0.12);line-height:1;font-style:italic}
+.mark-ai{position:absolute;bottom:70px;right:62px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,106,0.3)}
+
+/* DESTINATIONS */
+.destinations{padding:120px 48px;background:var(--black2)}
+.section-pre{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.section-title{font-family:'Instrument Serif',serif;font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.15;color:var(--white);margin-bottom:16px}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:64px}
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.dest-card{position:relative;overflow:hidden;min-height:460px;padding:48px 44px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;transition:transform 0.4s}
+.dest-card:hover{transform:scale(1.01)}
+.dest-card.azure-card{background:linear-gradient(160deg,#060D18 0%,#091828 60%,#060D18 100%)}
+.dest-card.teal-card{background:linear-gradient(160deg,#050E0C 0%,#081A16 60%,#050E0C 100%)}
+.dest-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,0.75) 0%,transparent 55%)}
+.dest-pattern{position:absolute;top:0;right:0;width:280px;height:280px;opacity:0.03;background-image:radial-gradient(circle,var(--white) 1px,transparent 1px);background-size:20px 20px}
+.dest-content{position:relative;z-index:2}
+.dest-tag{display:inline-block;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;padding:4px 11px;border-radius:1px;margin-bottom:18px;font-weight:500}
+.azure-tag{background:rgba(43,126,196,0.2);color:#7EC4F0;border:0.5px solid rgba(43,126,196,0.4)}
+.teal-tag{background:rgba(26,155,127,0.2);color:#5FD4C0;border:0.5px solid rgba(26,155,127,0.4)}
+.dest-name{font-family:'Instrument Serif',serif;font-size:34px;font-weight:400;color:var(--white);margin-bottom:10px}
+.dest-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:340px;margin-bottom:22px}
+.dest-props{display:flex;gap:8px;flex-wrap:wrap}
+.dest-prop{font-size:11px;color:var(--muted);background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:1px;letter-spacing:0.04em}
+.dest-arrow{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;transition:gap 0.2s}
+.dest-card:hover .dest-arrow{gap:16px}
+
+/* HOW TROVAI WORKS */
+.how{padding:120px 48px;background:var(--black)}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:60px}
+.how-visual{position:relative;padding:48px;background:var(--black2);border:0.5px solid var(--border);border-radius:4px}
+.ai-demo{font-family:'Geist',sans-serif}
+.ai-prompt{background:rgba(200,169,106,0.06);border:0.5px solid rgba(200,169,106,0.2);border-radius:3px;padding:14px 18px;margin-bottom:12px}
+.ai-prompt-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,169,106,0.5);margin-bottom:6px}
+.ai-prompt-text{font-size:14px;color:var(--white);line-height:1.6}
+.ai-result{border:0.5px solid var(--border);border-radius:3px;padding:16px 18px;margin-bottom:8px;transition:border-color 0.2s}
+.ai-result:hover{border-color:var(--border2)}
+.ai-result-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ai-result-name{font-size:13px;font-weight:500;color:var(--white)}
+.ai-result-score{font-size:11px;color:var(--gold);background:rgba(200,169,106,0.1);padding:2px 8px;border-radius:10px}
+.ai-result-detail{font-size:12px;color:var(--muted)}
+.ai-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:20px}
+.how-steps{display:flex;flex-direction:column;gap:36px}
+.how-step{display:flex;gap:24px}
+.step-num{font-family:'Instrument Serif',serif;font-size:36px;color:rgba(200,169,106,0.2);line-height:1;flex-shrink:0;width:36px}
+.step-body h3{font-size:16px;font-weight:500;color:var(--white);margin-bottom:8px}
+.step-body p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* QUIZ */
+.quiz-section{padding:120px 48px;background:var(--black2)}
+.quiz-wrap{max-width:680px;margin:60px auto 0}
+.quiz-shell{background:var(--black3);border:0.5px solid var(--border);border-radius:4px;overflow:hidden}
+.quiz-top{padding:28px 36px 0;background:linear-gradient(135deg,rgba(200,169,106,0.05),transparent)}
+.quiz-brand{font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;color:rgba(200,169,106,0.5);margin-bottom:20px;letter-spacing:0.04em}
+.qbar{display:flex;gap:4px}
+.qb{height:2px;flex:1;background:var(--border);border-radius:2px;transition:background 0.3s}
+.qb.done{background:var(--gold)}
+.qb.active{background:rgba(200,169,106,0.35)}
+.quiz-main{padding:32px 36px}
+.qs{display:none;flex-direction:column;animation:fadeUp 0.35s both}
+.qs.active{display:flex}
+.q-eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,169,106,0.6);margin-bottom:10px}
+.q-title{font-family:'Instrument Serif',serif;font-size:24px;font-weight:400;color:var(--white);margin-bottom:6px;line-height:1.3}
+.q-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
+.q-opt{background:rgba(255,255,255,0.025);border:0.5px solid var(--border);border-radius:3px;padding:14px 16px;cursor:pointer;transition:all 0.18s;text-align:left}
+.q-opt:hover{background:rgba(200,169,106,0.06);border-color:rgba(200,169,106,0.25)}
+.q-opt.sel{background:rgba(200,169,106,0.1);border-color:rgba(200,169,106,0.5)}
+.q-opt.sel-az{background:rgba(43,126,196,0.1);border-color:rgba(43,126,196,0.45)}
+.q-opt.sel-tl{background:rgba(26,155,127,0.1);border-color:rgba(26,155,127,0.45)}
+.q-opt-ico{font-size:16px;margin-bottom:6px;display:block}
+.q-opt-title{font-size:13px;font-weight:500;color:var(--white);display:block;margin-bottom:2px}
+.q-opt-sub{font-size:11px;color:var(--muted);display:block}
+.q-dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.q-dest{border-radius:3px;padding:24px 20px;cursor:pointer;border:0.5px solid var(--border);transition:all 0.2s;text-align:center}
+.q-dest.az{background:rgba(43,126,196,0.06);border-color:rgba(43,126,196,0.18)}
+.q-dest.az:hover,.q-dest.az.sel{background:rgba(43,126,196,0.15);border-color:rgba(43,126,196,0.5)}
+.q-dest.tl{background:rgba(26,155,127,0.06);border-color:rgba(26,155,127,0.18)}
+.q-dest.tl:hover,.q-dest.tl.sel{background:rgba(26,155,127,0.15);border-color:rgba(26,155,127,0.5)}
+.q-dest.bo{background:rgba(200,169,106,0.04);border-color:rgba(200,169,106,0.15)}
+.q-dest.bo:hover,.q-dest.bo.sel{background:rgba(200,169,106,0.12);border-color:rgba(200,169,106,0.45)}
+.q-dest-ico{font-size:28px;margin-bottom:10px;display:block}
+.q-dest-name{font-family:'Instrument Serif',serif;font-size:17px;color:var(--white);display:block;margin-bottom:3px}
+.q-dest-sub{font-size:11px;color:var(--muted);display:block}
+.q-nav{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:0.5px solid var(--border)}
+.q-back{background:none;border:none;font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,242,238,0.25);cursor:pointer;transition:color 0.2s}
+.q-back:hover{color:var(--muted)}
+.q-next{background:rgba(200,169,106,0.1);border:0.5px solid rgba(200,169,106,0.35);color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:10px 22px;border-radius:2px;cursor:pointer;transition:all 0.18s}
+.q-next:hover{background:rgba(200,169,106,0.18)}
+.q-next:disabled{opacity:0.2;cursor:default}
+.q-slider{-webkit-appearance:none;width:100%;height:2px;background:linear-gradient(90deg,var(--gold) var(--pct,30%),var(--border) var(--pct,30%));border:none;outline:none;cursor:pointer}
+.q-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);border:2px solid var(--black3)}
+.q-budget-val{font-family:'Instrument Serif',serif;font-size:34px;color:var(--gold);margin-bottom:14px}
+.q-slider-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(244,242,238,0.25);margin-top:8px}
+.q-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.q-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.55)}
+.q-input{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:11px 14px;outline:none;transition:border-color 0.2s}
+.q-input:focus{border-color:rgba(200,169,106,0.45)}
+.q-input::placeholder{color:rgba(244,242,238,0.18)}
+.q-result-badge{display:inline-block;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.3);padding:4px 12px;border-radius:2px;margin-bottom:18px}
+.q-result-title{font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;color:var(--white);margin-bottom:10px;line-height:1.3}
+.q-result-text{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:22px}
+.q-props{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.q-prop{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color 0.2s}
+.q-prop:hover{border-color:var(--border2)}
+.q-prop-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--black3)}
+.q-prop-body{padding:10px 12px}
+.q-prop-loc{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,169,106,0.55);margin-bottom:4px}
+.q-prop-type{font-family:'Instrument Serif',serif;font-size:13px;color:var(--white);margin-bottom:4px;line-height:1.3}
+.q-prop-price{font-size:12px;color:var(--gold);font-weight:500}
+.q-prop-link{display:block;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,169,106,0.4);margin-top:5px;text-decoration:none;transition:color 0.2s}
+.q-prop-link:hover{color:var(--gold)}
+.q-trust{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border)}
+.q-trust-item{font-size:11px;color:rgba(244,242,238,0.28);letter-spacing:0.04em}
+.q-trust-dot{width:3px;height:3px;border-radius:50%;background:rgba(200,169,106,0.25)}
+
+/* ABOUT */
+.about{padding:120px 48px;background:var(--black)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;margin-top:60px}
+.about-text p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:20px}
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px}
+.about-card{padding:18px 20px;background:var(--black2);border:0.5px solid var(--border);border-radius:2px}
+.about-card h4{font-size:13px;font-weight:500;color:var(--white);margin-bottom:6px}
+.about-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.about-visual{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:40px;position:relative;overflow:hidden}
+.brand-display{text-align:center}
+.brand-wordmark{font-family:'Instrument Serif',serif;font-size:72px;font-style:italic;color:var(--white);letter-spacing:-0.02em;line-height:1}
+.brand-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-left:2px;vertical-align:middle;margin-bottom:8px}
+.brand-tagline{font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:20px}
+.brand-divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:20px auto}
+.brand-colors{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.bc{width:32px;height:32px;border-radius:50%}
+.brand-fonts{margin-top:28px;text-align:left}
+.bf{font-size:12px;color:var(--muted);margin-bottom:6px}
+.bf strong{color:var(--white);font-weight:400}
+.brand-taglines{margin-top:28px;text-align:left}
+.bt{font-size:13px;color:var(--muted);line-height:1.8}
+.bt strong{color:var(--gold);font-weight:400}
+.abs-mark{position:absolute;top:-20px;right:-20px;font-family:'Instrument Serif',serif;font-size:160px;color:rgba(200,169,106,0.03);line-height:1;pointer-events:none;font-style:italic}
+
+/* FOOTER */
+footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--gold);margin-bottom:14px;font-style:italic}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:280px}
+.footer-col h4{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color 0.2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{max-width:1200px;margin:36px auto 0;padding-top:24px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between}
+.footer-bottom p{font-size:12px;color:rgba(244,242,238,0.2)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  nav{padding:16px 20px}
+  .nav-links{display:none}
+  .hero{padding:100px 20px 60px}
+  .trovai-mark{display:none}
+  .hero-stats{flex-direction:column;gap:0}
+  .stat{padding:12px 0;border-left:none;border-top:0.5px solid var(--border)}
+  .stat:first-child{border-top:none}
+  section,section.destinations,section.how{padding:80px 20px}
+  .destinations,.how,.quiz-section,.about{padding:80px 20px}
+  .dest-grid,.how-grid,.about-grid,.footer-inner{grid-template-columns:1fr}
+  .quiz-top,.quiz-main{padding:20px}
+  .q-opts,.q-dest-grid,.q-props{grid-template-columns:1fr}
+  .about-visual{display:none}
+}
+</style>
+</head>
+<body>
+
+<form name="trovai-leads" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"><input type="email" name="email"><input type="tel" name="phone">
+  <input type="text" name="destination"><input type="text" name="budget">
+  <input type="text" name="property_type"><input type="text" name="intended_use">
+  <input type="text" name="timeline"><input type="text" name="bot-field">
+</form>
+<nav id="nav">
+  <div class="nav-logo">
+    <span class="nav-logo-t">Trovai</span>
+    <div class="nav-logo-dot"></div>
+  </div>
+  <div class="nav-links">
+    <a href="#destinations">Destinations</a>
+    <a href="#how">How it works</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="#quiz" class="nav-cta">Find your home</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="trovai-mark">
+    <div class="mark-circle">
+      <span class="mark-t">T</span>
+      <span class="mark-ai">AI</span>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      AI-powered luxury property search
+    </div>
+    <div class="hero-title">The AI that finds</div>
+    <div class="hero-title-2">your perfect home.</div>
+    <p class="hero-sub">Trovai matches wealthy Dutch and Belgian buyers with extraordinary properties on the <strong>CÃÂ´te d'Azur</strong> and in <strong>CuraÃÂ§ao</strong> Ã¢ÂÂ automatically, intelligently, at any hour.</p>
+    <div class="hero-actions">
+      <a href="#quiz" class="btn-gold">Start your search Ã¢ÂÂ</a>
+      <a href="#how" class="btn-ghost">How Trovai works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">5,000+</div><div class="stat-l">Riviera listings</div></div>
+      <div class="stat"><div class="stat-n">2</div><div class="stat-l">Premium destinations</div></div>
+      <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">AI always on</div></div>
+      <div class="stat"><div class="stat-n">Ã¢ÂÂ¬0</div><div class="stat-l">Cost to buyer</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations" id="destinations">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">Where Trovai searches</div>
+    <h2 class="section-title">Two destinations.<br><em>One intelligent search.</em></h2>
+    <p class="section-sub">Trovai's AI scans the complete market in both destinations simultaneously Ã¢ÂÂ matching your profile to properties before you've finished your morning coffee.</p>
+    <div class="dest-grid">
+      <div class="dest-card azure-card" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+        <div class="dest-overlay"></div>
+        <div class="dest-pattern"></div>
+        <div class="dest-content">
+          <div class="dest-tag azure-tag">France Ã· Ibiza Ã· Portugal Ã· Dubai</div>
+          <div class="dest-name">CÃÂ´te d'Azur</div>
+          <p class="dest-desc">The French Riviera Ã¢ÂÂ from Menton to Saint-Tropez. 5,000+ listings via our partner network. Villas from Ã¢ÂÂ¬800K to Ã¢ÂÂ¬30M+. Off-market access included.</p>
+          <div class="dest-props">
+            <span class="dest-prop">5,000+ listings</span>
+            <span class="dest-prop">Ã¢ÂÂ¬800K Ã¢ÂÂ Ã¢ÂÂ¬30M+</span>
+            <span class="dest-prop">Off-market</span>
+            <span class="dest-prop">Tax optimisation</span>
+          </div>
+          <a href="#quiz" class="dest-arrow">Explore Riviera Ã¢ÂÂ</a>
+        </div>
+      </div>
+      <div class="dest-card teal-card" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+        <div class="dest-overlay"></div>
+        <div class="dest-pattern"></div>
+        <div class="dest-content">
+          <div class="dest-tag teal-tag">Dutch Caribbean</div>
+          <div class="dest-name">CuraÃÂ§ao</div>
+          <p class="dest-desc">Tropical paradise with Dutch roots. Villas, resort apartments, investment properties. 365 days of sun. Strong rental yields. Dutch legal system Ã¢ÂÂ familiar and secure.</p>
+          <div class="dest-props">
+            <span class="dest-prop">Full market access</span>
+            <span class="dest-prop">Ã¢ÂÂ¬150K Ã¢ÂÂ Ã¢ÂÂ¬2M+</span>
+            <span class="dest-prop">Dutch system</span>
+            <span class="dest-prop">6Ã¢ÂÂ8% yield</span>
+          </div>
+          <a href="#quiz" class="dest-arrow">Explore CuraÃÂ§ao Ã¢ÂÂ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">The Trovai method</div>
+    <h2 class="section-title">AI that works <em>while you sleep.</em></h2>
+    <div class="how-grid">
+      <div>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Tell Trovai your vision</h3>
+              <p>Answer 5 questions. Destination, property type, budget, intended use, timeline. Trovai's AI builds your buyer profile in real time.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>AI matches, scores and ranks</h3>
+              <p>Trovai scans 5,000+ listings plus off-market properties, scores each one against your profile, and builds a personalised portfolio Ã¢ÂÂ in seconds.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Personal expert takes over</h3>
+              <p>A human expert reviews your AI-matched portfolio, adds local context, arranges viewings and guides you to the notary. Free for the buyer Ã¢ÂÂ commission paid by the seller.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Nurture until you're ready</h3>
+              <p>Not buying tomorrow? Trovai keeps you warm with market updates, new listings, price movements Ã¢ÂÂ automatically, for as long as you need.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual">
+        <div class="ai-demo">
+          <div class="ai-label">Your profile</div>
+          <div class="ai-prompt">
+            <div class="ai-prompt-label">Trovai AI Ã¢ÂÂ profile match</div>
+            <div class="ai-prompt-text">Villa Ã· CÃÂ´te d'Azur Ã· Ã¢ÂÂ¬2.5M budget Ã· Holiday + rental Ã· Ready within 12 months</div>
+          </div>
+          <div class="ai-label">Top matches Ã¢ÂÂ scored by AI</div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Villa Les Pins Ã¢ÂÂ Mougins</span><span class="ai-result-score">98% match</span></div>
+            <div class="ai-result-detail">4 bed Ã· pool Ã· 180ÃÂ° view Ã· Ã¢ÂÂ¬2.35M Ã· Off-market</div>
+          </div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Mas ProvenÃÂ§al Ã¢ÂÂ Valbonne</span><span class="ai-result-score">94% match</span></div>
+            <div class="ai-result-detail">5 bed Ã· domaine Ã· Ã¢ÂÂ¬2.1M Ã· Available now</div>
+          </div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Villa Californie Ã¢ÂÂ Cannes</span><span class="ai-result-score">91% match</span></div>
+            <div class="ai-result-detail">3 bed Ã· sea view Ã· Ã¢ÂÂ¬2.45M Ã· New listing</div>
+          </div>
+          <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--border);font-size:12px;color:var(--muted)">
+            Trovai AI Ã· Matched in 0.4s Ã· Including 2 off-market properties
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">Start your search</div>
+    <h2 class="section-title">Let Trovai <em>find your home.</em></h2>
+    <p class="section-sub">2 minutes. Instant AI match. A curated portfolio Ã¢ÂÂ including off-market properties Ã¢ÂÂ arrives within 24 hours.</p>
+    <div class="quiz-wrap">
+      <div class="quiz-shell">
+        <div class="quiz-top">
+          <div class="quiz-brand">Trovai Ã· AI Property Search</div>
+          <div class="qbar" id="qbar"></div>
+        </div>
+        <div class="quiz-main">
+
+          <!-- DEST -->
+          <div class="qs active" id="qs-0">
+            <div class="q-title">Where is your dream destination?</div>
+            <div class="q-sub">Trovai searches both markets simultaneously.</div>
+            <div class="q-dest-grid">
+              <div class="q-dest az" onclick="pickDest(this,'cotedazur')"><span class="q-dest-ico">Ã°ÂÂÂ«Ã°ÂÂ·</span><span class="q-dest-name">CÃÂ´te d'Azur</span><span class="q-dest-sub">French Riviera + Ibiza, Portugal, Dubai</span></div>
+              <div class="q-dest tl" onclick="pickDest(this,'curacao')"><span class="q-dest-ico">Ã°ÂÂÂ</span><span class="q-dest-name">CuraÃÂ§ao</span><span class="q-dest-sub">Caribbean Ã· sun year-round</span></div>
+            </div>
+            <div class="q-dest-grid" style="margin-bottom:0">
+              <div class="q-dest bo" onclick="pickDest(this,'both')"><span class="q-dest-ico">Ã¢ÂÂ¨</span><span class="q-dest-name" style="color:var(--white)">Both destinations</span><span class="q-dest-sub">Let AI compare for me</span></div>
+              <div class="q-dest" onclick="pickDest(this,'unsure')"><span class="q-dest-ico">Ã°ÂÂÂ­</span><span class="q-dest-name" style="color:var(--white)">Not sure yet</span><span class="q-dest-sub">Surprise me</span></div>
+            </div>
+          </div>
+
+          <!-- CDA 1 -->
+          <div class="qs" id="qs-cda-1">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 1 of 4</div>
+            <div class="q-title">Which part of the Riviera?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_area','nice','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Nice & surroundings</span><span class="q-opt-sub">City energy, cosmopolitan</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','cannes','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¬</span><span class="q-opt-title">Cannes & Antibes</span><span class="q-opt-sub">Glamour, beach, marina</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','monaco','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Monaco & Menton</span><span class="q-opt-sub">Prestige, border</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','hinterland','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¿</span><span class="q-opt-title">Hinterland villages</span><span class="q-opt-sub">Peace, nature, authentic</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-0')">Ã¢ÂÂ Back</button><button class="q-next" id="cdn1" disabled onclick="goQ('qs-cda-2')">Continue</button></div>
+          </div>
+
+          <!-- CDA 2 -->
+          <div class="qs" id="qs-cda-2">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 2 of 4</div>
+            <div class="q-title">What type of property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_type','villa','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¡</span><span class="q-opt-title">Villa with garden</span><span class="q-opt-sub">Pool, privacy, space</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','apartment','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¢</span><span class="q-opt-title">Luxury apartment</span><span class="q-opt-sub">Sea view, concierge</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','estate','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ°</span><span class="q-opt-title">Domaine / estate</span><span class="q-opt-sub">Land, grandeur, legacy</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','open','sel-az')"><span class="q-opt-ico">Ã¢ÂÂ¨</span><span class="q-opt-title">Show me the best</span><span class="q-opt-sub">AI decides for me</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cda-1')">Ã¢ÂÂ Back</button><button class="q-next" id="cdn2" disabled onclick="goQ('qs-cda-3')">Continue</button></div>
+          </div>
+
+          <!-- CDA 3 BUDGET -->
+          <div class="qs" id="qs-cda-3">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 3 of 4</div>
+            <div class="q-title">What is your budget?</div>
+            <div class="q-budget-val" id="cda-bv">Ã¢ÂÂ¬ 2.000.000</div>
+            <input type="range" class="q-slider" id="cda-sl" min="0" max="10" value="3" step="1" oninput="updBudget('cda',this.value)">
+            <div class="q-slider-labels"><span>Ã¢ÂÂ¬500K</span><span>Ã¢ÂÂ¬2M</span><span>Ã¢ÂÂ¬5M</span><span>Ã¢ÂÂ¬10M+</span></div>
+            <div class="q-nav" style="margin-top:28px"><button class="q-back" onclick="goQ('qs-cda-2')">Ã¢ÂÂ Back</button><button class="q-next" onclick="goQ('qs-cda-4')">Continue</button></div>
+          </div>
+
+          <!-- CDA 4 USE -->
+          <div class="qs" id="qs-cda-4">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 4 of 4</div>
+            <div class="q-title">How will you use the property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_use','holiday','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã¢ÂÂÃ¯Â¸Â</span><span class="q-opt-title">Holiday home</span><span class="q-opt-sub">Personal enjoyment</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','invest','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Investment</span><span class="q-opt-sub">Rental + capital gain</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','relocate','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Primary residence</span><span class="q-opt-sub">Ready to move</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','both','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Both</span><span class="q-opt-sub">Enjoy and earn</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cda-3')">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- CUR 1 -->
+          <div class="qs" id="qs-cur-1">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 1 of 3</div>
+            <div class="q-title">What type of property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cur_type','villa','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ¡</span><span class="q-opt-title">Villa with pool</span><span class="q-opt-sub">Private or resort</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','apartment','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Resort apartment</span><span class="q-opt-sub">Managed, sea view</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','invest','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Investment property</span><span class="q-opt-sub">Rental income focus</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','bungalow','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ´</span><span class="q-opt-title">Bungalow</span><span class="q-opt-sub">Relaxed island living</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-0')">Ã¢ÂÂ Back</button><button class="q-next" id="cun1" disabled onclick="goQ('qs-cur-2')">Continue</button></div>
+          </div>
+
+          <!-- CUR 2 BUDGET -->
+          <div class="qs" id="qs-cur-2">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 2 of 3</div>
+            <div class="q-title">What is your budget?</div>
+            <div class="q-budget-val" id="cur-bv">ÃÂ± Ã¢ÂÂ¬ 300.000</div>
+            <input type="range" class="q-slider" id="cur-sl" min="0" max="7" value="2" step="1" oninput="updBudget('cur',this.value)">
+            <div class="q-slider-labels"><span>Ã¢ÂÂ¬150K</span><span>Ã¢ÂÂ¬400K</span><span>Ã¢ÂÂ¬800K</span><span>Ã¢ÂÂ¬2M+</span></div>
+            <div class="q-nav" style="margin-top:28px"><button class="q-back" onclick="goQ('qs-cur-1')">Ã¢ÂÂ Back</button><button class="q-next" onclick="goQ('qs-cur-3')">Continue</button></div>
+          </div>
+
+          <!-- CUR 3 TIMELINE -->
+          <div class="qs" id="qs-cur-3">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 3 of 3</div>
+            <div class="q-title">When are you looking to buy?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cur_tl','now','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã¢ÂÂ¡</span><span class="q-opt-title">Within 6 months</span><span class="q-opt-sub">Actively searching</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','year','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">This year</span><span class="q-opt-sub">Getting serious</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','later','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ­</span><span class="q-opt-title">1Ã¢ÂÂ2 years</span><span class="q-opt-sub">Planning ahead</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','exploring','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ­</span><span class="q-opt-title">Just exploring</span><span class="q-opt-sub">No rush</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cur-2')">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="qs" id="qs-email">
+            <div class="q-title">Your AI match is ready.</div>
+            <div class="q-sub">Where shall Trovai send your personalised portfolio Ã¢ÂÂ including off-market properties?</div>
+            <div class="q-field"><label class="q-label">Your name</label><input class="q-input" id="qi-name" type="text" placeholder="First name"></div>
+            <div class="q-field"><label class="q-label">Email address</label><input class="q-input" id="qi-email" type="email" placeholder="your@email.com"></div>
+            <div class="q-field"><label class="q-label">WhatsApp (optional)</label><input class="q-input" id="qi-phone" type="tel" placeholder="+31 6 ..."></div>
+            <button class="btn-gold" onclick="submitQ()" style="width:100%;justify-content:center;margin-top:8px">Send my Trovai portfolio Ã¢ÂÂ</button>
+            <p style="font-size:10px;color:rgba(244,242,238,0.2);margin-top:10px;line-height:1.5">No spam. Your details are used only to prepare your property selection.</p>
+            <div class="q-nav" style="padding-top:10px"><button class="q-back" onclick="history.go(-1)">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- RESULT -->
+          <div class="qs" id="qs-result">
+            <div class="q-result-badge">Trovai AI Ã¢ÂÂ match complete</div>
+            <div class="q-result-title">Your portfolio is ready, <span id="qr-name">Ã¢ÂÂ</span></div>
+            <div class="q-result-text" id="qr-text"></div>
+            <div id="qr-loading" style="display:none;text-align:center;padding:20px 0">
+  <div style="font-size:12px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Trovai AI zoekt live listings...</div>
+  <div style="margin-top:10px;height:2px;background:var(--border);border-radius:2px;overflow:hidden"><div id="qr-progress" style="height:100%;background:var(--gold);width:0%;transition:width 2s ease-in-out"></div></div>
+</div>
+<div id="qr-loading" style="display:none;text-align:center;padding:20px 0"><div style="font-size:12px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Trovai AI zoekt live listings...</div><div style="margin-top:10px;height:2px;background:var(--border);border-radius:2px;overflow:hidden"><div id="qr-progress" style="height:100%;background:var(--gold);width:0%;transition:width 2s ease-in-out"></div></div></div><div class="q-props" id="qr-props"></div>
+            <div style="background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:3px;padding:16px 20px;margin-top:4px">
+              <div style="font-size:13px;color:#5FD4C0;font-weight:500;margin-bottom:4px">Ã¢ÂÂ Bevestigingsmail onderweg</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6">U ontvangt direct een email met uw persoonlijke selectie. Controleer eventueel uw spam folder.</div>
+            </div>
+            <div class="q-trust" style="margin-top:20px">
+              <span class="q-trust-item">Free buyer service</span><div class="q-trust-dot"></div>
+              <span class="q-trust-item">Commission paid by seller</span><div class="q-trust-dot"></div>
+              <span class="q-trust-item">Response within 24h</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / BRAND -->
+<section class="about" id="about">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="about-grid">
+      <div>
+        <div class="section-pre">About Trovai</div>
+        <h2 class="section-title">Where AI meets <em>human expertise.</em></h2>
+        <p>Trovai is an AI-driven property platform connecting Dutch and Belgian buyers with luxury properties in the CÃÂ´te d'Azur and CuraÃÂ§ao. Our technology works around the clock Ã¢ÂÂ qualifying, matching and nurturing leads automatically.</p>
+        <p>We partner with <strong style="color:var(--white);font-weight:400">Living on the CÃÂ´te d'Azur</strong> (5,000+ listings, rated 9.9/10, 19 years expertise) and <strong style="color:var(--white);font-weight:400">At Home CuraÃÂ§ao</strong> (full island coverage, Dutch-speaking team). Our service is completely free for buyers Ã¢ÂÂ the seller's agent shares their commission.</p>
+        <div class="about-cards">
+          <div class="about-card"><h4>CÃÂ´te d'Azur</h4><p>5,000+ listings. Off-market access. France, Ibiza, Portugal, Dubai.</p></div>
+          <div class="about-card"><h4>CuraÃÂ§ao</h4><p>Full island coverage. Dutch system. Villas to resort apartments.</p></div>
+          <div class="about-card"><h4>AI-powered</h4><p>Instant matching. 24/7 availability. Always learning your preferences.</p></div>
+          <div class="about-card"><h4>Free for buyers</h4><p>Commission paid by seller. Zero cost, zero obligation.</p></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;justify-content:center">
+        <div style="background:var(--black3);border:0.5px solid var(--border);border-radius:4px;padding:36px">
+          <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px">Ready to start?</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;color:var(--white);margin-bottom:12px;line-height:1.3">Let Trovai find your<br><em style="color:var(--gold)">perfect property.</em></div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px">Answer 5 questions and receive a personalised portfolio Ã¢ÂÂ including off-market properties Ã¢ÂÂ within 24 hours. Free, no obligation.</p>
+          <a href="#quiz" class="btn-gold" style="display:inline-flex;align-items:center;gap:10px">Start your search Ã¢ÂÂ</a>
+        </div>
+        <div style="background:var(--black3);border:0.5px solid var(--border);border-radius:4px;padding:28px">
+          <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Contact</div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8">
+            <a href="mailto:info@trovai.nl" style="color:var(--white);text-decoration:none">info@trovai.nl</a><br>
+            <a href="https://wa.me/31611380562" style="color:var(--muted);text-decoration:none">WhatsApp</a><br>
+            <span style="color:var(--muted)">Response within 24 hours</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section id="contact" style="padding:120px 48px;background:var(--black)">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="section-pre">Direct contact</div>
+    <h2 class="section-title">Laat uw gegevens <em>achter.</em></h2>
+    <p class="section-sub" style="margin-bottom:48px">Geen quiz nodig. Vul uw gegevens in en wij nemen binnen 24 uur persoonlijk contact op.</p>
+
+    <form name="trovai-contact" netlify netlify-honeypot="bot-field" id="contact-form">
+      <input type="hidden" name="form-name" value="trovai-contact">
+      <input type="hidden" name="bot-field" style="display:none">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Naam *</label>
+          <input name="name" required type="text" placeholder="Jan de Vries" style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Email *</label>
+          <input name="email" required type="email" placeholder="jan@email.com" style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">WhatsApp</label>
+          <input name="phone" type="tel" placeholder="+31 6 ..." style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Interesse</label>
+          <select name="interest" style="background:var(--black3);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;cursor:pointer">
+            <option value="">Selecteer bestemming</option>
+            <option value="cotedazur">Ã°ÂÂÂ«Ã°ÂÂ· CÃÂ´te d'Azur</option>
+            <option value="curacao">Ã°ÂÂÂ CuraÃÂ§ao</option>
+            <option value="both">Ã¢ÂÂ¨ Beide</option>
+            <option value="unsure">Nog niet zeker</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px">
+        <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Uw vraag of wens</label>
+        <textarea name="message" rows="4" placeholder="Vertel ons kort wat u zoekt..." style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;resize:vertical;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'"></textarea>
+      </div>
+
+      <button type="submit" class="btn-gold" style="width:100%;justify-content:center" id="contact-submit">Verstuur mijn aanvraag Ã¢ÂÂ</button>
+      <p style="font-size:10px;color:rgba(244,242,238,0.2);margin-top:10px;line-height:1.5">Geen spam. Uw gegevens worden uitsluitend gebruikt om u te contacteren over uw zoekopdracht.</p>
+    </form>
+
+    <div id="contact-success" style="display:none;background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.3);border-radius:3px;padding:28px;text-align:center">
+      <div style="font-family:'Instrument Serif',serif;font-size:24px;color:var(--white);margin-bottom:8px">Bedankt, <span id="contact-name">Ã¢ÂÂ</span></div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7">Uw aanvraag is ontvangen. We nemen binnen 24 uur persoonlijk contact op via email of WhatsApp.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Trovai.</div>
+      <p class="footer-desc">AI-powered luxury property search. CÃÂ´te d'Azur and CuraÃÂ§ao. Free for buyers.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <a href="#destinations">CÃÂ´te d'Azur</a>
+      <a href="#destinations">CuraÃÂ§ao</a>
+      <a href="#destinations">Ibiza</a>
+      <a href="#destinations">Portugal</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:info@trovai.nl" style="color:var(--muted);text-decoration:none">info@trovai.nl</a>
+      <a href="https://wa.me/31611380562">WhatsApp</a>
+      <a href="https://linkedin.com">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>ÃÂ© 2026 Trovai. AI-driven luxury property search. Partner of Living on the CÃÂ´te d'Azur & At Home CuraÃÂ§ao.</p>
+    <p>trovai.nl</p>
+  </div>
+</footer>
+
+<script>
+const A={};
+const cdaB=['Ã¢ÂÂ¬500.000','Ã¢ÂÂ¬750.000','Ã¢ÂÂ¬1.000.000','Ã¢ÂÂ¬1.500.000','Ã¢ÂÂ¬2.000.000','Ã¢ÂÂ¬2.500.000','Ã¢ÂÂ¬3.500.000','Ã¢ÂÂ¬5.000.000','Ã¢ÂÂ¬6.500.000','Ã¢ÂÂ¬8.000.000','Ã¢ÂÂ¬10.000.000+'];
+const curB=['ÃÂ± Ã¢ÂÂ¬150.000','ÃÂ± Ã¢ÂÂ¬250.000','ÃÂ± Ã¢ÂÂ¬350.000','ÃÂ± Ã¢ÂÂ¬500.000','ÃÂ± Ã¢ÂÂ¬700.000','ÃÂ± Ã¢ÂÂ¬1.000.000','ÃÂ± Ã¢ÂÂ¬1.500.000','Ã¢ÂÂ¬2.000.000+'];
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>40);
+});
+
+function goQ(id){
+  document.querySelectorAll('.qs').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateBar();
+}
+
+function updateBar(){
+  const bar=document.getElementById('qbar');
+  const dest=A.destination;
+  let total=0,cur=0;
+  const id=document.querySelector('.qs.active')?.id;
+  if(!dest){bar.innerHTML='';return;}
+  if(dest==='cotedazur'){
+    total=4;
+    const m={'qs-cda-1':1,'qs-cda-2':2,'qs-cda-3':3,'qs-cda-4':4,'qs-email':5,'qs-result':6};
+    cur=m[id]||0;
+  } else {
+    total=3;
+    const m={'qs-cur-1':1,'qs-cur-2':2,'qs-cur-3':3,'qs-email':4,'qs-result':5};
+    cur=m[id]||0;
+  }
+  bar.innerHTML='';
+  for(let i=1;i<=total;i++){
+    const d=document.createElement('div');
+    d.className='qb'+(i<cur?' done':i===cur?' active':'');
+    bar.appendChild(d);
+  }
+}
+
+function pickDest(el,val){
+  document.querySelectorAll('.q-dest').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  A.destination=val;
+  setTimeout(()=>{
+    if(val==='cotedazur') goQ('qs-cda-1');
+    else if(val==='curacao') goQ('qs-cur-1');
+    else goQ('qs-cda-1');
+  },280);
+}
+
+function pick(el,key,val,cls){
+  el.closest('.q-opts').querySelectorAll('.q-opt').forEach(o=>{
+    o.classList.remove('sel','sel-az','sel-tl');
+  });
+  el.classList.add(cls||'sel');
+  A[key]=val;
+  const nb={'cda_area':'cdn1','cda_type':'cdn2','cur_type':'cun1'};
+  if(nb[key]) document.getElementById(nb[key]).disabled=false;
+}
+
+function updBudget(d,v){
+  if(d==='cda'){
+    A.cda_budget=cdaB[v];
+    const sl=document.getElementById('cda-sl');
+    sl.style.setProperty('--pct',(v/10*100)+'%');
+    document.getElementById('cda-bv').textContent=cdaB[v];
+  } else {
+    A.cur_budget=curB[v];
+    const sl=document.getElementById('cur-sl');
+    sl.style.setProperty('--pct',(v/7*100)+'%');
+    document.getElementById('cur-bv').textContent=curB[v];
+  }
+}
+
+async async function submitQ(){
+  const name=document.getElementById('qi-name').value.trim()||'there';
+  A.name=name;A.email=document.getElementById('qi-email').value.trim();A.phone=document.getElementById('qi-phone').value.trim();
+  document.getElementById('qr-name').textContent=name;
+  goQ('qs-result');
+  document.getElementById('qr-loading').style.display='block';
+  document.getElementById('qr-props').innerHTML='';
+  document.getElementById('qr-text').textContent='';
+  setTimeout(()=>{const p=document.getElementById('qr-progress');if(p)p.style.width='85%';},100);
+  const dest=A.destination;
+  const budget=A.cda_budget||A.cur_budget||'';
+  const property_type=A.cda_type||A.cur_type||'open';
+  const area=A.cda_area||'';
+  if(A.email){fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form_type:'quiz',name:A.name,email:A.email,phone:A.phone,destination:dest||'unknown',budget,property_type,intended_use:A.cda_use||'niet opgegeven',timeline:A.cur_tl||'niet opgegeven'})}).catch(()=>{});}
+  if(dest==='cotedazur'||dest==='both'){
+    try{
+      const res=await fetch('/api/get-listings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({destination:dest,property_type,budget,area})});
+      const data=await res.json();
+      document.getElementById('qr-loading').style.display='none';
+      const al={nice:"Nice & surroundings",cannes:"Cannes & Antibes",monaco:"the Monaco region",hinterland:"the Hinterland"};
+      document.getElementById('qr-text').textContent=`Trovai AI matched ${data.total||''}+ live listings and selected the best fit for your profile in ${al[area]||"the Côte d'Azur"} within ${budget||'your budget'}.`;
+      if(data.listings&&data.listings.length>0){
+        document.getElementById('qr-props').innerHTML=data.listings.map(p=>`<div class="q-prop">${p.image?`<img class="q-prop-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`:''}<div class="q-prop-body"><div class="q-prop-loc">${p.city||'Côte d\'Azur'} · ${p.category||''}</div><div class="q-prop-type">${p.name}</div><div class="q-prop-price">${p.price_formatted}</div>${p.beds?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${p.beds}${p.surface?' · '+p.surface:''}</div>`:''}<a class="q-prop-link" href="${p.url}" target="_blank">Bekijk listing →</a></div></div>`).join('');
+      }else{showStaticProps(dest,area,budget);}
+    }catch(e){document.getElementById('qr-loading').style.display='none';showStaticProps(dest,area,budget);}
+  }else{
+    document.getElementById('qr-loading').style.display='none';
+    document.getElementById('qr-text').textContent=`Trovai AI heeft uw Curaçao profiel klaarstaan — ${A.cur_type||'villa'} binnen ${budget||'uw budget'}. U ontvangt een persoonlijke selectie binnen 24 uur.`;
+    document.getElementById('qr-props').innerHTML=[{loc:'Jan Thiel',type:'Villa met zwembad',price:'Vanaf €450.000'},{loc:'Piscadera Bay',type:'Resort villa',price:'Vanaf €320.000'},{loc:'Vredenberg',type:'Nieuwbouw',price:'Vanaf €280.000'}].map(p=>`<div class="q-prop"><div class="q-prop-body"><div class="q-prop-loc">${p.loc}</div><div class="q-prop-type">${p.type}</div><div class="q-prop-price">${p.price}</div></div></div>`).join('');
+  }
+}
+function showStaticProps(dest,area,budget){
+  const al={nice:"Nice",cannes:"Cannes",monaco:"Monaco",hinterland:"Hinterland"};
+  document.getElementById('qr-text').textContent=`Trovai AI heeft een selectie samengesteld voor ${al[area]||"de Côte d'Azur"} binnen ${budget||'uw budget'}. Uw persoonlijke portfolio arriveert binnen 24 uur.`;
+  document.getElementById('qr-props').innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Uw gepersonaliseerde selectie wordt per email verstuurd.</div>';
+}ml lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trovai Ã¢ÂÂ AI finds your perfect property</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080A0F'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='20' font-style='italic' fill='%23C8A96A'>T</text><circle cx='23' cy='20' r='2.5' fill='%23C8A96A'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080A0F;
+  --black2:#0C0E14;
+  --black3:#11141C;
+  --white:#F4F2EE;
+  --gold:#C8A96A;
+  --gold2:#A8853A;
+  --muted:rgba(244,242,238,0.45);
+  --border:rgba(244,242,238,0.08);
+  --border2:rgba(244,242,238,0.14);
+  --azure:#2B7EC4;
+  --teal:#1A9B7F;
+}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:'Geist',sans-serif;font-weight:300;overflow-x:hidden}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid transparent;transition:all 0.3s}
+nav.scrolled{background:rgba(8,10,15,0.92);border-color:var(--border);backdrop-filter:blur(12px)}
+.nav-logo{display:flex;align-items:baseline;gap:2px}
+.nav-logo-t{font-family:'Instrument Serif',serif;font-size:22px;color:var(--white);letter-spacing:-0.02em}
+.nav-logo-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:1px;margin-bottom:3px}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:13px;color:var(--muted);text-decoration:none;letter-spacing:0.06em;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-cta{background:transparent;border:0.5px solid rgba(200,169,106,0.45);color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:9px 22px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.nav-cta:hover{background:rgba(200,169,106,0.1)}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:140px 48px 80px}
+.hero-grid{position:absolute;inset:0;opacity:0.03;background-image:linear-gradient(var(--border2) 1px,transparent 1px),linear-gradient(90deg,var(--border2) 1px,transparent 1px);background-size:60px 60px}
+.hero-glow{position:absolute;top:20%;left:50%;transform:translateX(-50%);width:600px;height:600px;background:radial-gradient(ellipse,rgba(200,169,106,0.06) 0%,transparent 70%);pointer-events:none}
+.hero-glow2{position:absolute;top:40%;right:-100px;width:400px;height:400px;background:radial-gradient(ellipse,rgba(43,126,196,0.05) 0%,transparent 70%);pointer-events:none}
+.hero-content{position:relative;z-index:1;max-width:1200px;margin:0 auto;width:100%}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(200,169,106,0.08);border:0.5px solid rgba(200,169,106,0.25);border-radius:100px;padding:6px 14px;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);margin-bottom:36px;opacity:0;animation:fadeUp 0.8s 0.1s both}
+.hero-badge-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.5;transform:scale(0.8)}}
+.hero-title{font-family:'Instrument Serif',serif;font-size:clamp(48px,6.5vw,88px);font-weight:400;line-height:1.05;letter-spacing:-0.02em;color:var(--white);margin-bottom:6px;opacity:0;animation:fadeUp 0.9s 0.25s both}
+.hero-title-2{font-family:'Instrument Serif',serif;font-size:clamp(48px,6.5vw,88px);font-weight:400;line-height:1.05;letter-spacing:-0.02em;font-style:italic;color:var(--gold);margin-bottom:32px;opacity:0;animation:fadeUp 0.9s 0.35s both}
+.hero-sub{font-size:17px;font-weight:300;color:var(--muted);line-height:1.75;max-width:520px;margin-bottom:52px;opacity:0;animation:fadeUp 0.9s 0.5s both}
+.hero-sub strong{color:var(--white);font-weight:400}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:72px;opacity:0;animation:fadeUp 0.9s 0.65s both}
+.btn-gold{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:13px;font-weight:500;letter-spacing:0.08em;text-transform:uppercase;border:none;padding:14px 28px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px)}
+.btn-ghost{display:inline-flex;align-items:center;gap:8px;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:13px;letter-spacing:0.06em;padding:14px 28px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
+.btn-ghost:hover{border-color:rgba(244,242,238,0.3);color:var(--white)}
+.hero-stats{display:flex;gap:0;opacity:0;animation:fadeUp 0.9s 0.8s both}
+.stat{padding:20px 36px;border-left:0.5px solid var(--border)}
+.stat:first-child{padding-left:0;border-left:none}
+.stat-n{font-family:'Instrument Serif',serif;font-size:32px;color:var(--white)}
+.stat-l{font-size:12px;color:var(--muted);margin-top:3px;letter-spacing:0.05em}
+
+/* TROVAI MARK */
+.trovai-mark{position:absolute;right:48px;top:50%;transform:translateY(-50%);opacity:0;animation:fadeUp 0.9s 0.9s both}
+.mark-circle{width:320px;height:320px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.12);display:flex;align-items:center;justify-content:center;position:relative}
+.mark-circle::before{content:'';position:absolute;inset:20px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.07)}
+.mark-circle::after{content:'';position:absolute;inset:50px;border-radius:50%;border:0.5px solid rgba(200,169,106,0.04)}
+.mark-t{font-family:'Instrument Serif',serif;font-size:120px;color:rgba(200,169,106,0.12);line-height:1;font-style:italic}
+.mark-ai{position:absolute;bottom:70px;right:62px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:rgba(200,169,106,0.3)}
+
+/* DESTINATIONS */
+.destinations{padding:120px 48px;background:var(--black2)}
+.section-pre{font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.section-title{font-family:'Instrument Serif',serif;font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.15;color:var(--white);margin-bottom:16px}
+.section-title em{font-style:italic;color:var(--gold)}
+.section-sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:500px;margin-bottom:64px}
+.dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:2px}
+.dest-card{position:relative;overflow:hidden;min-height:460px;padding:48px 44px;display:flex;flex-direction:column;justify-content:flex-end;cursor:pointer;transition:transform 0.4s}
+.dest-card:hover{transform:scale(1.01)}
+.dest-card.azure-card{background:linear-gradient(160deg,#060D18 0%,#091828 60%,#060D18 100%)}
+.dest-card.teal-card{background:linear-gradient(160deg,#050E0C 0%,#081A16 60%,#050E0C 100%)}
+.dest-overlay{position:absolute;inset:0;background:linear-gradient(0deg,rgba(0,0,0,0.75) 0%,transparent 55%)}
+.dest-pattern{position:absolute;top:0;right:0;width:280px;height:280px;opacity:0.03;background-image:radial-gradient(circle,var(--white) 1px,transparent 1px);background-size:20px 20px}
+.dest-content{position:relative;z-index:2}
+.dest-tag{display:inline-block;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;padding:4px 11px;border-radius:1px;margin-bottom:18px;font-weight:500}
+.azure-tag{background:rgba(43,126,196,0.2);color:#7EC4F0;border:0.5px solid rgba(43,126,196,0.4)}
+.teal-tag{background:rgba(26,155,127,0.2);color:#5FD4C0;border:0.5px solid rgba(26,155,127,0.4)}
+.dest-name{font-family:'Instrument Serif',serif;font-size:34px;font-weight:400;color:var(--white);margin-bottom:10px}
+.dest-desc{font-size:13px;color:var(--muted);line-height:1.65;max-width:340px;margin-bottom:22px}
+.dest-props{display:flex;gap:8px;flex-wrap:wrap}
+.dest-prop{font-size:11px;color:var(--muted);background:rgba(255,255,255,0.05);padding:4px 10px;border-radius:1px;letter-spacing:0.04em}
+.dest-arrow{display:inline-flex;align-items:center;gap:8px;margin-top:22px;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;color:var(--gold);text-decoration:none;transition:gap 0.2s}
+.dest-card:hover .dest-arrow{gap:16px}
+
+/* HOW TROVAI WORKS */
+.how{padding:120px 48px;background:var(--black)}
+.how-grid{display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:start;margin-top:60px}
+.how-visual{position:relative;padding:48px;background:var(--black2);border:0.5px solid var(--border);border-radius:4px}
+.ai-demo{font-family:'Geist',sans-serif}
+.ai-prompt{background:rgba(200,169,106,0.06);border:0.5px solid rgba(200,169,106,0.2);border-radius:3px;padding:14px 18px;margin-bottom:12px}
+.ai-prompt-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(200,169,106,0.5);margin-bottom:6px}
+.ai-prompt-text{font-size:14px;color:var(--white);line-height:1.6}
+.ai-result{border:0.5px solid var(--border);border-radius:3px;padding:16px 18px;margin-bottom:8px;transition:border-color 0.2s}
+.ai-result:hover{border-color:var(--border2)}
+.ai-result-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px}
+.ai-result-name{font-size:13px;font-weight:500;color:var(--white)}
+.ai-result-score{font-size:11px;color:var(--gold);background:rgba(200,169,106,0.1);padding:2px 8px;border-radius:10px}
+.ai-result-detail{font-size:12px;color:var(--muted)}
+.ai-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;margin-top:20px}
+.how-steps{display:flex;flex-direction:column;gap:36px}
+.how-step{display:flex;gap:24px}
+.step-num{font-family:'Instrument Serif',serif;font-size:36px;color:rgba(200,169,106,0.2);line-height:1;flex-shrink:0;width:36px}
+.step-body h3{font-size:16px;font-weight:500;color:var(--white);margin-bottom:8px}
+.step-body p{font-size:14px;color:var(--muted);line-height:1.7}
+
+/* QUIZ */
+.quiz-section{padding:120px 48px;background:var(--black2)}
+.quiz-wrap{max-width:680px;margin:60px auto 0}
+.quiz-shell{background:var(--black3);border:0.5px solid var(--border);border-radius:4px;overflow:hidden}
+.quiz-top{padding:28px 36px 0;background:linear-gradient(135deg,rgba(200,169,106,0.05),transparent)}
+.quiz-brand{font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;color:rgba(200,169,106,0.5);margin-bottom:20px;letter-spacing:0.04em}
+.qbar{display:flex;gap:4px}
+.qb{height:2px;flex:1;background:var(--border);border-radius:2px;transition:background 0.3s}
+.qb.done{background:var(--gold)}
+.qb.active{background:rgba(200,169,106,0.35)}
+.quiz-main{padding:32px 36px}
+.qs{display:none;flex-direction:column;animation:fadeUp 0.35s both}
+.qs.active{display:flex}
+.q-eyebrow{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:rgba(200,169,106,0.6);margin-bottom:10px}
+.q-title{font-family:'Instrument Serif',serif;font-size:24px;font-weight:400;color:var(--white);margin-bottom:6px;line-height:1.3}
+.q-sub{font-size:13px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.q-opts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px}
+.q-opt{background:rgba(255,255,255,0.025);border:0.5px solid var(--border);border-radius:3px;padding:14px 16px;cursor:pointer;transition:all 0.18s;text-align:left}
+.q-opt:hover{background:rgba(200,169,106,0.06);border-color:rgba(200,169,106,0.25)}
+.q-opt.sel{background:rgba(200,169,106,0.1);border-color:rgba(200,169,106,0.5)}
+.q-opt.sel-az{background:rgba(43,126,196,0.1);border-color:rgba(43,126,196,0.45)}
+.q-opt.sel-tl{background:rgba(26,155,127,0.1);border-color:rgba(26,155,127,0.45)}
+.q-opt-ico{font-size:16px;margin-bottom:6px;display:block}
+.q-opt-title{font-size:13px;font-weight:500;color:var(--white);display:block;margin-bottom:2px}
+.q-opt-sub{font-size:11px;color:var(--muted);display:block}
+.q-dest-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px}
+.q-dest{border-radius:3px;padding:24px 20px;cursor:pointer;border:0.5px solid var(--border);transition:all 0.2s;text-align:center}
+.q-dest.az{background:rgba(43,126,196,0.06);border-color:rgba(43,126,196,0.18)}
+.q-dest.az:hover,.q-dest.az.sel{background:rgba(43,126,196,0.15);border-color:rgba(43,126,196,0.5)}
+.q-dest.tl{background:rgba(26,155,127,0.06);border-color:rgba(26,155,127,0.18)}
+.q-dest.tl:hover,.q-dest.tl.sel{background:rgba(26,155,127,0.15);border-color:rgba(26,155,127,0.5)}
+.q-dest.bo{background:rgba(200,169,106,0.04);border-color:rgba(200,169,106,0.15)}
+.q-dest.bo:hover,.q-dest.bo.sel{background:rgba(200,169,106,0.12);border-color:rgba(200,169,106,0.45)}
+.q-dest-ico{font-size:28px;margin-bottom:10px;display:block}
+.q-dest-name{font-family:'Instrument Serif',serif;font-size:17px;color:var(--white);display:block;margin-bottom:3px}
+.q-dest-sub{font-size:11px;color:var(--muted);display:block}
+.q-nav{display:flex;justify-content:space-between;align-items:center;padding-top:16px;border-top:0.5px solid var(--border)}
+.q-back{background:none;border:none;font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(244,242,238,0.25);cursor:pointer;transition:color 0.2s}
+.q-back:hover{color:var(--muted)}
+.q-next{background:rgba(200,169,106,0.1);border:0.5px solid rgba(200,169,106,0.35);color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:10px 22px;border-radius:2px;cursor:pointer;transition:all 0.18s}
+.q-next:hover{background:rgba(200,169,106,0.18)}
+.q-next:disabled{opacity:0.2;cursor:default}
+.q-slider{-webkit-appearance:none;width:100%;height:2px;background:linear-gradient(90deg,var(--gold) var(--pct,30%),var(--border) var(--pct,30%));border:none;outline:none;cursor:pointer}
+.q-slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);border:2px solid var(--black3)}
+.q-budget-val{font-family:'Instrument Serif',serif;font-size:34px;color:var(--gold);margin-bottom:14px}
+.q-slider-labels{display:flex;justify-content:space-between;font-size:11px;color:rgba(244,242,238,0.25);margin-top:8px}
+.q-field{display:flex;flex-direction:column;gap:5px;margin-bottom:12px}
+.q-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.55)}
+.q-input{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:11px 14px;outline:none;transition:border-color 0.2s}
+.q-input:focus{border-color:rgba(200,169,106,0.45)}
+.q-input::placeholder{color:rgba(244,242,238,0.18)}
+.q-result-badge{display:inline-block;font-size:10px;letter-spacing:0.15em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.3);padding:4px 12px;border-radius:2px;margin-bottom:18px}
+.q-result-title{font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;color:var(--white);margin-bottom:10px;line-height:1.3}
+.q-result-text{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:22px}
+.q-props{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:22px}
+.q-prop{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:3px;overflow:hidden;transition:border-color 0.2s}
+.q-prop:hover{border-color:var(--border2)}
+.q-prop-img{width:100%;height:110px;object-fit:cover;display:block;background:var(--black3)}
+.q-prop-body{padding:10px 12px}
+.q-prop-loc{font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,169,106,0.55);margin-bottom:4px}
+.q-prop-type{font-family:'Instrument Serif',serif;font-size:13px;color:var(--white);margin-bottom:4px;line-height:1.3}
+.q-prop-price{font-size:12px;color:var(--gold);font-weight:500}
+.q-prop-link{display:block;font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(200,169,106,0.4);margin-top:5px;text-decoration:none;transition:color 0.2s}
+.q-prop-link:hover{color:var(--gold)}
+.q-trust{display:flex;align-items:center;gap:12px;margin-top:20px;padding-top:18px;border-top:0.5px solid var(--border)}
+.q-trust-item{font-size:11px;color:rgba(244,242,238,0.28);letter-spacing:0.04em}
+.q-trust-dot{width:3px;height:3px;border-radius:50%;background:rgba(200,169,106,0.25)}
+
+/* ABOUT */
+.about{padding:120px 48px;background:var(--black)}
+.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:100px;align-items:center;margin-top:60px}
+.about-text p{font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:20px}
+.about-cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px}
+.about-card{padding:18px 20px;background:var(--black2);border:0.5px solid var(--border);border-radius:2px}
+.about-card h4{font-size:13px;font-weight:500;color:var(--white);margin-bottom:6px}
+.about-card p{font-size:12px;color:var(--muted);line-height:1.6;margin:0}
+.about-visual{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:40px;position:relative;overflow:hidden}
+.brand-display{text-align:center}
+.brand-wordmark{font-family:'Instrument Serif',serif;font-size:72px;font-style:italic;color:var(--white);letter-spacing:-0.02em;line-height:1}
+.brand-dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--gold);margin-left:2px;vertical-align:middle;margin-bottom:8px}
+.brand-tagline{font-size:13px;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-top:20px}
+.brand-divider{width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:20px auto}
+.brand-colors{display:flex;justify-content:center;gap:10px;margin-top:20px}
+.bc{width:32px;height:32px;border-radius:50%}
+.brand-fonts{margin-top:28px;text-align:left}
+.bf{font-size:12px;color:var(--muted);margin-bottom:6px}
+.bf strong{color:var(--white);font-weight:400}
+.brand-taglines{margin-top:28px;text-align:left}
+.bt{font-size:13px;color:var(--muted);line-height:1.8}
+.bt strong{color:var(--gold);font-weight:400}
+.abs-mark{position:absolute;top:-20px;right:-20px;font-family:'Instrument Serif',serif;font-size:160px;color:rgba(200,169,106,0.03);line-height:1;pointer-events:none;font-style:italic}
+
+/* FOOTER */
+footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--gold);margin-bottom:14px;font-style:italic}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:280px}
+.footer-col h4{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
+.footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color 0.2s}
+.footer-col a:hover{color:var(--white)}
+.footer-bottom{max-width:1200px;margin:36px auto 0;padding-top:24px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between}
+.footer-bottom p{font-size:12px;color:rgba(244,242,238,0.2)}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+
+@media(max-width:900px){
+  nav{padding:16px 20px}
+  .nav-links{display:none}
+  .hero{padding:100px 20px 60px}
+  .trovai-mark{display:none}
+  .hero-stats{flex-direction:column;gap:0}
+  .stat{padding:12px 0;border-left:none;border-top:0.5px solid var(--border)}
+  .stat:first-child{border-top:none}
+  section,section.destinations,section.how{padding:80px 20px}
+  .destinations,.how,.quiz-section,.about{padding:80px 20px}
+  .dest-grid,.how-grid,.about-grid,.footer-inner{grid-template-columns:1fr}
+  .quiz-top,.quiz-main{padding:20px}
+  .q-opts,.q-dest-grid,.q-props{grid-template-columns:1fr}
+  .about-visual{display:none}
+}
+</style>
+</head>
+<body>
+
+<form name="trovai-leads" netlify netlify-honeypot="bot-field" hidden>
+  <input type="text" name="name"><input type="email" name="email"><input type="tel" name="phone">
+  <input type="text" name="destination"><input type="text" name="budget">
+  <input type="text" name="property_type"><input type="text" name="intended_use">
+  <input type="text" name="timeline"><input type="text" name="bot-field">
+</form>
+<nav id="nav">
+  <div class="nav-logo">
+    <span class="nav-logo-t">Trovai</span>
+    <div class="nav-logo-dot"></div>
+  </div>
+  <div class="nav-links">
+    <a href="#destinations">Destinations</a>
+    <a href="#how">How it works</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+    <a href="#quiz" class="nav-cta">Find your home</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-glow2"></div>
+
+  <div class="trovai-mark">
+    <div class="mark-circle">
+      <span class="mark-t">T</span>
+      <span class="mark-ai">AI</span>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="hero-badge-dot"></div>
+      AI-powered luxury property search
+    </div>
+    <div class="hero-title">The AI that finds</div>
+    <div class="hero-title-2">your perfect home.</div>
+    <p class="hero-sub">Trovai matches wealthy Dutch and Belgian buyers with extraordinary properties on the <strong>CÃÂ´te d'Azur</strong> and in <strong>CuraÃÂ§ao</strong> Ã¢ÂÂ automatically, intelligently, at any hour.</p>
+    <div class="hero-actions">
+      <a href="#quiz" class="btn-gold">Start your search Ã¢ÂÂ</a>
+      <a href="#how" class="btn-ghost">How Trovai works</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-n">5,000+</div><div class="stat-l">Riviera listings</div></div>
+      <div class="stat"><div class="stat-n">2</div><div class="stat-l">Premium destinations</div></div>
+      <div class="stat"><div class="stat-n">24/7</div><div class="stat-l">AI always on</div></div>
+      <div class="stat"><div class="stat-n">Ã¢ÂÂ¬0</div><div class="stat-l">Cost to buyer</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DESTINATIONS -->
+<section class="destinations" id="destinations">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">Where Trovai searches</div>
+    <h2 class="section-title">Two destinations.<br><em>One intelligent search.</em></h2>
+    <p class="section-sub">Trovai's AI scans the complete market in both destinations simultaneously Ã¢ÂÂ matching your profile to properties before you've finished your morning coffee.</p>
+    <div class="dest-grid">
+      <div class="dest-card azure-card" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+        <div class="dest-overlay"></div>
+        <div class="dest-pattern"></div>
+        <div class="dest-content">
+          <div class="dest-tag azure-tag">France Ã· Ibiza Ã· Portugal Ã· Dubai</div>
+          <div class="dest-name">CÃÂ´te d'Azur</div>
+          <p class="dest-desc">The French Riviera Ã¢ÂÂ from Menton to Saint-Tropez. 5,000+ listings via our partner network. Villas from Ã¢ÂÂ¬800K to Ã¢ÂÂ¬30M+. Off-market access included.</p>
+          <div class="dest-props">
+            <span class="dest-prop">5,000+ listings</span>
+            <span class="dest-prop">Ã¢ÂÂ¬800K Ã¢ÂÂ Ã¢ÂÂ¬30M+</span>
+            <span class="dest-prop">Off-market</span>
+            <span class="dest-prop">Tax optimisation</span>
+          </div>
+          <a href="#quiz" class="dest-arrow">Explore Riviera Ã¢ÂÂ</a>
+        </div>
+      </div>
+      <div class="dest-card teal-card" onclick="document.getElementById('quiz').scrollIntoView({behavior:'smooth'})">
+        <div class="dest-overlay"></div>
+        <div class="dest-pattern"></div>
+        <div class="dest-content">
+          <div class="dest-tag teal-tag">Dutch Caribbean</div>
+          <div class="dest-name">CuraÃÂ§ao</div>
+          <p class="dest-desc">Tropical paradise with Dutch roots. Villas, resort apartments, investment properties. 365 days of sun. Strong rental yields. Dutch legal system Ã¢ÂÂ familiar and secure.</p>
+          <div class="dest-props">
+            <span class="dest-prop">Full market access</span>
+            <span class="dest-prop">Ã¢ÂÂ¬150K Ã¢ÂÂ Ã¢ÂÂ¬2M+</span>
+            <span class="dest-prop">Dutch system</span>
+            <span class="dest-prop">6Ã¢ÂÂ8% yield</span>
+          </div>
+          <a href="#quiz" class="dest-arrow">Explore CuraÃÂ§ao Ã¢ÂÂ</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">The Trovai method</div>
+    <h2 class="section-title">AI that works <em>while you sleep.</em></h2>
+    <div class="how-grid">
+      <div>
+        <div class="how-steps">
+          <div class="how-step">
+            <div class="step-num">1</div>
+            <div class="step-body">
+              <h3>Tell Trovai your vision</h3>
+              <p>Answer 5 questions. Destination, property type, budget, intended use, timeline. Trovai's AI builds your buyer profile in real time.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">2</div>
+            <div class="step-body">
+              <h3>AI matches, scores and ranks</h3>
+              <p>Trovai scans 5,000+ listings plus off-market properties, scores each one against your profile, and builds a personalised portfolio Ã¢ÂÂ in seconds.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">3</div>
+            <div class="step-body">
+              <h3>Personal expert takes over</h3>
+              <p>A human expert reviews your AI-matched portfolio, adds local context, arranges viewings and guides you to the notary. Free for the buyer Ã¢ÂÂ commission paid by the seller.</p>
+            </div>
+          </div>
+          <div class="how-step">
+            <div class="step-num">4</div>
+            <div class="step-body">
+              <h3>Nurture until you're ready</h3>
+              <p>Not buying tomorrow? Trovai keeps you warm with market updates, new listings, price movements Ã¢ÂÂ automatically, for as long as you need.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="how-visual">
+        <div class="ai-demo">
+          <div class="ai-label">Your profile</div>
+          <div class="ai-prompt">
+            <div class="ai-prompt-label">Trovai AI Ã¢ÂÂ profile match</div>
+            <div class="ai-prompt-text">Villa Ã· CÃÂ´te d'Azur Ã· Ã¢ÂÂ¬2.5M budget Ã· Holiday + rental Ã· Ready within 12 months</div>
+          </div>
+          <div class="ai-label">Top matches Ã¢ÂÂ scored by AI</div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Villa Les Pins Ã¢ÂÂ Mougins</span><span class="ai-result-score">98% match</span></div>
+            <div class="ai-result-detail">4 bed Ã· pool Ã· 180ÃÂ° view Ã· Ã¢ÂÂ¬2.35M Ã· Off-market</div>
+          </div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Mas ProvenÃÂ§al Ã¢ÂÂ Valbonne</span><span class="ai-result-score">94% match</span></div>
+            <div class="ai-result-detail">5 bed Ã· domaine Ã· Ã¢ÂÂ¬2.1M Ã· Available now</div>
+          </div>
+          <div class="ai-result">
+            <div class="ai-result-top"><span class="ai-result-name">Villa Californie Ã¢ÂÂ Cannes</span><span class="ai-result-score">91% match</span></div>
+            <div class="ai-result-detail">3 bed Ã· sea view Ã· Ã¢ÂÂ¬2.45M Ã· New listing</div>
+          </div>
+          <div style="margin-top:20px;padding-top:16px;border-top:0.5px solid var(--border);font-size:12px;color:var(--muted)">
+            Trovai AI Ã· Matched in 0.4s Ã· Including 2 off-market properties
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- QUIZ -->
+<section class="quiz-section" id="quiz">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="section-pre">Start your search</div>
+    <h2 class="section-title">Let Trovai <em>find your home.</em></h2>
+    <p class="section-sub">2 minutes. Instant AI match. A curated portfolio Ã¢ÂÂ including off-market properties Ã¢ÂÂ arrives within 24 hours.</p>
+    <div class="quiz-wrap">
+      <div class="quiz-shell">
+        <div class="quiz-top">
+          <div class="quiz-brand">Trovai Ã· AI Property Search</div>
+          <div class="qbar" id="qbar"></div>
+        </div>
+        <div class="quiz-main">
+
+          <!-- DEST -->
+          <div class="qs active" id="qs-0">
+            <div class="q-title">Where is your dream destination?</div>
+            <div class="q-sub">Trovai searches both markets simultaneously.</div>
+            <div class="q-dest-grid">
+              <div class="q-dest az" onclick="pickDest(this,'cotedazur')"><span class="q-dest-ico">Ã°ÂÂÂ«Ã°ÂÂ·</span><span class="q-dest-name">CÃÂ´te d'Azur</span><span class="q-dest-sub">French Riviera + Ibiza, Portugal, Dubai</span></div>
+              <div class="q-dest tl" onclick="pickDest(this,'curacao')"><span class="q-dest-ico">Ã°ÂÂÂ</span><span class="q-dest-name">CuraÃÂ§ao</span><span class="q-dest-sub">Caribbean Ã· sun year-round</span></div>
+            </div>
+            <div class="q-dest-grid" style="margin-bottom:0">
+              <div class="q-dest bo" onclick="pickDest(this,'both')"><span class="q-dest-ico">Ã¢ÂÂ¨</span><span class="q-dest-name" style="color:var(--white)">Both destinations</span><span class="q-dest-sub">Let AI compare for me</span></div>
+              <div class="q-dest" onclick="pickDest(this,'unsure')"><span class="q-dest-ico">Ã°ÂÂÂ­</span><span class="q-dest-name" style="color:var(--white)">Not sure yet</span><span class="q-dest-sub">Surprise me</span></div>
+            </div>
+          </div>
+
+          <!-- CDA 1 -->
+          <div class="qs" id="qs-cda-1">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 1 of 4</div>
+            <div class="q-title">Which part of the Riviera?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_area','nice','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Nice & surroundings</span><span class="q-opt-sub">City energy, cosmopolitan</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','cannes','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¬</span><span class="q-opt-title">Cannes & Antibes</span><span class="q-opt-sub">Glamour, beach, marina</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','monaco','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Monaco & Menton</span><span class="q-opt-sub">Prestige, border</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','hinterland','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¿</span><span class="q-opt-title">Hinterland villages</span><span class="q-opt-sub">Peace, nature, authentic</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-0')">Ã¢ÂÂ Back</button><button class="q-next" id="cdn1" disabled onclick="goQ('qs-cda-2')">Continue</button></div>
+          </div>
+
+          <!-- CDA 2 -->
+          <div class="qs" id="qs-cda-2">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 2 of 4</div>
+            <div class="q-title">What type of property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_type','villa','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¡</span><span class="q-opt-title">Villa with garden</span><span class="q-opt-sub">Pool, privacy, space</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','apartment','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ¢</span><span class="q-opt-title">Luxury apartment</span><span class="q-opt-sub">Sea view, concierge</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','estate','sel-az')"><span class="q-opt-ico">Ã°ÂÂÂ°</span><span class="q-opt-title">Domaine / estate</span><span class="q-opt-sub">Land, grandeur, legacy</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_type','open','sel-az')"><span class="q-opt-ico">Ã¢ÂÂ¨</span><span class="q-opt-title">Show me the best</span><span class="q-opt-sub">AI decides for me</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cda-1')">Ã¢ÂÂ Back</button><button class="q-next" id="cdn2" disabled onclick="goQ('qs-cda-3')">Continue</button></div>
+          </div>
+
+          <!-- CDA 3 BUDGET -->
+          <div class="qs" id="qs-cda-3">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 3 of 4</div>
+            <div class="q-title">What is your budget?</div>
+            <div class="q-budget-val" id="cda-bv">Ã¢ÂÂ¬ 2.000.000</div>
+            <input type="range" class="q-slider" id="cda-sl" min="0" max="10" value="3" step="1" oninput="updBudget('cda',this.value)">
+            <div class="q-slider-labels"><span>Ã¢ÂÂ¬500K</span><span>Ã¢ÂÂ¬2M</span><span>Ã¢ÂÂ¬5M</span><span>Ã¢ÂÂ¬10M+</span></div>
+            <div class="q-nav" style="margin-top:28px"><button class="q-back" onclick="goQ('qs-cda-2')">Ã¢ÂÂ Back</button><button class="q-next" onclick="goQ('qs-cda-4')">Continue</button></div>
+          </div>
+
+          <!-- CDA 4 USE -->
+          <div class="qs" id="qs-cda-4">
+            <div class="q-eyebrow">CÃÂ´te d'Azur Ã· Question 4 of 4</div>
+            <div class="q-title">How will you use the property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cda_use','holiday','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã¢ÂÂÃ¯Â¸Â</span><span class="q-opt-title">Holiday home</span><span class="q-opt-sub">Personal enjoyment</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','invest','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Investment</span><span class="q-opt-sub">Rental + capital gain</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','relocate','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Primary residence</span><span class="q-opt-sub">Ready to move</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_use','both','sel-az');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Both</span><span class="q-opt-sub">Enjoy and earn</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cda-3')">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- CUR 1 -->
+          <div class="qs" id="qs-cur-1">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 1 of 3</div>
+            <div class="q-title">What type of property?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cur_type','villa','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ¡</span><span class="q-opt-title">Villa with pool</span><span class="q-opt-sub">Private or resort</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','apartment','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Resort apartment</span><span class="q-opt-sub">Managed, sea view</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','invest','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">Investment property</span><span class="q-opt-sub">Rental income focus</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_type','bungalow','sel-tl')"><span class="q-opt-ico">Ã°ÂÂÂ´</span><span class="q-opt-title">Bungalow</span><span class="q-opt-sub">Relaxed island living</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-0')">Ã¢ÂÂ Back</button><button class="q-next" id="cun1" disabled onclick="goQ('qs-cur-2')">Continue</button></div>
+          </div>
+
+          <!-- CUR 2 BUDGET -->
+          <div class="qs" id="qs-cur-2">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 2 of 3</div>
+            <div class="q-title">What is your budget?</div>
+            <div class="q-budget-val" id="cur-bv">ÃÂ± Ã¢ÂÂ¬ 300.000</div>
+            <input type="range" class="q-slider" id="cur-sl" min="0" max="7" value="2" step="1" oninput="updBudget('cur',this.value)">
+            <div class="q-slider-labels"><span>Ã¢ÂÂ¬150K</span><span>Ã¢ÂÂ¬400K</span><span>Ã¢ÂÂ¬800K</span><span>Ã¢ÂÂ¬2M+</span></div>
+            <div class="q-nav" style="margin-top:28px"><button class="q-back" onclick="goQ('qs-cur-1')">Ã¢ÂÂ Back</button><button class="q-next" onclick="goQ('qs-cur-3')">Continue</button></div>
+          </div>
+
+          <!-- CUR 3 TIMELINE -->
+          <div class="qs" id="qs-cur-3">
+            <div class="q-eyebrow">CuraÃÂ§ao Ã· Question 3 of 3</div>
+            <div class="q-title">When are you looking to buy?</div>
+            <div class="q-opts">
+              <div class="q-opt" onclick="pick(this,'cur_tl','now','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã¢ÂÂ¡</span><span class="q-opt-title">Within 6 months</span><span class="q-opt-sub">Actively searching</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','year','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ</span><span class="q-opt-title">This year</span><span class="q-opt-sub">Getting serious</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','later','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ­</span><span class="q-opt-title">1Ã¢ÂÂ2 years</span><span class="q-opt-sub">Planning ahead</span></div>
+              <div class="q-opt" onclick="pick(this,'cur_tl','exploring','sel-tl');goQ('qs-email')"><span class="q-opt-ico">Ã°ÂÂÂ­</span><span class="q-opt-title">Just exploring</span><span class="q-opt-sub">No rush</span></div>
+            </div>
+            <div class="q-nav"><button class="q-back" onclick="goQ('qs-cur-2')">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- EMAIL -->
+          <div class="qs" id="qs-email">
+            <div class="q-title">Your AI match is ready.</div>
+            <div class="q-sub">Where shall Trovai send your personalised portfolio Ã¢ÂÂ including off-market properties?</div>
+            <div class="q-field"><label class="q-label">Your name</label><input class="q-input" id="qi-name" type="text" placeholder="First name"></div>
+            <div class="q-field"><label class="q-label">Email address</label><input class="q-input" id="qi-email" type="email" placeholder="your@email.com"></div>
+            <div class="q-field"><label class="q-label">WhatsApp (optional)</label><input class="q-input" id="qi-phone" type="tel" placeholder="+31 6 ..."></div>
+            <button class="btn-gold" onclick="submitQ()" style="width:100%;justify-content:center;margin-top:8px">Send my Trovai portfolio Ã¢ÂÂ</button>
+            <p style="font-size:10px;color:rgba(244,242,238,0.2);margin-top:10px;line-height:1.5">No spam. Your details are used only to prepare your property selection.</p>
+            <div class="q-nav" style="padding-top:10px"><button class="q-back" onclick="history.go(-1)">Ã¢ÂÂ Back</button></div>
+          </div>
+
+          <!-- RESULT -->
+          <div class="qs" id="qs-result">
+            <div class="q-result-badge">Trovai AI Ã¢ÂÂ match complete</div>
+            <div class="q-result-title">Your portfolio is ready, <span id="qr-name">Ã¢ÂÂ</span></div>
+            <div class="q-result-text" id="qr-text"></div>
+            <div id="qr-loading" style="display:none;text-align:center;padding:20px 0">
+  <div style="font-size:12px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Trovai AI zoekt live listings...</div>
+  <div style="margin-top:10px;height:2px;background:var(--border);border-radius:2px;overflow:hidden"><div id="qr-progress" style="height:100%;background:var(--gold);width:0%;transition:width 2s ease-in-out"></div></div>
+</div>
+<div id="qr-loading" style="display:none;text-align:center;padding:20px 0"><div style="font-size:12px;color:var(--muted);letter-spacing:0.08em;text-transform:uppercase">Trovai AI zoekt live listings...</div><div style="margin-top:10px;height:2px;background:var(--border);border-radius:2px;overflow:hidden"><div id="qr-progress" style="height:100%;background:var(--gold);width:0%;transition:width 2s ease-in-out"></div></div></div><div class="q-props" id="qr-props"></div>
+            <div style="background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:3px;padding:16px 20px;margin-top:4px">
+              <div style="font-size:13px;color:#5FD4C0;font-weight:500;margin-bottom:4px">Ã¢ÂÂ Bevestigingsmail onderweg</div>
+              <div style="font-size:12px;color:var(--muted);line-height:1.6">U ontvangt direct een email met uw persoonlijke selectie. Controleer eventueel uw spam folder.</div>
+            </div>
+            <div class="q-trust" style="margin-top:20px">
+              <span class="q-trust-item">Free buyer service</span><div class="q-trust-dot"></div>
+              <span class="q-trust-item">Commission paid by seller</span><div class="q-trust-dot"></div>
+              <span class="q-trust-item">Response within 24h</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT / BRAND -->
+<section class="about" id="about">
+  <div style="max-width:1200px;margin:0 auto">
+    <div class="about-grid">
+      <div>
+        <div class="section-pre">About Trovai</div>
+        <h2 class="section-title">Where AI meets <em>human expertise.</em></h2>
+        <p>Trovai is an AI-driven property platform connecting Dutch and Belgian buyers with luxury properties in the CÃÂ´te d'Azur and CuraÃÂ§ao. Our technology works around the clock Ã¢ÂÂ qualifying, matching and nurturing leads automatically.</p>
+        <p>We partner with <strong style="color:var(--white);font-weight:400">Living on the CÃÂ´te d'Azur</strong> (5,000+ listings, rated 9.9/10, 19 years expertise) and <strong style="color:var(--white);font-weight:400">At Home CuraÃÂ§ao</strong> (full island coverage, Dutch-speaking team). Our service is completely free for buyers Ã¢ÂÂ the seller's agent shares their commission.</p>
+        <div class="about-cards">
+          <div class="about-card"><h4>CÃÂ´te d'Azur</h4><p>5,000+ listings. Off-market access. France, Ibiza, Portugal, Dubai.</p></div>
+          <div class="about-card"><h4>CuraÃÂ§ao</h4><p>Full island coverage. Dutch system. Villas to resort apartments.</p></div>
+          <div class="about-card"><h4>AI-powered</h4><p>Instant matching. 24/7 availability. Always learning your preferences.</p></div>
+          <div class="about-card"><h4>Free for buyers</h4><p>Commission paid by seller. Zero cost, zero obligation.</p></div>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:24px;justify-content:center">
+        <div style="background:var(--black3);border:0.5px solid var(--border);border-radius:4px;padding:36px">
+          <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px">Ready to start?</div>
+          <div style="font-family:'Instrument Serif',serif;font-size:26px;font-weight:400;color:var(--white);margin-bottom:12px;line-height:1.3">Let Trovai find your<br><em style="color:var(--gold)">perfect property.</em></div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:24px">Answer 5 questions and receive a personalised portfolio Ã¢ÂÂ including off-market properties Ã¢ÂÂ within 24 hours. Free, no obligation.</p>
+          <a href="#quiz" class="btn-gold" style="display:inline-flex;align-items:center;gap:10px">Start your search Ã¢ÂÂ</a>
+        </div>
+        <div style="background:var(--black3);border:0.5px solid var(--border);border-radius:4px;padding:28px">
+          <div style="font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:10px">Contact</div>
+          <p style="font-size:14px;color:var(--muted);line-height:1.8">
+            <a href="mailto:info@trovai.nl" style="color:var(--white);text-decoration:none">info@trovai.nl</a><br>
+            <a href="https://wa.me/31611380562" style="color:var(--muted);text-decoration:none">WhatsApp</a><br>
+            <span style="color:var(--muted)">Response within 24 hours</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT FORM -->
+<section id="contact" style="padding:120px 48px;background:var(--black)">
+  <div style="max-width:680px;margin:0 auto">
+    <div class="section-pre">Direct contact</div>
+    <h2 class="section-title">Laat uw gegevens <em>achter.</em></h2>
+    <p class="section-sub" style="margin-bottom:48px">Geen quiz nodig. Vul uw gegevens in en wij nemen binnen 24 uur persoonlijk contact op.</p>
+
+    <form name="trovai-contact" netlify netlify-honeypot="bot-field" id="contact-form">
+      <input type="hidden" name="form-name" value="trovai-contact">
+      <input type="hidden" name="bot-field" style="display:none">
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Naam *</label>
+          <input name="name" required type="text" placeholder="Jan de Vries" style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Email *</label>
+          <input name="email" required type="email" placeholder="jan@email.com" style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">WhatsApp</label>
+          <input name="phone" type="tel" placeholder="+31 6 ..." style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'">
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Interesse</label>
+          <select name="interest" style="background:var(--black3);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;cursor:pointer">
+            <option value="">Selecteer bestemming</option>
+            <option value="cotedazur">Ã°ÂÂÂ«Ã°ÂÂ· CÃÂ´te d'Azur</option>
+            <option value="curacao">Ã°ÂÂÂ CuraÃÂ§ao</option>
+            <option value="both">Ã¢ÂÂ¨ Beide</option>
+            <option value="unsure">Nog niet zeker</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:24px">
+        <label style="font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.6)">Uw vraag of wens</label>
+        <textarea name="message" rows="4" placeholder="Vertel ons kort wat u zoekt..." style="background:rgba(244,242,238,0.03);border:0.5px solid rgba(244,242,238,0.1);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:14px;font-weight:300;padding:12px 14px;outline:none;width:100%;resize:vertical;transition:border-color 0.2s" onfocus="this.style.borderColor='rgba(200,169,106,0.45)'" onblur="this.style.borderColor='rgba(244,242,238,0.1)'"></textarea>
+      </div>
+
+      <button type="submit" class="btn-gold" style="width:100%;justify-content:center" id="contact-submit">Verstuur mijn aanvraag Ã¢ÂÂ</button>
+      <p style="font-size:10px;color:rgba(244,242,238,0.2);margin-top:10px;line-height:1.5">Geen spam. Uw gegevens worden uitsluitend gebruikt om u te contacteren over uw zoekopdracht.</p>
+    </form>
+
+    <div id="contact-success" style="display:none;background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.3);border-radius:3px;padding:28px;text-align:center">
+      <div style="font-family:'Instrument Serif',serif;font-size:24px;color:var(--white);margin-bottom:8px">Bedankt, <span id="contact-name">Ã¢ÂÂ</span></div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7">Uw aanvraag is ontvangen. We nemen binnen 24 uur persoonlijk contact op via email of WhatsApp.</p>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Trovai.</div>
+      <p class="footer-desc">AI-powered luxury property search. CÃÂ´te d'Azur and CuraÃÂ§ao. Free for buyers.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Destinations</h4>
+      <a href="#destinations">CÃÂ´te d'Azur</a>
+      <a href="#destinations">CuraÃÂ§ao</a>
+      <a href="#destinations">Ibiza</a>
+      <a href="#destinations">Portugal</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:info@trovai.nl" style="color:var(--muted);text-decoration:none">info@trovai.nl</a>
+      <a href="https://wa.me/31611380562">WhatsApp</a>
+      <a href="https://linkedin.com">LinkedIn</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>ÃÂ© 2026 Trovai. AI-driven luxury property search. Partner of Living on the CÃÂ´te d'Azur & At Home CuraÃÂ§ao.</p>
+    <p>trovai.nl</p>
+  </div>
+</footer>
+
+<script>
+const A={};
+const cdaB=['Ã¢ÂÂ¬500.000','Ã¢ÂÂ¬750.000','Ã¢ÂÂ¬1.000.000','Ã¢ÂÂ¬1.500.000','Ã¢ÂÂ¬2.000.000','Ã¢ÂÂ¬2.500.000','Ã¢ÂÂ¬3.500.000','Ã¢ÂÂ¬5.000.000','Ã¢ÂÂ¬6.500.000','Ã¢ÂÂ¬8.000.000','Ã¢ÂÂ¬10.000.000+'];
+const curB=['ÃÂ± Ã¢ÂÂ¬150.000','ÃÂ± Ã¢ÂÂ¬250.000','ÃÂ± Ã¢ÂÂ¬350.000','ÃÂ± Ã¢ÂÂ¬500.000','ÃÂ± Ã¢ÂÂ¬700.000','ÃÂ± Ã¢ÂÂ¬1.000.000','ÃÂ± Ã¢ÂÂ¬1.500.000','Ã¢ÂÂ¬2.000.000+'];
+
+window.addEventListener('scroll',()=>{
+  document.getElementById('nav').classList.toggle('scrolled',scrollY>40);
+});
+
+function goQ(id){
+  document.querySelectorAll('.qs').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  updateBar();
+}
+
+function updateBar(){
+  const bar=document.getElementById('qbar');
+  const dest=A.destination;
+  let total=0,cur=0;
+  const id=document.querySelector('.qs.active')?.id;
+  if(!dest){bar.innerHTML='';return;}
+  if(dest==='cotedazur'){
+    total=4;
+    const m={'qs-cda-1':1,'qs-cda-2':2,'qs-cda-3':3,'qs-cda-4':4,'qs-email':5,'qs-result':6};
+    cur=m[id]||0;
+  } else {
+    total=3;
+    const m={'qs-cur-1':1,'qs-cur-2':2,'qs-cur-3':3,'qs-email':4,'qs-result':5};
+    cur=m[id]||0;
+  }
+  bar.innerHTML='';
+  for(let i=1;i<=total;i++){
+    const d=document.createElement('div');
+    d.className='qb'+(i<cur?' done':i===cur?' active':'');
+    bar.appendChild(d);
+  }
+}
+
+function pickDest(el,val){
+  document.querySelectorAll('.q-dest').forEach(c=>c.classList.remove('sel'));
+  el.classList.add('sel');
+  A.destination=val;
+  setTimeout(()=>{
+    if(val==='cotedazur') goQ('qs-cda-1');
+    else if(val==='curacao') goQ('qs-cur-1');
+    else goQ('qs-cda-1');
+  },280);
+}
+
+function pick(el,key,val,cls){
+  el.closest('.q-opts').querySelectorAll('.q-opt').forEach(o=>{
+    o.classList.remove('sel','sel-az','sel-tl');
+  });
+  el.classList.add(cls||'sel');
+  A[key]=val;
+  const nb={'cda_area':'cdn1','cda_type':'cdn2','cur_type':'cun1'};
+  if(nb[key]) document.getElementById(nb[key]).disabled=false;
+}
+
+function updBudget(d,v){
+  if(d==='cda'){
+    A.cda_budget=cdaB[v];
+    const sl=document.getElementById('cda-sl');
+    sl.style.setProperty('--pct',(v/10*100)+'%');
+    document.getElementById('cda-bv').textContent=cdaB[v];
+  } else {
+    A.cur_budget=curB[v];
+    const sl=document.getElementById('cur-sl');
+    sl.style.setProperty('--pct',(v/7*100)+'%');
+    document.getElementById('cur-bv').textContent=curB[v];
+  }
+}
+
+async function submitQ(){
+  const name=document.getElementById('qi-name').value.trim()||'there';
+  A.name=name;
+  A.email=document.getElementById('qi-email').value.trim();
+  A.phone=document.getElementById('qi-phone').value.trim();
+  document.getElementById('qr-name').textContent=name;
+  goQ('qs-result');
+  document.getElementById('qr-loading').style.display='block';
+  document.getElementById('qr-props').innerHTML='';
+  document.getElementById('qr-text').textContent='';
+  setTimeout(()=>{const p=document.getElementById('qr-progress');if(p)p.style.width='85%';},100);
+  const dest=A.destination;
+  const budget=A.cda_budget||A.cur_budget||'';
+  const property_type=A.cda_type||A.cur_type||'open';
+  const area=A.cda_area||'';
+  if(A.email){
+    fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({form_type:'quiz',name:A.name,email:A.email,phone:A.phone,
+    destination:dest||'unknown',budget,property_type,
+    intended_use:A.cda_use||'niet opgegeven',timeline:A.cur_tl||'niet opgegeven'})
+    }).catch(()=>{});
+  }
+  if(dest==='cotedazur'||dest==='both'){
+    try{
+      const res=await fetch('/api/get-listings',{method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({destination:dest,property_type,budget,area})});
+      const data=await res.json();
+      document.getElementById('qr-loading').style.display='none';
+      const al={nice:"Nice & surroundings",cannes:"Cannes & Antibes",monaco:"the Monaco region",hinterland:"the Hinterland"};
+      document.getElementById('qr-text').textContent=`Trovai AI matched ${data.total||''}+ live listings and selected the best fit for your profile in ${al[area]||"the CÃ´te d'Azur"} within ${budget||'your budget'}.`;
+      if(data.listings&&data.listings.length>0){
+        document.getElementById('qr-props').innerHTML=data.listings.map(p=>`
+          <div class="q-prop">
+            ${p.image?`<img class="q-prop-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`:''}
+            <div class="q-prop-body">
+              <div class="q-prop-loc">${p.city||"CÃ´te d'Azur"} · ${p.category||''}</div>
+              <div class="q-prop-type">${p.name}</div>
+              <div class="q-prop-price">${p.price_formatted}</div>
+              ${p.beds?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${p.beds}${p.surface?' · '+p.surface:''}</div>`:''}
+              <a class="q-prop-link" href="${p.url}" target="_blank">Bekijk listing â</a>
+            </div>
+          </div>`).join('');
+      }else{showStaticProps(dest,area,budget);}
+    }catch(e){
+      document.getElementById('qr-loading').style.display='none';
+      showStaticProps(dest,area,budget);
+    }
+  }else{
+    document.getElementById('qr-loading').style.display='none';
+    document.getElementById('qr-text').textContent=`Trovai AI heeft uw CuraÃ§ao profiel klaarstaan â ${A.cur_type||'villa'} binnen ${budget||'uw budget'}. U ontvangt een persoonlijke selectie binnen 24 uur.`;
+    document.getElementById('qr-props').innerHTML=[
+      {loc:'Jan Thiel',type:'Villa met zwembad',price:'Vanaf â¬450.000'},
+      {loc:'Piscadera Bay',type:'Resort villa',price:'Vanaf â¬320.000'},
+      {loc:'Vredenberg',type:'Nieuwbouw',price:'Vanaf â¬280.000'}
+    ].map(p=>`<div class="q-prop"><div class="q-prop-body"><div class="q-prop-loc">${p.loc}</div><div class="q-prop-type">${p.type}</div><div class="q-prop-price">${p.price}</div></div></div>`).join('');
+  }
+}
+function showStaticProps(dest,area,budget){
+  const al={nice:"Nice",cannes:"Cannes",monaco:"Monaco",hinterland:"Hinterland"};
+  document.getElementById('qr-text').textContent=`Trovai AI heeft een selectie samengesteld voor ${al[area]||"de CÃ´te d'Azur"} binnen ${budget||'uw budget'}. Uw persoonlijke portfolio arriveert binnen 24 uur.`;
+  document.getElementById('qr-props').innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Uw gepersonaliseerde selectie wordt per email verstuurd.</div>';
+}
+
+updBudget('cda',3);
+updBudget('cur',2);
+
+// Contact form handler
+document.getElementById('contact-form').addEventListener('submit',function(e){
+  e.preventDefault();
+  const btn=document.getElementById('contact-submit');
+  btn.textContent='Versturen...';btn.disabled=true;
+  const data=Object.fromEntries(new FormData(this));
+  fetch('/api/send-email',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({form_type:'contact',...data})
+  })
+  .then(()=>{
+    document.getElementById('contact-form').style.display='none';
+    document.getElementById('contact-success').style.display='block';
+    document.getElementById('contact-name').textContent=data.name||'daar';
+  })
+  .catch(()=>{
+    document.getElementById('contact-form').style.display='none';
+    document.getElementById('contact-success').style.display='block';
+    document.getElementById('contact-name').textContent=data.name||'daar';
+  });
+});
+</script>
+</body>
+</html>
