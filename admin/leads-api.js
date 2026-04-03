@@ -30,40 +30,38 @@ window.addEventListener('DOMContentLoaded', async function() {
   
   const liveLeads = await loadLiveLeads();
   
-  if (liveLeads.length > 0) {
-    console.log(`Loaded ${liveLeads.length} live leads from API`);
-    
-    // Convert API format to tracker format
-    const convertedLeads = liveLeads.map(lead => ({
-      id: lead.id || Date.now(),
-      name: lead.name,
-      email: lead.email,
-      phone: lead.phone || '',
-      dest: lead.destination || 'unknown',
-      budget: lead.budget ? parseInt(lead.budget.replace(/[€.\s]/g, '')) : 0,
-      model: '25', // Default commission model
-      status: lead.status || 'new',
-      notes: lead.form_type === 'quiz' ? 'Via quiz submission' : 'Via contact form',
-      date: new Date(lead.created_at).toLocaleDateString('nl-NL'),
-      commission: 0 // Will be calculated based on budget + model
-    }));
-    
-    // Merge with localStorage (keep manual additions)
-    const localLeads = JSON.parse(localStorage.getItem('leads') || '[]');
-    const localIds = localLeads.map(l => l.id);
-    const newLiveLeads = convertedLeads.filter(l => !localIds.includes(l.id));
-    
-    const mergedLeads = [...newLiveLeads, ...localLeads];
-    localStorage.setItem('leads', JSON.stringify(mergedLeads));
-    
-    console.log(`Merged ${newLiveLeads.length} new live leads with ${localLeads.length} local leads`);
-    
-    // Trigger render if it exists
-    if (typeof render === 'function') {
-      leads = mergedLeads;
-      render();
-    }
-  } else {
-    console.log('No live leads found, using local storage');
+  console.log(`API returned ${liveLeads.length} leads`);
+  
+  // Convert API format to tracker format
+  const convertedLeads = liveLeads.map(lead => ({
+    id: lead.id || Date.now(),
+    name: lead.name,
+    email: lead.email,
+    phone: lead.phone || '',
+    dest: lead.destination || 'unknown',
+    budget: lead.budget ? parseInt(lead.budget.replace(/[€.\s]/g, '')) : 0,
+    model: '25', // Default commission model
+    status: lead.status || 'new',
+    notes: lead.form_type === 'quiz' ? 'Via quiz submission' : 'Via contact form',
+    date: new Date(lead.created_at).toLocaleDateString('nl-NL'),
+    commission: 0 // Will be calculated based on budget + model
+  }));
+  
+  // Get local leads (only non-API leads, identified by string IDs starting with 'lead_')
+  const localLeads = JSON.parse(localStorage.getItem('leads') || '[]');
+  const manualLeads = localLeads.filter(l => typeof l.id === 'number');
+  
+  // Replace all API leads, keep only manual additions
+  const mergedLeads = [...convertedLeads, ...manualLeads];
+  
+  console.log(`Loaded ${convertedLeads.length} API leads + ${manualLeads.length} manual leads = ${mergedLeads.length} total`);
+  
+  // Update storage and render
+  localStorage.setItem('leads', JSON.stringify(mergedLeads));
+  
+  if (typeof leads !== 'undefined' && typeof render === 'function') {
+    leads = mergedLeads;
+    render();
+    console.log('Rendered updated leads');
   }
 });
