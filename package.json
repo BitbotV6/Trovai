@@ -1,0 +1,15 @@
+{
+  "name": "trovai",
+  "version": "1.0.0",
+  "description": "Trovai - AI-powered luxury property search",
+  "type": "module",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
