@@ -769,6 +769,7 @@ async function submitQ(){
   }
   if(dest==='cotedazur'||dest==='both'){
     try{
+      console.log('Fetching listings:', {destination:dest,property_type,budget,area});
       const res=await fetch('/api/get-listings',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({destination:dest,property_type,budget,area})});
       const data=await res.json();
@@ -778,7 +779,7 @@ async function submitQ(){
       if(data.listings&&data.listings.length>0){
         document.getElementById('qr-props').innerHTML=data.listings.map(p=>`<div class="q-prop">${p.image?`<img class="q-prop-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`:''}<div class="q-prop-body"><div class="q-prop-loc">${p.city||'Côte d\'Azur'} · ${p.category||''}</div><div class="q-prop-type">${p.name}</div><div class="q-prop-price">${p.price_formatted}</div>${p.beds?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${p.beds}${p.surface?' · '+p.surface:''}</div>`:''}<a class="q-prop-link" href="${p.url}" target="_blank" rel="noopener">Bekijk listing →</a></div></div>`).join('');
       }else{showStaticProps(dest,area,budget);}
-    }catch(e){document.getElementById('qr-loading').style.display='none';showStaticProps(dest,area,budget);}
+    }catch(e){console.error('Listings API error:',e);document.getElementById('qr-loading').style.display='none';showStaticProps(dest,area,budget);}
   }else{
     document.getElementById('qr-loading').style.display='none';
     document.getElementById('qr-text').textContent=`Trovai AI heeft uw Curaçao profiel klaarstaan — ${A.cur_type||'villa'} binnen ${budget||'uw budget'}. U ontvangt een persoonlijke selectie binnen 24 uur.`;
