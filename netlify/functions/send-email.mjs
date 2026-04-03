@@ -1,3 +1,5 @@
+import { Netlify } from '@netlify/functions';
+
 export default async (req) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -5,7 +7,7 @@ export default async (req) => {
 
   const { name, email, phone, destination, budget, property_type, message, interest, form_type } = await req.json();
 
-  const RESEND_API_KEY = Netlify.env.get('RESEND_API_KEY');
+  const RESEND_API_KEY = process.env.RESEND_API_KEY;
 
   if (!RESEND_API_KEY) {
     return new Response(JSON.stringify({ error: 'Email service not configured' }), {
