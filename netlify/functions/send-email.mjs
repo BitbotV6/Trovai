@@ -1,5 +1,3 @@
-import { Netlify } from '@netlify/functions';
-
 export default async (req) => {
   if (req.method !== 'POST') {
     return new Response('Method not allowed', { status: 405 });
@@ -7,7 +5,7 @@ export default async (req) => {
 
   const { name, email, phone, destination, budget, property_type, message, interest, form_type } = await req.json();
 
-  const RESEND_API_KEY = process.env.RESEND_API_KEY;
+  const RESEND_API_KEY = Netlify.env.get('RESEND_API_KEY');
 
   if (!RESEND_API_KEY) {
     return new Response(JSON.stringify({ error: 'Email service not configured' }), {
@@ -17,21 +15,130 @@ export default async (req) => {
   }
 
   const destLabel = {
-    cotedazur: 'Cote d Azur',
-    curacao: 'Curacao',
-    both: 'Beide bestemmingen',
+    cotedazur: '🇫🇷 Côte d\'Azur',
+    curacao: '🌊 Curaçao',
+    both: '✨ Beide bestemmingen',
     unsure: 'Nog niet zeker'
   }[destination || interest] || destination || interest || 'Niet opgegeven';
 
-  const confirmHtml = '<div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;background:#080A0F;padding:40px"><h1 style="color:#F4F2EE;font-size:26px;font-weight:400">Bedankt, ' + name + '.</h1><p style="color:rgba(244,242,238,0.65);font-size:15px">Uw aanvraag is ontvangen. Ons team neemt binnen 24 uur persoonlijk contact op.</p><p style="color:#C8A96A;font-size:13px;margin-top:20px">Bestemming: ' + destLabel + ' | Budget: ' + (budget||'-') + '</p><p style="color:rgba(244,242,238,0.3);font-size:11px;margin-top:32px">info@trovai.nl trovai.nl</p></div>';
-  const notifHtml = '<div style="font-family:Arial,sans-serif;max-width:600px;padding:32px"><h2>Nieuwe lead via Trovai</h2><table style="width:100%;border-collapse:collapse;margin-top:16px"><tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold;width:130px">Naam</td><td style="padding:10px;border-bottom:1px solid #eee">' + name + '</td></tr><tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold">Email</td><td style="padding:10px;border-bottom:1px solid #eee">' + email + '</td></tr><tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold">WhatsApp</td><td style="padding:10px;border-bottom:1px solid #eee">' + (phone||'-') + '</td></tr><tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold">Bestemming</td><td style="padding:10px;border-bottom:1px solid #eee">' + destLabel + '</td></tr><tr><td style="padding:10px;border-bottom:1px solid #eee;font-weight:bold">Budget</td><td style="padding:10px;border-bottom:1px solid #eee">' + (budget||'-') + '</td></tr><tr><td style="padding:10px;font-weight:bold;vertical-align:top">Bericht</td><td style="padding:10px">' + (message||'-') + '</td></tr></table></div>';
+  // 1. Bevestigingsmail naar de aanvrager
+  const confirmationEmail = {
+    from: 'Trovai <info@trovai.nl>',
+    to: [email],
+    subject: `Bedankt voor uw aanvraag, ${name}`,
+    html: `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body style="margin:0;padding:0;background:#F4F2EE;font-family:'Georgia',serif">
+  <div style="max-width:600px;margin:0 auto;background:#080A0F">
+
+    <!-- Header -->
+    <div style="padding:40px 48px 32px;border-bottom:1px solid rgba(200,169,106,0.2)">
+      <div style="font-family:Georgia,serif;font-size:28px;font-style:italic;color:#F4F2EE;letter-spacing:-0.02em">
+        Trovai<span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:#C8A96A;margin-left:2px;vertical-align:middle;margin-bottom:4px"></span>
+      </div>
+      <div style="font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#C8A96A;margin-top:6px">AI · Luxury Property Search</div>
+    </div>
+
+    <!-- Body -->
+    <div style="padding:40px 48px">
+      <h1 style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#F4F2EE;margin:0 0 16px;line-height:1.3">
+        Bedankt, ${name}.
+      </h1>
+      <p style="font-size:15px;color:rgba(244,242,238,0.65);line-height:1.8;margin:0 0 28px">
+        Uw aanvraag is ontvangen. Ons team neemt binnen <strong style="color:#F4F2EE">24 uur</strong> persoonlijk contact op met een selectie properties die perfect aansluiten bij uw wensen.
+      </p>
+
+      <!-- Summary box -->
+      <div style="background:rgba(200,169,106,0.06);border:1px solid rgba(200,169,106,0.2);border-radius:4px;padding:24px;margin-bottom:32px">
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#C8A96A;margin-bottom:16px">Uw aanvraag samengevat</div>
+        ${destination || interest ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(244,242,238,0.06)"><span style="color:rgba(244,242,238,0.45);font-size:13px">Bestemming</span><span style="color:#F4F2EE;font-size:13px">${destLabel}</span></div>` : ''}
+        ${budget ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(244,242,238,0.06)"><span style="color:rgba(244,242,238,0.45);font-size:13px">Budget</span><span style="color:#F4F2EE;font-size:13px">${budget}</span></div>` : ''}
+        ${phone ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(244,242,238,0.06)"><span style="color:rgba(244,242,238,0.45);font-size:13px">WhatsApp</span><span style="color:#F4F2EE;font-size:13px">${phone}</span></div>` : ''}
+        ${message ? `<div style="padding:8px 0"><span style="color:rgba(244,242,238,0.45);font-size:13px;display:block;margin-bottom:6px">Uw bericht</span><span style="color:#F4F2EE;font-size:13px">${message}</span></div>` : ''}
+      </div>
+
+      <p style="font-size:14px;color:rgba(244,242,238,0.5);line-height:1.7;margin:0 0 8px">
+        Heeft u vragen in de tussentijd? Neem gerust contact op:
+      </p>
+      <p style="font-size:14px;margin:0">
+        <a href="mailto:info@trovai.nl" style="color:#C8A96A;text-decoration:none">info@trovai.nl</a>
+        &nbsp;·&nbsp;
+        <a href="https://wa.me/31611380562" style="color:#C8A96A;text-decoration:none">WhatsApp</a>
+      </p>
+    </div>
+
+    <!-- Footer -->
+    <div style="padding:24px 48px;border-top:1px solid rgba(244,242,238,0.06)">
+      <p style="font-size:11px;color:rgba(244,242,238,0.2);margin:0;line-height:1.6">
+        © 2026 Trovai · AI-driven luxury property search<br>
+        Côte d'Azur & Curaçao · trovai.nl
+      </p>
+    </div>
+
+  </div>
+</body>
+</html>`
+  };
+
+  // 2. Notificatie naar jou
+  const notificationEmail = {
+    from: 'Trovai <info@trovai.nl>',
+    to: ['info@trovai.nl'],
+    subject: `🏠 Nieuwe Trovai lead: ${name} — ${destLabel}`,
+    html: `
+<div style="font-family:Arial,sans-serif;max-width:600px;margin:0 auto;background:#f9f9f9;padding:32px;border-radius:8px">
+  <h2 style="color:#080A0F;margin:0 0 24px">Nieuwe lead via Trovai</h2>
+  <table style="width:100%;border-collapse:collapse">
+    <tr><td style="padding:10px;background:#fff;border-bottom:1px solid #eee;font-weight:bold;width:140px">Naam</td><td style="padding:10px;background:#fff;border-bottom:1px solid #eee">${name}</td></tr>
+    <tr><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee;font-weight:bold">Email</td><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee"><a href="mailto:${email}">${email}</a></td></tr>
+    <tr><td style="padding:10px;background:#fff;border-bottom:1px solid #eee;font-weight:bold">WhatsApp</td><td style="padding:10px;background:#fff;border-bottom:1px solid #eee">${phone ? `<a href="https://wa.me/${phone.replace(/\D/g,'')}">${phone}</a>` : '—'}</td></tr>
+    <tr><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee;font-weight:bold">Bestemming</td><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee">${destLabel}</td></tr>
+    ${budget ? `<tr><td style="padding:10px;background:#fff;border-bottom:1px solid #eee;font-weight:bold">Budget</td><td style="padding:10px;background:#fff;border-bottom:1px solid #eee">${budget}</td></tr>` : ''}
+    ${property_type ? `<tr><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee;font-weight:bold">Type woning</td><td style="padding:10px;background:#f5f5f5;border-bottom:1px solid #eee">${property_type}</td></tr>` : ''}
+    ${message ? `<tr><td style="padding:10px;background:#fff;font-weight:bold;vertical-align:top">Bericht</td><td style="padding:10px;background:#fff">${message}</td></tr>` : ''}
+  </table>
+  <p style="margin:24px 0 0;color:#666;font-size:13px">Verstuurd via trovai.nl · ${new Date().toLocaleString('nl-NL')}</p>
+</div>`
+  };
 
   try {
-    await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: 'Trovai <info@trovai.nl>', to: [email], subject: 'Bedankt voor uw aanvraag, ' + name, html: confirmHtml }) });
-    await fetch('https://api.resend.com/emails', { method: 'POST', headers: { 'Authorization': 'Bearer ' + RESEND_API_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ from: 'Trovai <info@trovai.nl>', to: ['roelofmethorst@gmail.com'], subject: 'Nieuwe Trovai lead: ' + name + ' - ' + destLabel, html: notifHtml }) });
-    return new Response(JSON.stringify({ success: true }), { status: 200, headers: { 'Content-Type': 'application/json' } });
-  } catch (e) {
-    return new Response(JSON.stringify({ error: 'Failed' }), { status: 500, headers: { 'Content-Type': 'application/json' } });
+    // Stuur beide emails via Resend
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(confirmationEmail)
+    });
+
+    await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${RESEND_API_KEY}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(notificationEmail)
+    });
+
+    return new Response(JSON.stringify({ success: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' }
+    });
+
+  } catch (error) {
+    return new Response(JSON.stringify({ error: 'Failed to send email' }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' }
+    });
   }
 };
-export const config = { path: '/api/send-email' };
+
+export const config = {
+  path: '/api/send-email'
+};
