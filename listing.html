@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trovai — Woning details</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#080A0F;--black2:#0C0E14;--white:#F4F2EE;--gold:#C8A96A;--gold2:#A8853A;--muted:rgba(244,242,238,0.45);--border:rgba(244,242,238,0.08);--border2:rgba(244,242,238,0.14)}
+body{background:var(--black);color:var(--white);font-family:'Geist',sans-serif;font-weight:300;min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,10,15,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.nav-logo{display:flex;align-items:baseline;gap:2px}
+.nav-logo-t{font-family:'Instrument Serif',serif;font-size:20px;color:var(--white)}
+.nav-logo-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:1px;margin-bottom:3px}
+.nav-back{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+main{max-width:1100px;margin:0 auto;padding:100px 48px 80px}
+#loading{text-align:center;padding:120px 0}
+.spin{display:inline-block;width:24px;height:24px;border:1.5px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--muted);margin-top:14px}
+#listing{display:none}
+.listing-pre{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.listing-title{font-family:'Instrument Serif',serif;font-size:clamp(28px,4vw,46px);font-weight:400;color:var(--white);margin-bottom:8px;line-height:1.15}
+.listing-price{font-family:'Instrument Serif',serif;font-size:32px;color:var(--gold);margin-bottom:32px}
+.photo-grid{display:grid;grid-template-columns:2fr 1fr;grid-template-rows:260px 200px;gap:3px;margin-bottom:40px;border-radius:4px;overflow:hidden}
+.photo-main{grid-row:1/3}
+.photo-main img,.photo-sub img{width:100%;height:100%;object-fit:cover;display:block}
+.photo-placeholder{background:var(--black2);width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.photo-placeholder span{font-size:12px;color:var(--muted)}
+.listing-grid{display:grid;grid-template-columns:2fr 1fr;gap:48px;align-items:start}
+.detail-section{margin-bottom:32px}
+.detail-label{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.detail-text{font-size:15px;color:var(--white);line-height:1.8}
+.detail-text p{margin-bottom:12px}
+.detail-pills{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.pill{font-size:11px;color:var(--muted);background:rgba(244,242,238,0.04);border:0.5px solid var(--border);padding:5px 12px;border-radius:2px}
+.sidebar{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:28px;position:sticky;top:90px}
+.sidebar-title{font-family:'Instrument Serif',serif;font-size:20px;color:var(--white);margin-bottom:6px}
+.sidebar-sub{font-size:13px;color:var(--muted);margin-bottom:24px;line-height:1.65}
+.btn-gold{display:block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:14px 24px;border-radius:2px;cursor:pointer;text-decoration:none;text-align:center;transition:opacity 0.2s;margin-bottom:10px}
+.btn-gold:hover{opacity:0.88}
+.btn-wa{display:block;background:transparent;border:0.5px solid rgba(37,211,102,0.35);color:rgba(37,211,102,0.8);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:13px 24px;border-radius:2px;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s;margin-bottom:10px}
+.btn-wa:hover{background:rgba(37,211,102,0.07);color:#25D366}
+.btn-ghost{display:block;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:13px 24px;border-radius:2px;cursor:pointer;text-decoration:none;text-align:center;transition:all 0.2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.sidebar-note{font-size:11px;color:rgba(244,242,238,0.22);margin-top:16px;line-height:1.65;text-align:center}
+.sidebar-divider{height:0.5px;background:var(--border);margin:20px 0}
+.sidebar-stat{display:flex;justify-content:space-between;margin-bottom:8px}
+.sidebar-stat-label{font-size:12px;color:var(--muted)}
+.sidebar-stat-val{font-size:12px;color:var(--white);font-weight:500}
+#error{display:none;text-align:center;padding:120px 0}
+.error-text{font-size:14px;color:var(--muted)}
+.contact-form{margin-top:24px}
+.form-field{margin-bottom:12px}
+.form-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
+.form-input,.form-textarea{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:13px;font-weight:300;padding:10px 12px;outline:none;transition:border-color 0.2s;width:100%}
+.form-input:focus,.form-textarea:focus{border-color:rgba(200,169,106,0.45)}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(244,242,238,0.2)}
+.form-textarea{resize:vertical;min-height:80px}
+.form-success{background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:2px;padding:12px 16px;font-size:13px;color:#5FD4C0;display:none;margin-top:10px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.4s both}
+@media(max-width:800px){
+  nav{padding:14px 20px}
+  main{padding:80px 20px 60px}
+  .listing-grid,.photo-grid{grid-template-columns:1fr}
+  .photo-grid{grid-template-rows:240px}
+  .photo-sub{display:none}
+  .photo-main{grid-row:auto}
+  .sidebar{position:static}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-logo"><span class="nav-logo-t">Trovai</span><div class="nav-logo-dot"></div></div>
+  <a href="/#quiz" class="nav-back">&#8592; Terug naar zoeken</a>
+</nav>
+<main>
+  <div id="loading"><div class="spin"></div><div class="loading-text">Woning laden...</div></div>
+  <div id="error"><div class="error-text">Deze woning kon niet worden geladen.<br><a href="/#quiz" style="color:var(--gold)">&#8592; Terug naar zoeken</a></div></div>
+  <div id="listing" class="fade-in">
+    <div class="listing-pre" id="l-pre">Cote d'Azur</div>
+    <h1 class="listing-title" id="l-title">Laden...</h1>
+    <div class="listing-price" id="l-price"></div>
+    <div class="photo-grid" id="l-photos"></div>
+    <div class="listing-grid">
+      <div>
+        <div class="detail-section"><div class="detail-label">Over deze woning</div><div class="detail-text" id="l-desc"></div></div>
+        <div class="detail-section"><div class="detail-label">Details</div><div class="detail-pills" id="l-pills"></div></div>
+      </div>
+      <div class="sidebar">
+        <div class="sidebar-title">Interesse?</div>
+        <div class="sidebar-sub">Trovai begeleidt u gratis. De commissie wordt betaald door de verkoper.</div>
+        <div id="l-sidebar-stats" style="margin-bottom:20px"></div>
+        <div class="sidebar-divider"></div>
+        <div class="contact-form">
+          <div class="form-field"><label class="form-label">Uw naam</label><input class="form-input" id="cf-name" placeholder="Jan de Vries"></div>
+          <div class="form-field"><label class="form-label">Email</label><input class="form-input" id="cf-email" type="email" placeholder="jan@email.com"></div>
+          <div class="form-field"><label class="form-label">Bericht (optioneel)</label><textarea class="form-textarea" id="cf-msg" placeholder="Ik heb interesse in deze woning..."></textarea></div>
+          <button class="btn-gold" onclick="submitContact()" id="cf-btn">Stuur mijn vraag &#8594;</button>
+          <div class="form-success" id="cf-success">&#10003; Bericht ontvangen - we nemen binnen 24 uur contact op.</div>
+        </div>
+        <div class="sidebar-divider"></div>
+        <a href="https://wa.me/31611380562" target="_blank" class="btn-wa">WhatsApp direct</a>
+        <a href="/#quiz" class="btn-ghost">&#8592; Nieuwe zoekopdracht</a>
+        <div class="sidebar-note">Gratis voor kopers &middot; Commissie betaald door verkoper</div>
+      </div>
+    </div>
+  </div>
+</main>
+<script>
+const LOCA='https://www.livingonthecotedazur.com/wp-json/wc/store/v1/products';
+let cur=null;
+function clean(s){return s.replace(/&#8211;/g,'\u2013').replace(/&#8217;/g,"'").replace(/&#8220;/g,'"').replace(/&#8221;/g,'"').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').trim();}
+async function loadListing(){
+  const parts=window.location.pathname.split('/');
+  const id=parts[parts.length-1]||parts[parts.length-2];
+  if(!id||isNaN(id)){show('error');return;}
+  try{
+    const r=await fetch(LOCA+'/'+id);
+    if(!r.ok)throw new Error();
+    cur=await r.json();render(cur);
+  }catch(e){
+    try{
+      const r=await fetch(LOCA+'?include='+id+'&per_page=1');
+      const d=await r.json();
+      if(d&&d.length>0){cur=d[0];render(d[0]);}else throw new Error();
+    }catch(e2){show('error');}
+  }
+}
+function show(id){document.getElementById('loading').style.display='none';document.getElementById(id).style.display='block';}
+function attr(p,n){return p.attributes?.find(a=>a.name===n)?.terms?.[0]?.name||'';}
+function render(p){
+  const price=parseInt(p.prices?.price||0);
+  const city=attr(p,'City'),beds=attr(p,'Number of beds'),rooms=attr(p,'Number of rooms'),surface=attr(p,'Living area'),land=attr(p,'Land area'),cat=p.categories?.[0]?.name||'';
+  document.title=clean(p.name)+' - Trovai';
+  document.getElementById('l-pre').textContent=[city,cat].filter(Boolean).join(' · ');
+  document.getElementById('l-title').textContent=clean(p.name);
+  document.getElementById('l-price').textContent=price>0?'\u20ac '+Math.round(price).toLocaleString('nl-NL'):'Prijs op aanvraag';
+  const photos=p.images||[];
+  document.getElementById('l-photos').innerHTML=photos.length>0?
+    '<div class="photo-main"><img src="'+photos[0].src+'" loading="eager"></div>'+
+    (photos[1]?'<div class="photo-sub"><img src="'+photos[1].src+'" loading="lazy"></div>':'<div class="photo-sub photo-placeholder"><span>Foto 2</span></div>')+
+    (photos[2]?'<div class="photo-sub"><img src="'+photos[2].src+'" loading="lazy"></div>':'<div class="photo-sub photo-placeholder"><span>Foto 3</span></div>'):
+    '<div class="photo-main photo-placeholder"><span>Geen foto beschikbaar</span></div>';
+  const desc=(p.description||p.short_description||'').replace(/<[^>]+>/g,' ').replace(/\s+/g,' ').trim();
+  document.getElementById('l-desc').innerHTML=desc?'<p>'+desc.substring(0,800)+'</p>':'<p style="color:var(--muted)">Neem contact op voor meer informatie.</p>';
+  const pills=[beds?beds+' slaapkamers':'',rooms?rooms+' kamers':'',surface?surface+' m\u00b2 wonen':'',land?land+' m\u00b2 grond':'',city,cat].filter(Boolean);
+  document.getElementById('l-pills').innerHTML=pills.map(t=>'<span class="pill">'+t+'</span>').join('');
+  const stats=[[beds?'Slaapkamers':null,beds],[surface?'Woonoppervlak':null,surface+' m\u00b2'],[land?'Perceel':null,land+' m\u00b2'],[city?'Stad':null,city]].filter(s=>s[0]);
+  document.getElementById('l-sidebar-stats').innerHTML=stats.map(s=>'<div class="sidebar-stat"><span class="sidebar-stat-label">'+s[0]+'</span><span class="sidebar-stat-val">'+s[1]+'</span></div>').join('');
+  show('listing');
+}
+async function submitContact(){
+  const name=document.getElementById('cf-name').value.trim();
+  const email=document.getElementById('cf-email').value.trim();
+  if(!name||!email){alert('Vul uw naam en emailadres in');return;}
+  const btn=document.getElementById('cf-btn');
+  btn.textContent='Versturen...';btn.style.opacity='0.6';
+  try{await fetch('/api/send-email',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({form_type:'listing_inquiry',name,email,message:document.getElementById('cf-msg').value.trim()||('Interesse in: '+(cur?clean(cur.name):'woning')),listing_id:window.location.pathname.split('/').pop(),listing_name:cur?clean(cur.name):'',listing_price:cur&&parseInt(cur.prices?.price)>0?'\u20ac '+Math.round(parseInt(cur.prices.price)).toLocaleString('nl-NL'):''})})}catch(e){}
+  btn.style.display='none';document.getElementById('cf-success').style.display='block';
+}
+loadListing();
+</script>
+</body>
+</html>
