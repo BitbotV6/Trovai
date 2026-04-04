@@ -23,6 +23,9 @@
     Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://trovai.nl https://api.resend.com"
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Pragma = "no-cache"
+    Expires = "0"
 
 [[headers]]
   for = "/*"
