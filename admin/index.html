@@ -399,12 +399,21 @@ render();
   console.log('[Admin] Loading leads...');
   const apiLeads = await loadAPILeads();
   
-  console.log('[Admin] Setting window.leads to', apiLeads.length, 'leads');
-  window.leads = apiLeads;
+  console.log('[Admin] Setting leads to', apiLeads.length, 'leads');
   
-  if (typeof window.render === 'function') {
-    window.render();
-    console.log('[Admin] Rendered!');
+  // Calculate commission for each lead
+  const enrichedLeads = apiLeads.map(lead => ({
+    ...lead,
+    commission: calcCommission(lead.budget, parseFloat(lead.model))
+  }));
+  
+  // Update the global leads variable (NOT window.leads)
+  leads = enrichedLeads;
+  
+  console.log('[Admin] Rendering', leads.length, 'leads...');
+  if (typeof render === 'function') {
+    render();
+    console.log('[Admin] ✓ Rendered!');
   } else {
     console.error('[Admin] render() not found');
   }
