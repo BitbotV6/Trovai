@@ -1,8 +1,11 @@
 // Trovai · get-listings.mjs
 // Haalt ECHTE listings op van livingonthecotedazur.com
 // URLs gaan naar trovai.nl/listing/[id] zodat de koper op ons domein blijft
+// Minimumprijs: 800.000 euro (afspraak met Ab Kuijer)
 
 const LOCA = 'https://www.livingonthecotedazur.com/wp-json/wc/store/v1/products';
+
+const MIN_PRICE = 800000; // Onder dit bedrag geen listings tonen — afspraak Ab Kuijer
 
 const CATEGORY_MAP = {
   villa: 'villa',
@@ -19,12 +22,12 @@ const CITY_MAP = {
 };
 
 function parseBudget(str) {
-  if (!str) return { min: 0, max: 99000000 };
+  if (!str) return { min: MIN_PRICE, max: 99000000 };
   const clean = str.replace(/[€.\s+±~]/g, '').replace(',', '');
   const num = parseInt(clean) || 0;
   const isPlus = str.includes('+');
   return {
-    min: Math.floor(num * 0.6),
+    min: Math.max(MIN_PRICE, Math.floor(num * 0.6)),
     max: isPlus ? 99000000 : Math.ceil(num * 1.4)
   };
 }
@@ -86,6 +89,7 @@ export default async (req) => {
   try {
     const { destination, property_type, budget, area } = await req.json();
 
+    // Curacao heeft nog geen live API
     if (destination === 'curacao') {
       return new Response(JSON.stringify({
         listings: [], total: 0,
@@ -98,10 +102,11 @@ export default async (req) => {
 
     let { listings, total } = await fetchFromLOCA({ category, minPrice, maxPrice, limit: 12 });
 
+    // Fallback: verbreed budget als te weinig resultaten, maar blijf boven MIN_PRICE
     if (listings.length < 3) {
       const wider = await fetchFromLOCA({
         category,
-        minPrice: Math.floor(minPrice * 0.4),
+        minPrice: Math.max(MIN_PRICE, Math.floor(minPrice * 0.4)),
         maxPrice: Math.ceil(maxPrice * 1.6),
         limit: 12
       });
@@ -109,6 +114,7 @@ export default async (req) => {
       total = wider.total;
     }
 
+    // Stadsfilter op basis van area-keuze
     let filtered = listings;
     if (area && CITY_MAP[area] && listings.length > 3) {
       const preferred = CITY_MAP[area];
