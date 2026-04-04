@@ -343,6 +343,65 @@ function recalc(){
 // No mock data - all leads come from /api/get-leads
 render();
 </script>
-<script src="tracker-live.js"></script>
+<script>
+// Inline tracker for reliability
+(async function() {
+  console.log('[Admin] INLINE tracker starting...');
+  
+  const token = localStorage.getItem('admin_token') || 'trovai2026';
+  
+  async function loadAPILeads() {
+    try {
+      const res = await fetch('/api/get-leads', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      
+      if (!res.ok) {
+        console.error('[Admin] API error:', res.status);
+        return [];
+      }
+      
+      const data = await res.json();
+      console.log('[Admin] API returned', data.leads?.length || 0, 'leads');
+      
+      return (data.leads || []).map(lead => ({
+        id: lead.id,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone || '',
+        dest: lead.destination || 'unknown',
+        budget: lead.budget ? parseInt(lead.budget.replace(/[€.\s]/g, '')) : 0,
+        model: '25',
+        status: lead.status || 'new',
+        notes: lead.form_type === 'quiz' ? 'Via quiz' : 'Contact',
+        date: new Date(lead.created_at).toLocaleDateString('nl-NL'),
+        commission: 0
+      }));
+    } catch (e) {
+      console.error('[Admin] Load error:', e);
+      return [];
+    }
+  }
+  
+  // Wait for page to be ready
+  await new Promise(resolve => {
+    if (document.readyState === 'complete') resolve();
+    else window.addEventListener('load', resolve);
+  });
+  
+  console.log('[Admin] Loading leads...');
+  const apiLeads = await loadAPILeads();
+  
+  console.log('[Admin] Setting window.leads to', apiLeads.length, 'leads');
+  window.leads = apiLeads;
+  
+  if (typeof window.render === 'function') {
+    window.render();
+    console.log('[Admin] Rendered!');
+  } else {
+    console.error('[Admin] render() not found');
+  }
+})();
+</script>
 </body>
 </html>
