@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Trovai — Woning details</title>
+<title>Trovai â Woning details</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -121,15 +121,14 @@ async function loadListing(){
   const id=parts[parts.length-1]||parts[parts.length-2];
   if(!id||isNaN(id)){show('error');return;}
   try{
-    const r=await fetch(LOCA+'/'+id);
-    if(!r.ok)throw new Error();
-    cur=await r.json();render(cur);
+    const r=await fetch(LOCA+'?include='+id+'&per_page=1');
+    if(!r.ok)throw new Error('API fout: '+r.status);
+    const d=await r.json();
+    if(d&&d.length>0){cur=d[0];render(d[0]);}
+    else{show('error');}
   }catch(e){
-    try{
-      const r=await fetch(LOCA+'?include='+id+'&per_page=1');
-      const d=await r.json();
-      if(d&&d.length>0){cur=d[0];render(d[0]);}else throw new Error();
-    }catch(e2){show('error');}
+    console.error('Listing laden mislukt:',e.message);
+    show('error');
   }
 }
 function show(id){document.getElementById('loading').style.display='none';document.getElementById(id).style.display='block';}
@@ -138,7 +137,7 @@ function render(p){
   const price=parseInt(p.prices?.price||0);
   const city=attr(p,'City'),beds=attr(p,'Number of beds'),rooms=attr(p,'Number of rooms'),surface=attr(p,'Living area'),land=attr(p,'Land area'),cat=p.categories?.[0]?.name||'';
   document.title=clean(p.name)+' - Trovai';
-  document.getElementById('l-pre').textContent=[city,cat].filter(Boolean).join(' · ');
+  document.getElementById('l-pre').textContent=[city,cat].filter(Boolean).join(' Â· ');
   document.getElementById('l-title').textContent=clean(p.name);
   document.getElementById('l-price').textContent=price>0?'\u20ac '+Math.round(price).toLocaleString('nl-NL'):'Prijs op aanvraag';
   const photos=p.images||[];
