@@ -235,6 +235,30 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
   .q-opts,.q-dest-grid,.q-props{grid-template-columns:1fr}
   .about-visual{display:none}
 }
+
+.showcase-section{background:var(--black);padding:80px 0;border-top:0.5px solid var(--border)}
+.showcase-inner{max-width:1200px;margin:0 auto;padding:0 48px}
+.sc-header{text-align:center;margin-bottom:48px}
+.sc-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+.sc-title{font-family:'Instrument Serif',serif;font-size:clamp(28px,3.5vw,42px);font-weight:400;color:var(--white);margin-bottom:12px;line-height:1.2}
+.sc-sub{font-size:14px;color:var(--muted);line-height:1.7}
+.sc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-bottom:48px}
+.sc-card{text-decoration:none;display:block;border:0.5px solid var(--border);border-radius:4px;overflow:hidden;transition:border-color 0.2s,transform 0.2s;background:var(--black2)}
+.sc-card:hover{border-color:var(--gold);transform:translateY(-2px)}
+.sc-img{height:200px;background-size:cover;background-position:center;position:relative}
+.sc-tag{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.45);background:rgba(8,10,15,0.75);backdrop-filter:blur(6px);padding:4px 10px;border-radius:2px}
+.sc-body{padding:18px 20px}
+.sc-location{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.sc-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--white);margin-bottom:8px;line-height:1.3}
+.sc-price{font-size:18px;font-family:'Instrument Serif',serif;color:var(--gold);margin-bottom:6px}
+.sc-meta{font-size:11px;color:var(--muted)}
+.sc-cta{text-align:center;padding-top:8px;border-top:0.5px solid var(--border)}
+.sc-cta-text{font-size:15px;color:var(--muted);margin-bottom:20px;line-height:1.6;padding-top:40px}
+.sc-cta-btn{display:inline-block;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:14px 36px;border-radius:2px;text-decoration:none;transition:opacity 0.2s}
+.sc-cta-btn:hover{opacity:0.88}
+@media(max-width:900px){.sc-grid{grid-template-columns:1fr 1fr}.showcase-inner{padding:0 20px}}
+@media(max-width:600px){.sc-grid{grid-template-columns:1fr}}
+
 </style>
 </head>
 <body>
@@ -404,6 +428,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 </section>
 
 <!-- QUIZ -->
+<section class="showcase-section"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op de Côte d’Azur</h2><p class="sc-sub">Handgepickte woningen boven € 800.000 · Gratis begeleiding voor kopers</p></div><div class="sc-grid"><a href="/listing/3599285" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/95bf74851f215b7f64f6f7234f2065e6_467b1c251a_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Le Tignet</div><div class="sc-name">Elegant bastide overlooking the Cannes countr</div><div class="sc-price">€ 2.300.000</div><div class="sc-meta">6 slaapkamers</div></div></a><a href="/listing/3599138" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df05f56abaeb16519f369884f89ffb42_cb6d27febf_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Grasse</div><div class="sc-name">Villa for sale in Grasse</div><div class="sc-price">€ 1.850.000</div><div class="sc-meta">4 slaapkamers</div></div></a><a href="/listing/3599130" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df0c40f7aa1b2936861b2f972b7073f3_d618115913_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Theoule sur Mer</div><div class="sc-name">Exceptional Contemporary Villa for sale in Th</div><div class="sc-price">€ 15.225.000</div><div class="sc-meta">7 slaapkamers</div></div></a><a href="/listing/3599203" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg)"><div class="sc-tag">Apartment</div></div><div class="sc-body"><div class="sc-location">Nice</div><div class="sc-name">NICE – PORT DISTRICT – TOP FLOOR – 2-BEDROOM </div><div class="sc-price">€ 875.000</div><div class="sc-meta">2 slaapkamers</div></div></a><a href="/listing/3599146" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/1d770df7d6491f6f88ab3bc7671a0ff0_bb17d2d986_1920-original.jpg)"><div class="sc-tag">Apartment</div></div><div class="sc-body"><div class="sc-location">Cannes</div><div class="sc-name">Bourgeois Apartment For Sale in Cannes</div><div class="sc-price">€ 885.000</div><div class="sc-meta">2 slaapkamers</div></div></a></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
 <section class="quiz-section" id="quiz">
   <div style="max-width:1200px;margin:0 auto">
     <div class="section-pre">Start your search</div>
