@@ -294,7 +294,7 @@ function renderListing(p) {
     if (sqm > 0) document.getElementById('l-ppm').textContent = fmt(Math.round(price / sqm)) + ' per m\u00b2';
   }
 
-  if (p.permalink) document.getElementById('l-loca').href = p.permalink;
+  var locaEl = document.getElementById('l-loca'); if (locaEl && p.permalink) locaEl.href = p.permalink;
 
   // Gallery
   lbPhotos = (p.images || []).map(function(i){ return i.src; }).filter(Boolean);
