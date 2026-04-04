@@ -48,16 +48,16 @@ window.addEventListener('DOMContentLoaded', async function() {
   apiLeads = await loadLeads();
   console.log(`[Admin] Loaded ${apiLeads.length} leads from API`);
   
-  // Set global leads array
-  if (typeof window.leads !== 'undefined') {
-    window.leads = apiLeads;
-    console.log('[Admin] Updated global leads array');
-    
-    // Trigger render if function exists
-    if (typeof window.render === 'function') {
-      window.render();
-      console.log('[Admin] Rendered leads');
-    }
+  // Set global leads array (force it to exist)
+  window.leads = apiLeads;
+  console.log('[Admin] Set window.leads to', apiLeads.length, 'leads');
+  
+  // Trigger render if function exists
+  if (typeof window.render === 'function') {
+    window.render();
+    console.log('[Admin] Rendered leads');
+  } else {
+    console.error('[Admin] render() function not found!');
   }
 });
 
@@ -69,11 +69,9 @@ setInterval(async () => {
   if (newLeads.length !== apiLeads.length) {
     console.log(`[Admin] New leads detected! ${apiLeads.length} → ${newLeads.length}`);
     apiLeads = newLeads;
-    if (typeof window.leads !== 'undefined') {
-      window.leads = apiLeads;
-      if (typeof window.render === 'function') {
-        window.render();
-      }
+    window.leads = apiLeads;
+    if (typeof window.render === 'function') {
+      window.render();
     }
   }
 }, 30000);
