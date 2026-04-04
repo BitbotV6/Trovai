@@ -8,136 +8,107 @@
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--black:#080A0F;--black2:#0C0E14;--black3:#11141C;--white:#F4F2EE;--gold:#C8A96A;--gold2:#A8853A;--muted:rgba(244,242,238,0.45);--border:rgba(244,242,238,0.08);--border2:rgba(244,242,238,0.14)}
+:root{--black:#080A0F;--black2:#0C0E14;--white:#F4F2EE;--gold:#C8A96A;--gold2:#A8853A;--muted:rgba(244,242,238,0.45);--border:rgba(244,242,238,0.08);--border2:rgba(244,242,238,0.14)}
 body{background:var(--black);color:var(--white);font-family:'Geist',sans-serif;font-weight:300;min-height:100vh}
 nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,10,15,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
 .logo{display:flex;align-items:baseline;gap:2px}
 .logo-t{font-family:'Instrument Serif',serif;font-size:20px;color:var(--white)}
 .logo-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:1px;margin-bottom:3px}
-.nav-back{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-back{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none}
 .nav-back:hover{color:var(--white)}
 main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
-
-/* LOADING */
 #loading{text-align:center;padding:120px 0}
 .spin{display:inline-block;width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-.loading-text{font-size:13px;color:var(--muted);margin-top:16px;letter-spacing:0.06em}
+.loading-text{font-size:13px;color:var(--muted);margin-top:16px}
 #error-div{display:none;text-align:center;padding:120px 0;color:var(--muted)}
 #listing{display:none}
-
-/* BREADCRUMB */
 .breadcrumb{font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-bottom:24px}
 .breadcrumb a{color:var(--muted);text-decoration:none}
 .breadcrumb a:hover{color:var(--gold)}
 .breadcrumb span{margin:0 6px;opacity:0.4}
-
-/* HEADER */
 .listing-header{margin-bottom:28px}
 .listing-tag{display:inline-block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.35);padding:4px 12px;border-radius:2px;margin-bottom:14px}
 .listing-title{font-family:'Instrument Serif',serif;font-size:clamp(26px,3.5vw,44px);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:12px}
-.listing-location{font-size:14px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:8px}
-.listing-location-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.6}
+.listing-location{font-size:14px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.loc-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.5}
 .listing-price-row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap}
 .listing-price{font-family:'Instrument Serif',serif;font-size:36px;color:var(--gold)}
-.listing-price-sqm{font-size:13px;color:var(--muted);padding-top:4px}
-
-/* PHOTO GALLERY */
+.listing-price-sqm{font-size:13px;color:var(--muted)}
 .gallery{margin-bottom:40px}
-.gallery-main{position:relative;border-radius:4px;overflow:hidden;margin-bottom:4px;height:480px;cursor:pointer}
-.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s}
-.gallery-main:hover img{transform:scale(1.01)}
-.gallery-count{position:absolute;bottom:16px;right:16px;background:rgba(8,10,15,0.8);backdrop-filter:blur(8px);color:var(--white);font-size:12px;padding:6px 14px;border-radius:2px;letter-spacing:0.06em}
-.gallery-thumbs{display:grid;grid-template-columns:repeat(6,1fr);gap:4px}
-.gallery-thumb{height:80px;border-radius:2px;overflow:hidden;cursor:pointer;opacity:0.6;transition:opacity 0.2s;border:1.5px solid transparent}
-.gallery-thumb:hover,.gallery-thumb.active{opacity:1;border-color:var(--gold)}
-.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
-
-/* LIGHTBOX */
-.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:500;display:none;align-items:center;justify-content:center}
+.gallery-main{position:relative;border-radius:4px;overflow:hidden;margin-bottom:4px;height:480px;cursor:pointer;background:var(--black2)}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block}
+.gallery-count{position:absolute;bottom:16px;right:16px;background:rgba(8,10,15,0.75);backdrop-filter:blur(8px);color:var(--white);font-size:12px;padding:6px 14px;border-radius:2px;letter-spacing:0.06em}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.thumb{height:72px;border-radius:2px;overflow:hidden;cursor:pointer;opacity:0.55;transition:opacity 0.2s;border:1.5px solid transparent;background:var(--black2)}
+.thumb:hover,.thumb.active{opacity:1;border-color:var(--gold)}
+.thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:500;display:none;align-items:center;justify-content:center;flex-direction:column}
 .lightbox.open{display:flex}
-.lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:2px}
-.lightbox-close{position:absolute;top:20px;right:28px;color:var(--white);font-size:32px;cursor:pointer;opacity:0.7;background:none;border:none;font-family:inherit}
-.lightbox-close:hover{opacity:1}
-.lightbox-prev,.lightbox-next{position:absolute;top:50%;transform:translateY(-50%);color:var(--white);font-size:28px;cursor:pointer;opacity:0.6;background:none;border:none;padding:20px;font-family:inherit}
-.lightbox-prev:hover,.lightbox-next:hover{opacity:1}
-.lightbox-prev{left:20px}
-.lightbox-next{right:20px}
-
-/* BODY LAYOUT */
+.lb-img{max-width:90vw;max-height:85vh;object-fit:contain}
+.lb-close{position:absolute;top:20px;right:28px;color:var(--white);font-size:30px;cursor:pointer;background:none;border:none;font-family:inherit;opacity:0.7;line-height:1}
+.lb-close:hover{opacity:1}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);color:var(--white);font-size:32px;cursor:pointer;background:rgba(8,10,15,0.5);border:none;padding:16px 20px;font-family:inherit;opacity:0.7}
+.lb-nav:hover{opacity:1}
+.lb-prev{left:0}
+.lb-next{right:0}
+.lb-counter{position:absolute;bottom:20px;color:var(--muted);font-size:13px;letter-spacing:0.08em}
 .listing-body{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start}
-
-/* SPECS BAR */
-.specs-bar{display:grid;grid-template-columns:repeat(4,1fr);gap:0;border:0.5px solid var(--border);border-radius:3px;margin-bottom:36px;background:var(--black2)}
-.spec-item{padding:18px 20px;border-right:0.5px solid var(--border)}
-.spec-item:last-child{border-right:none}
+.specs-bar{display:grid;grid-template-columns:repeat(4,1fr);border:0.5px solid var(--border);border-radius:3px;margin-bottom:36px;background:var(--black2);overflow:hidden}
+.spec{padding:18px 20px;border-right:0.5px solid var(--border)}
+.spec:last-child{border-right:none}
 .spec-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
 .spec-val{font-size:15px;font-weight:500;color:var(--white)}
-.spec-val.gold{color:var(--gold)}
-
-/* DETAILS TABLE */
-.details-section{margin-bottom:36px}
 .section-title{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border)}
-.details-table{width:100%;border-collapse:collapse}
-.details-table tr{border-bottom:0.5px solid var(--border)}
-.details-table tr:last-child{border-bottom:none}
-.details-table td{padding:11px 0;font-size:13px}
-.details-table td:first-child{color:var(--muted);width:45%}
-.details-table td:last-child{color:var(--white);font-weight:400}
-
-/* DESCRIPTION */
-.desc-section{margin-bottom:36px}
+.desc-section,.details-section{margin-bottom:36px}
 .desc-text{font-size:15px;color:rgba(244,242,238,0.75);line-height:1.85}
-.desc-text p{margin-bottom:16px}
-.desc-read-more{display:inline-block;margin-top:4px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;border:none;background:none;font-family:inherit;padding:0}
-.desc-read-more:hover{opacity:0.7}
-
-/* MAP placeholder */
-.map-section{margin-bottom:36px}
-.map-placeholder{height:200px;background:var(--black2);border:0.5px solid var(--border);border-radius:3px;display:flex;align-items:center;justify-content:center}
-.map-placeholder span{font-size:13px;color:var(--muted)}
-
-/* SIDEBAR */
+.desc-text p{margin-bottom:14px}
+.read-more-btn{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;border:none;background:none;font-family:inherit;padding:0;margin-top:4px}
+.read-more-btn:hover{opacity:0.7}
+.det-table{width:100%;border-collapse:collapse}
+.det-table tr{border-bottom:0.5px solid var(--border)}
+.det-table tr:last-child{border-bottom:none}
+.det-table td{padding:11px 0;font-size:13px;vertical-align:top}
+.det-table td:first-child{color:var(--muted);width:48%;padding-right:16px}
+.det-table td:last-child{color:var(--white)}
+.loca-ref{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px;display:inline-block;margin-bottom:36px}
+.loca-ref:hover{color:var(--gold);border-color:var(--gold)}
 .sidebar{position:sticky;top:90px}
-.sidebar-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:28px;margin-bottom:16px}
-.sidebar-price{font-family:'Instrument Serif',serif;font-size:28px;color:var(--gold);margin-bottom:4px}
-.sidebar-price-label{font-size:11px;color:var(--muted);margin-bottom:20px}
-.sidebar-divider{height:0.5px;background:var(--border);margin:20px 0}
-.sidebar-title{font-size:14px;font-weight:500;color:var(--white);margin-bottom:6px}
-.sidebar-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
-.form-field{margin-bottom:12px}
-.form-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
-.form-input,.form-textarea{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:13px;font-weight:300;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s}
-.form-input:focus,.form-textarea:focus{border-color:rgba(200,169,106,0.45)}
-.form-input::placeholder,.form-textarea::placeholder{color:rgba(244,242,238,0.2)}
-.form-textarea{resize:vertical;min-height:80px}
-.btn-gold{display:block;width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:14px 24px;border-radius:2px;cursor:pointer;text-align:center;margin-bottom:10px;transition:opacity 0.2s}
+.sb-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:28px;margin-bottom:16px}
+.sb-price{font-family:'Instrument Serif',serif;font-size:28px;color:var(--gold);margin-bottom:4px}
+.sb-price-label{font-size:11px;color:var(--muted);margin-bottom:20px}
+.sb-divider{height:0.5px;background:var(--border);margin:20px 0}
+.sb-title{font-size:14px;font-weight:500;color:var(--white);margin-bottom:6px}
+.sb-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
+.f-field{margin-bottom:12px}
+.f-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
+.f-input,.f-area{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:13px;font-weight:300;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s}
+.f-input:focus,.f-area:focus{border-color:rgba(200,169,106,0.45)}
+.f-input::placeholder,.f-area::placeholder{color:rgba(244,242,238,0.2)}
+.f-area{resize:vertical;min-height:80px}
+.btn-gold{display:block;width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:14px 24px;border-radius:2px;cursor:pointer;text-align:center;margin-bottom:10px}
 .btn-gold:hover{opacity:0.88}
-.btn-wa{display:block;background:transparent;border:0.5px solid rgba(37,211,102,0.35);color:rgba(37,211,102,0.8);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:2px;text-decoration:none;text-align:center;margin-bottom:8px;transition:all 0.2s}
+.btn-wa{display:block;background:transparent;border:0.5px solid rgba(37,211,102,0.35);color:rgba(37,211,102,0.8);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:2px;text-decoration:none;text-align:center;margin-bottom:8px}
 .btn-wa:hover{background:rgba(37,211,102,0.08);color:#25D366}
-.btn-ghost{display:block;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:2px;text-decoration:none;text-align:center;transition:all 0.2s}
+.btn-ghost{display:block;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px 24px;border-radius:2px;text-decoration:none;text-align:center}
 .btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
-.form-success{background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:2px;padding:12px 16px;font-size:13px;color:#5FD4C0;display:none;margin-top:10px}
-.free-label{text-align:center;font-size:11px;color:rgba(244,242,238,0.22);margin-top:14px;line-height:1.6}
-
-/* AGENT CARD */
+.f-success{background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:2px;padding:12px 16px;font-size:13px;color:#5FD4C0;display:none;margin-top:10px}
+.free-note{text-align:center;font-size:11px;color:rgba(244,242,238,0.22);margin-top:14px;line-height:1.6}
 .agent-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:20px 24px;display:flex;align-items:center;gap:16px}
-.agent-avatar{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:18px;color:var(--black);flex-shrink:0}
+.agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:18px;color:var(--black);flex-shrink:0}
 .agent-name{font-size:13px;font-weight:500;color:var(--white)}
 .agent-role{font-size:11px;color:var(--muted);margin-top:2px}
-
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp 0.4s both}
-
 @media(max-width:900px){
   nav{padding:14px 20px}
   main{padding:80px 20px 60px}
   .listing-body{grid-template-columns:1fr}
   .sidebar{position:static}
   .specs-bar{grid-template-columns:1fr 1fr}
-  .spec-item:nth-child(2){border-right:none}
-  .spec-item:nth-child(3),.spec-item:nth-child(4){border-top:0.5px solid var(--border)}
-  .gallery-main{height:280px}
+  .spec:nth-child(2){border-right:none}
+  .spec:nth-child(3),.spec:nth-child(4){border-top:0.5px solid var(--border)}
+  .gallery-main{height:260px}
   .gallery-thumbs{grid-template-columns:repeat(4,1fr)}
 }
 </style>
@@ -149,43 +120,44 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
   <a href="/#quiz" class="nav-back">&#8592; Terug naar zoeken</a>
 </nav>
 
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <button class="lightbox-close" onclick="closeLightbox()">&#10005;</button>
-  <button class="lightbox-prev" onclick="lbNav(-1,event)">&#8592;</button>
-  <img class="lightbox-img" id="lb-img" src="" alt="">
-  <button class="lightbox-next" onclick="lbNav(1,event)">&#8594;</button>
+<div class="lightbox" id="lb">
+  <button class="lb-close" onclick="lbClose()">&#10005;</button>
+  <button class="lb-nav lb-prev" onclick="lbNav(-1)">&#8592;</button>
+  <img class="lb-img" id="lb-img" src="" alt="">
+  <button class="lb-nav lb-next" onclick="lbNav(1)">&#8594;</button>
+  <div class="lb-counter" id="lb-cnt"></div>
 </div>
 
 <main>
-  <div id="loading"><div class="spin"></div><div class="loading-text">Woning laden...</div></div>
+  <div id="loading">
+    <div class="spin"></div>
+    <div class="loading-text">Woning laden...</div>
+  </div>
   <div id="error-div">
     <p style="margin-bottom:16px">Deze woning kon niet worden geladen.</p>
     <a href="/#quiz" style="color:var(--gold)">&#8592; Terug naar zoeken</a>
   </div>
 
   <div id="listing" class="fade-in">
-
     <div class="breadcrumb">
-      <a href="/">Trovai</a>
-      <span>/</span>
-      <a href="/#quiz">Zoeken</a>
-      <span>/</span>
-      <span id="bc-city">Woning</span>
+      <a href="/">Trovai</a><span>/</span>
+      <a href="/#quiz">Zoeken</a><span>/</span>
+      <span id="bc-loc">Woning</span>
     </div>
 
     <div class="listing-header">
-      <div class="listing-tag" id="l-tag">Appartement</div>
+      <div class="listing-tag" id="l-tag">Woning</div>
       <h1 class="listing-title" id="l-title"></h1>
       <div class="listing-location">
         <span id="l-city"></span>
-        <div class="listing-location-dot"></div>
+        <div class="loc-dot"></div>
         <span id="l-region"></span>
-        <div class="listing-location-dot"></div>
+        <div class="loc-dot"></div>
         <span id="l-country">Frankrijk</span>
       </div>
       <div class="listing-price-row">
         <div class="listing-price" id="l-price"></div>
-        <div class="listing-price-sqm" id="l-price-sqm"></div>
+        <div class="listing-price-sqm" id="l-ppm"></div>
       </div>
     </div>
 
@@ -193,65 +165,39 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 
     <div class="listing-body">
       <div>
-
-        <!-- SPECS BAR -->
         <div class="specs-bar" id="l-specs"></div>
-
-        <!-- OMSCHRIJVING -->
         <div class="desc-section">
           <div class="section-title">Omschrijving</div>
           <div class="desc-text" id="l-desc"></div>
         </div>
-
-        <!-- DETAILS -->
         <div class="details-section">
           <div class="section-title">Woningdetails</div>
-          <table class="details-table" id="l-details"></table>
+          <table class="det-table" id="l-dets"></table>
         </div>
-
-        <!-- LOCA LINK -->
-        <div style="margin-bottom:36px">
-          <a id="l-loca-link" href="#" target="_blank" style="font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px">
-            Bekijk ook op Living on the C&#244;te d&#8217;Azur &#8594;
-          </a>
-        </div>
-
+        <a id="l-loca" href="#" target="_blank" class="loca-ref">
+          Bekijk ook op Living on the C&#244;te d&#8217;Azur &#8594;
+        </a>
       </div>
-
-      <!-- SIDEBAR -->
       <div class="sidebar">
-        <div class="sidebar-card">
-          <div class="sidebar-price" id="sb-price"></div>
-          <div class="sidebar-price-label">Vraagprijs &#183; Gratis voor kopers</div>
-          <div class="sidebar-divider"></div>
-          <div class="sidebar-title">Interesse in deze woning?</div>
-          <div class="sidebar-sub">Trovai begeleidt u gratis van eerste bezichtiging tot notaris. De commissie wordt betaald door de verkoper.</div>
-          <div class="form-field">
-            <label class="form-label">Uw naam</label>
-            <input class="form-input" id="cf-name" placeholder="Jan de Vries">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Email</label>
-            <input class="form-input" id="cf-email" type="email" placeholder="jan@email.com">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Telefoonnummer</label>
-            <input class="form-input" id="cf-phone" type="tel" placeholder="+31 6 ...">
-          </div>
-          <div class="form-field">
-            <label class="form-label">Bericht (optioneel)</label>
-            <textarea class="form-textarea" id="cf-msg" placeholder="Ik heb interesse in deze woning en zou graag meer informatie willen..."></textarea>
-          </div>
-          <button class="btn-gold" onclick="submitContact()" id="cf-btn">Vraag informatie aan &#8594;</button>
-          <div class="form-success" id="cf-ok">&#10003; Ontvangen &#8212; we nemen binnen 24 uur contact op.</div>
-          <div class="sidebar-divider"></div>
-          <a href="https://wa.me/31611380562" target="_blank" class="btn-wa">&#128172; WhatsApp direct</a>
+        <div class="sb-card">
+          <div class="sb-price" id="sb-price"></div>
+          <div class="sb-price-label">Vraagprijs &#183; Gratis voor kopers</div>
+          <div class="sb-divider"></div>
+          <div class="sb-title">Interesse in deze woning?</div>
+          <div class="sb-sub">Trovai begeleidt u gratis van eerste contact tot notaris. De commissie wordt betaald door de verkoper.</div>
+          <div class="f-field"><label class="f-label">Uw naam</label><input class="f-input" id="cf-name" placeholder="Jan de Vries"></div>
+          <div class="f-field"><label class="f-label">Email</label><input class="f-input" id="cf-email" type="email" placeholder="jan@email.com"></div>
+          <div class="f-field"><label class="f-label">Telefoon</label><input class="f-input" id="cf-phone" type="tel" placeholder="+31 6 ..."></div>
+          <div class="f-field"><label class="f-label">Bericht (optioneel)</label><textarea class="f-area" id="cf-msg" placeholder="Ik heb interesse in deze woning..."></textarea></div>
+          <button class="btn-gold" onclick="doContact()" id="cf-btn">Vraag informatie aan &#8594;</button>
+          <div class="f-success" id="cf-ok">&#10003; Ontvangen &#8212; we nemen binnen 24 uur contact op.</div>
+          <div class="sb-divider"></div>
+          <a href="https://wa.me/31611380562" target="_blank" class="btn-wa">WhatsApp direct</a>
           <a href="/#quiz" class="btn-ghost">&#8592; Andere woningen bekijken</a>
-          <div class="free-label">Trovai is gratis voor kopers<br>Commissie betaald door verkoper</div>
+          <div class="free-note">Trovai is gratis voor kopers<br>Commissie betaald door de verkoper</div>
         </div>
-
         <div class="agent-card">
-          <div class="agent-avatar">R</div>
+          <div class="agent-av">R</div>
           <div>
             <div class="agent-name">Roelof Methorst</div>
             <div class="agent-role">Trovai &#183; C&#244;te d&#8217;Azur specialist</div>
@@ -259,216 +205,228 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
         </div>
       </div>
     </div>
-
   </div>
 </main>
 
 <script>
 var cur = null;
-var lbPhotos = [];
+var photos = [];
 var lbIdx = 0;
-var descExpanded = false;
 
-function cleanName(s) {
-  return (s||'').replace(/&#8211;/g,'–').replace(/&#8217;/g,"'").replace(/&#8220;/g,'"').replace(/&#8221;/g,'"').replace(/&amp;/g,'&').replace(/&nbsp;/g,' ').replace(/&#xD;/g,'').trim();
-}
-
-function getAttr(p, name) {
-  var attrs = p.attributes || [];
-  for (var i = 0; i < attrs.length; i++) {
-    if (attrs[i].name === name) return attrs[i].terms?.[0]?.name || '';
+function attr(p, name) {
+  var a = (p.attributes || []);
+  for (var i = 0; i < a.length; i++) {
+    if (a[i].name === name && a[i].terms && a[i].terms[0]) return a[i].terms[0].name;
   }
   return '';
 }
 
-function fmt(n) {
-  return '€ ' + Math.round(n).toLocaleString('nl-NL');
+function fmtPrice(n) {
+  return '\u20ac\u00a0' + Math.round(n).toLocaleString('nl-NL');
 }
 
-function showEl(id) {
+function cleanHtml(s) {
+  var tmp = document.createElement('div');
+  tmp.innerHTML = (s || '');
+  return tmp.textContent || tmp.innerText || '';
+}
+
+function showSection(id) {
   document.getElementById('loading').style.display = 'none';
   document.getElementById(id).style.display = 'block';
 }
 
 async function loadListing() {
-  var parts = window.location.pathname.split('/').filter(function(p){ return p; });
+  var parts = window.location.pathname.split('/').filter(function(x){ return x.length > 0; });
   var id = parts[parts.length - 1];
-  if (!id || isNaN(Number(id))) { showEl('error-div'); return; }
-
+  if (!id || isNaN(Number(id))) { showSection('error-div'); return; }
   try {
-    var res = await fetch('/api/get-listing?id=' + id);
-    if (!res.ok) throw new Error('Status ' + res.status);
-    var p = await res.json();
-    if (!p || !p.id) throw new Error('Leeg');
+    var r = await fetch('/api/get-listing?id=' + id);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    var p = await r.json();
+    if (!p || !p.id) throw new Error('Geen data');
     cur = p;
-    render(p);
+    renderPage(p);
   } catch(e) {
-    console.error('Listing:', e.message);
-    showEl('error-div');
+    console.error('Listing fout:', e.message);
+    showSection('error-div');
   }
 }
 
-function render(p) {
-  var price = parseInt(p.prices?.price || 0);
-  var city = getAttr(p, 'City');
-  var region = getAttr(p, 'Region');
-  var country = getAttr(p, 'Country');
-  var beds = getAttr(p, 'Number of beds');
-  var rooms = getAttr(p, 'Number of rooms');
-  var surface = getAttr(p, 'Living area');
-  var land = getAttr(p, 'Land area');
-  var construction = getAttr(p, 'Type of construction');
-  var cat = (p.categories?.[0]?.name) || '';
-  var name = cleanName(p.name);
+function renderPage(p) {
+  var price = parseInt((p.prices && p.prices.price) || 0);
+  var city    = attr(p, 'City');
+  var region  = attr(p, 'Region');
+  var country = attr(p, 'Country');
+  var beds    = attr(p, 'Number of beds');
+  var rooms   = attr(p, 'Number of rooms');
+  var surface = attr(p, 'Living area');
+  var land    = attr(p, 'Land area');
+  var constr  = attr(p, 'Type of construction');
+  var cat     = (p.categories && p.categories[0] && p.categories[0].name) || '';
+  var name    = cleanHtml(p.name);
 
-  document.title = name + ' — Trovai';
-  document.getElementById('bc-city').textContent = city || cat;
-  document.getElementById('l-tag').textContent = cat || 'Woning';
+  document.title = name + ' \u2014 Trovai';
+  document.getElementById('bc-loc').textContent  = city || cat;
+  document.getElementById('l-tag').textContent   = cat || 'Woning';
   document.getElementById('l-title').textContent = name;
-  document.getElementById('l-city').textContent = city;
-  document.getElementById('l-region').textContent = region || 'Côte d’Azur';
+  document.getElementById('l-city').textContent  = city;
+  document.getElementById('l-region').textContent  = region || 'C\u00f4te d\u2019Azur';
   document.getElementById('l-country').textContent = country || 'Frankrijk';
-  document.getElementById('l-price').textContent = price > 0 ? fmt(price) : 'Prijs op aanvraag';
-  document.getElementById('sb-price').textContent = price > 0 ? fmt(price) : 'Prijs op aanvraag';
 
-  // Price/m2
-  if (surface && price > 0) {
-    var sqm = parseInt(surface);
-    if (sqm > 0) {
-      var ppm = Math.round(price / sqm);
-      document.getElementById('l-price-sqm').textContent = fmt(ppm) + ' per m²';
+  if (price > 0) {
+    document.getElementById('l-price').textContent  = fmtPrice(price);
+    document.getElementById('sb-price').textContent = fmtPrice(price);
+    if (surface) {
+      var sqm = parseInt(surface);
+      if (sqm > 0) document.getElementById('l-ppm').textContent = fmtPrice(Math.round(price / sqm)) + ' per m\u00b2';
     }
+  } else {
+    document.getElementById('l-price').textContent  = 'Prijs op aanvraag';
+    document.getElementById('sb-price').textContent = 'Prijs op aanvraag';
   }
 
-  // LOCA link
-  if (p.permalink) {
-    document.getElementById('l-loca-link').href = p.permalink;
-  }
+  if (p.permalink) document.getElementById('l-loca').href = p.permalink;
 
-  // Gallery
-  lbPhotos = (p.images || []).map(function(i){ return i.src; }).filter(Boolean);
-  renderGallery(lbPhotos);
+  photos = (p.images || []).map(function(i){ return i.src; }).filter(Boolean);
+  buildGallery(photos);
 
-  // Specs bar
-  var specs = [
-    beds ? {label:'Slaapkamers', val:beds} : null,
-    rooms ? {label:'Kamers', val:rooms} : null,
-    surface ? {label:'Woonoppervlak', val:surface+' m²'} : null,
-    land ? {label:'Perceel', val:land+' m²'} : null
-  ].filter(Boolean);
+  var specs = [];
+  if (beds)    specs.push({l:'Slaapkamers', v:beds});
+  if (rooms)   specs.push({l:'Kamers', v:rooms});
+  if (surface) specs.push({l:'Woonoppervlak', v:surface + ' m\u00b2'});
+  if (land)    specs.push({l:'Perceel', v:land + ' m\u00b2'});
   if (specs.length > 0) {
     document.getElementById('l-specs').innerHTML = specs.map(function(s){
-      return '<div class="spec-item"><div class="spec-label">'+s.label+'</div><div class="spec-val">'+s.val+'</div></div>';
+      return '<div class="spec"><div class="spec-label">'+s.l+'</div><div class="spec-val">'+s.v+$'</div></div>';
     }).join('');
   } else {
     document.getElementById('l-specs').style.display = 'none';
   }
 
-  // Description
-  var rawDesc = (p.description || '').replace(/&#xD;/g,'').replace(/
-/g,'
-').replace(//g,'
-');
-  var cleanDesc = rawDesc.replace(/<[^>]+>/g,' ').replace(/&[a-z#0-9]+;/g,' ').replace(/[ 	]+/g,' ').replace(/
-{3,}/g,'
-
-').trim();
-  if (cleanDesc) {
-    var paras = cleanDesc.split(/
-
-+/).filter(function(p){ return p.trim(); });
-    var shortParas = paras.slice(0,3);
-    var longHTML = paras.map(function(t){ return '<p>'+t.trim()+'</p>'; }).join('');
-    var shortHTML = shortParas.map(function(t){ return '<p>'+t.trim()+'</p>'; }).join('');
+  var rawDesc = cleanHtml(p.description || '');
+  rawDesc = rawDesc.replace(/\r\n/g, '\n').replace(/\r/g, '\n').replace(/[ \t]+/g, ' ').trim();
+  var paras = rawDesc.split(/\n\n++/).map(function(x){ return x.trim(); }).filter(Boolean);
+  if (paras.length > 0) {
+    var shortHTML = paras.slice(0, 3).map(function(t){ return '<p>'+t+'</p>'; }).join('');
+    var fullHTML  = paras.map(function(t){ return '<p>'+t+'</p>'; }).join('');
     var descEl = document.getElementById('l-desc');
     if (paras.length > 3) {
-      descEl.innerHTML = shortHTML + '<br><button class="desc-read-more" onclick="toggleDesc(this)" data-full="'+encodeURIComponent(longHTML)+'" data-short="'+encodeURIComponent(shortHTML)+'">Lees volledige omschrijving &#8594;</button>';
+      descEl.innerHTML = shortHTML;
+      var btn = document.createElement('button');
+      btn.className = 'read-more-btn';
+      btn.textContent = 'Lees volledige omschrijving \u2192';
+      var expanded = false;
+      btn.onclick = function() {
+        expanded = !expanded;
+        descEl.innerHTML = (expanded ? fullHTML : shortHTML);
+        descEl.appendChild(btn);
+        btn.textContent = expanded ? 'Minder weergeven \u2191' : 'Lees volledige omschrijving \u2192';
+      };
+      descEl.appendChild(btn);
     } else {
-      descEl.innerHTML = longHTML;
+      descEl.innerHTML = fullHTML;
     }
   } else {
     document.getElementById('l-desc').innerHTML = '<p style="color:var(--muted)">Neem contact op voor een volledige omschrijving.</p>';
   }
 
-  // Details table
-  var details = [
+  var rows = [
     ['Type woning', cat],
     ['Slaapkamers', beds],
     ['Kamers', rooms],
-    ['Woonoppervlak', surface ? surface+' m²' : ''],
-    ['Perceeloppervlak', land ? land+' m²' : ''],
-    ['Bouwtype', construction],
+    ['Woonoppervlak', surface ? surface + ' m\u00b2' : ''],
+    ['Perceeloppervlak', land ? land + ' m\u00b2' : ''],
+    ['Bouwtype', constr],
     ['Stad', city],
     ['Regio', region],
-    ['Land', country],
-    ['LOCA referentie', getAttr(p,'LOCA ID') || ''],
+    ['Land', country]
   ].filter(function(r){ return r[1]; });
-
-  document.getElementById('l-details').innerHTML = details.map(function(r){
+  document.getElementById('l-dets').innerHTML = rows.map(function(r){
     return '<tr><td>'+r[0]+'</td><td>'+r[1]+'</td></tr>';
   }).join('');
 
-  showEl('listing');
+  showSection('listing');
 }
 
-function renderGallery(photos) {
-  if (!photos.length) return;
-  var main = '<div class="gallery-main" onclick="openLightbox(0)">' +
-    '<img id="gallery-main-img" src="'+photos[0]+'" alt="" loading="eager">' +
-    '<div class="gallery-count" id="gallery-count">1 / '+photos.length+'</div>' +
+function buildGallery(imgs) {
+  if (!imgs.length) return;
+  var mainHtml = '<div class="gallery-main" onclick="lbOpen(0)">' +
+    '<img id="gal-main" src="' + imgs[0] + '" alt="" loading="eager">' +
+    '<div class="gallery-count" id="gal-cnt">1 / ' + imgs.length + '</div>' +
     '</div>';
-  var thumbs = photos.map(function(src, i){
-    return '<div class="gallery-thumb'+(i===0?' active':'')+'" onclick="setPhoto('+i+')"><img src="'+src+'" alt="" loading="lazy"></div>';
+  var thumbsHtml = imgs.map(function(src, i){
+    return '<div class="thumb' + (i===0?' active':'') + '" onclick="galSet('+i+')"><img src="'+src+'" alt="" loading="lazy"></div>';
   }).join('');
-  document.getElementById('l-gallery').innerHTML = main + '<div class="gallery-thumbs">'+thumbs+'</div>';
+  document.getElementById('l-gallery').innerHTML = mainHtml + '<div class="gallery-thumbs">' + thumbsHtml + '</div>';
 }
 
-function setPhoto(idx) {
+function galSet(idx) {
+  var img = document.getElementById('gal-main');
+  var cnt = document.getElementById('gal-cnt');
+  if (img) img.src = photos[idx];
+  if (cnt) cnt.textContent = (idx+1) + ' / ' + photos.length;
+  document.querySelectorAll('.thumb').forEach(function(t,i){ t.classList.toggle('active', i===idx); });
   lbIdx = idx;
-  var img = document.getElementById('gallery-main-img');
-  if (img) img.src = lbPhotos[idx];
-  var cnt = document.getElementById('gallery-count');
-  if (cnt) cnt.textContent = (idx+1) + ' / ' + lbPhotos.length;
-  document.querySelectorAll('.gallery-thumb').forEach(function(t,i){ t.classList.toggle('active', i===idx); });
 }
 
-function openLightbox(idx) {
+function lbOpen(idx) {
   lbIdx = idx;
-  document.getElementById('lb-img').src = lbPhotos[idx];
-  document.getElementById('lightbox').classList.add('open');
+  document.getElementById('lb-img').src = photos[idx];
+  document.getElementById('lb-cnt').textContent = (idx+1) + ' / ' + photos.length;
+  document.getElementById('lb').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
 
-function closeLightbox(e) {
-  if (!e || e.target === document.getElementById('lightbox') || e.type === 'click') {
-    document.getElementById('lightbox').classList.remove('open');
-    document.body.style.overflow = '';
-  }
+function lbClose() {
+  document.getElementById('lb').classList.remove('open');
+  document.body.style.overflow = '';
 }
 
-function lbNav(dir, e) {
-  if (e) e.stopPropagation();
-  lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
-  document.getElementById('lb-img').src = lbPhotos[lbIdx];
+function lbNav(dir) {
+  lbIdx = (lbIdx + dir + photos.length) % photos.length;
+  document.getElementById('lb-img').src = photos[lbIdx];
+  document.getElementById('lb-cnt').textContent = (lbIdx+1) + ' / ' + photos.length;
 }
 
-function toggleDesc(btn) {
-  var desc = document.getElementById('l-desc');
-  var isFull = btn.textContent.includes('Minder');
-  var newHTML = isFull ? decodeURIComponent(btn.getAttribute('data-short')) : decodeURIComponent(btn.getAttribute('data-full'));
-  btn.textContent = isFull ? 'Lees volledige omschrijving →' : 'Minder weergeven ↑';
-  var newBtn = btn.cloneNode(true);
-  newBtn.onclick = function(){ toggleDesc(newBtn); };
-  desc.innerHTML = newHTML + '<br>';
-  desc.appendChild(newBtn);
-}
+document.getElementById('lb').addEventListener('click', function(e){
+  if (e.target === this) lbClose();
+});
 
-document.addEventListener('keydown', function(e) {
-  if (!document.getElementById('lightbox').classList.contains('open')) return;
-  if (e.key === 'Escape') closeLightbox();
+document.addEventListener('keydown', function(e){
+  if (!document.getElementById('lb').classList.contains('open')) return;
+  if (e.key === 'Escape') lbClose();
   if (e.key === 'ArrowLeft') lbNav(-1);
   if (e.key === 'ArrowRight') lbNav(1);
 });
+
+async function doContact() {
+  var name  = document.getElementById('cf-name').value.trim();
+  var email = document.getElementById('cf-email').value.trim();
+  var phone = document.getElementById('cf-phone').value.trim();
+  var msg   = document.getElementById('cf-msg').value.trim();
+  if (!name || !email) { alert('Vul uw naam en emailadres in'); return; }
+  var btn = document.getElementById('cf-btn');
+  btn.textContent = 'Versturen...'; btn.style.opacity = '0.6';
+  var listingName  = cur ? cleanHtml(cur.name) : '';
+  var listingPrice = cur && parseInt(cur.prices && cur.prices.price) > 0 ? fmtPrice(parseInt(cur.prices.price)) : '';
+  try {
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json'},
+      body: JSON.stringify({
+        form_type: 'listing_inquiry',
+        name: name, email: email, phone: phone,
+        message: msg || ('Interesse in: ' + listingName),
+        listing_id: window.location.pathname.split('/').filter(Boolean).pop(),
+        listing_name: listingName,
+        listing_price: listingPrice
+      })
+    });
+  } catch(e) {}
+  btn.style.display = 'none';
+  document.getElementById('cf-ok').style.display = 'block';
+}
 
 loadListing();
 </script>
