@@ -16,8 +16,22 @@
   to = "/admin/:splat"
   status = 200
 
+# CSP headers for admin (allow inline scripts)
+[[headers]]
+  for = "/admin/*"
+  [headers.values]
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://trovai.nl https://api.resend.com"
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+
 [[headers]]
   for = "/*"
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+
+# UTF-8 charset
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Content-Type = "text/html; charset=UTF-8"
