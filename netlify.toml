@@ -1,18 +1,23 @@
-# Netlify configuration for trovai.nl
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+
+# Listing detail pagina
+[[redirects]]
+  from = "/listing/*"
+  to = "/listing.html"
+  status = 200
+
+# SPA fallback - admin
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin/:splat"
+  status = 200
 
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Type = "text/html; charset=UTF-8"
+    X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
-    X-Frame-Options = "SAMEORIGIN"
-
-[build]
-  publish = "."
-  command = "echo 'Static site ready'"
-
-# Redirect API calls to Netlify Functions
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
