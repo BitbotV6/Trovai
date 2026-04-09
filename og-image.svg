@@ -1,0 +1,52 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#08080F"/>
+      <stop offset="100%" style="stop-color:#11141C"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#C8A96A"/>
+      <stop offset="100%" style="stop-color:#AB853A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Achtergrond -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtiele grid lijnen -->
+  <line x1="0" y1="315" x2="1200" y2="315" stroke="rgba(244,242,238,0.04)" stroke-width="1"/>
+  <line x1="600" y1="0" x2="600" y2="630" stroke="rgba(244,242,238,0.04)" stroke-width="1"/>
+
+  <!-- Gouden accent lijn links -->
+  <rect x="80" y="200" width="3" height="120" fill="url(#gold)" rx="2"/>
+
+  <!-- Logo -->
+  <text x="80" y="140" font-family="Georgia, serif" font-size="28" fill="#C8A96A" font-style="italic">Trovai.</text>
+
+  <!-- Hoofdtitel -->
+  <text x="112" y="240" font-family="Georgia, serif" font-size="58" fill="#F4F2EE" font-weight="400">De AI die vindt</text>
+  <text x="112" y="310" font-family="Georgia, serif" font-size="58" fill="#C8A96A" font-style="italic">uw perfecte woning.</text>
+
+  <!-- Ondertitel -->
+  <text x="112" y="370" font-family="Arial, sans-serif" font-size="20" fill="#A8B5A4">Côte d'Azur · Curaçao · 5.000+ woningen · Gratis voor kopers</text>
+
+  <!-- Stats -->
+  <rect x="112" y="420" width="1" height="60" fill="rgba(244,242,238,0.1)"/>
+  <text x="112" y="450" font-family="Georgia, serif" font-size="32" fill="#C8A96A">5.000+</text>
+  <text x="112" y="472" font-family="Arial, sans-serif" font-size="13" fill="#A8B5A4" letter-spacing="2">WONINGEN</text>
+
+  <text x="270" y="450" font-family="Georgia, serif" font-size="32" fill="#C8A96A">€0</text>
+  <text x="270" y="472" font-family="Arial, sans-serif" font-size="13" fill="#A8B5A4" letter-spacing="2">VOOR KOPER</text>
+
+  <text x="390" y="450" font-family="Georgia, serif" font-size="32" fill="#C8A96A">24u</text>
+  <text x="390" y="472" font-family="Arial, sans-serif" font-size="13" fill="#A8B5A4" letter-spacing="2">REACTIETIJD</text>
+
+  <!-- Rechts: T AI mark -->
+  <circle cx="980" cy="315" r="120" fill="rgba(200,169,106,0.05)" stroke="rgba(200,169,106,0.15)" stroke-width="1"/>
+  <circle cx="980" cy="315" r="80" fill="rgba(200,169,106,0.05)" stroke="rgba(200,169,106,0.1)" stroke-width="1"/>
+  <text x="956" y="335" font-family="Georgia, serif" font-size="52" fill="#F4F2EE" font-style="italic">T</text>
+  <text x="990" y="310" font-family="Arial, sans-serif" font-size="18" fill="#C8A96A" font-weight="bold">AI</text>
+
+  <!-- URL onderaan -->
+  <text x="80" y="580" font-family="Arial, sans-serif" font-size="16" fill="rgba(244,242,238,0.3)">trovai.nl</text>
+</svg>
