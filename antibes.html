@@ -101,6 +101,13 @@ footer{background:var(--black2);border-top:0.5px solid var(--border);padding:60p
   footer{grid-template-columns:1fr;padding:40px 20px;gap:32px}
   .footer-bottom{padding:20px;flex-direction:column;gap:8px}
 }
+
+.internal-links-section{padding:60px 48px;background:var(--black3)}
+.internal-links-inner{max-width:1200px;margin:0 auto}
+.internal-links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.link-card{display:block;background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:16px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;transition:all .18s;letter-spacing:.02em}
+.link-card:hover{color:var(--white);border-color:var(--border2);background:var(--black3)}
+@media(max-width:900px){.internal-links-section{padding:40px 20px}}
 </style>
 </head>
 <body>
@@ -153,6 +160,16 @@ footer{background:var(--black2);border-top:0.5px solid var(--border);padding:60p
 <div class="faq-item"><div class="faq-q">Hoe ver is Antibes van het vliegveld?</div><div class="faq-a">Nice Airport ligt slechts 20 minuten rijden van Antibes — een van de beste verbindingen op de hele Rivièra.</div></div>
   </div>
 </div>
+
+<section class="internal-links-section">
+  <div class="internal-links-inner">
+    <div class="section-pre">Meer informatie</div>
+    <h2 class="section-title" style="margin-bottom:24px">Gerelateerde <em>bestemmingen en gidsen</em></h2>
+    <div class="internal-links-grid">
+      <a href="/villa-antibes" class="link-card">Villa kopen Antibes</a><a href="/cap-dantibes" class="link-card">Cap d'Antibes</a><a href="/juan-les-pins" class="link-card">Juan-les-Pins</a><a href="/cannes" class="link-card">Cannes</a><a href="/sophia-antipolis" class="link-card">Sophia Antipolis</a><a href="/valbonne" class="link-card">Valbonne</a>
+    </div>
+  </div>
+</section>
 <section class="cta-section">
   <div class="section-pre">Klaar om te starten?</div>
   <h2>Laat Trovai uw woning vinden in <em>Antibes</em></h2>
