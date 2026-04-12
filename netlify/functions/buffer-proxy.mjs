@@ -12,7 +12,8 @@ export default async (req) => {
 
   const key = Netlify.env.get('BUFFER_API_KEY');
   if (!key) return new Response(JSON.stringify({ error: 'BUFFER_API_KEY niet ingesteld' }), {
-    status: 500, headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
+    status: 500,
+    headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' }
   });
 
   const body = await req.text();
