@@ -130,6 +130,13 @@ footer{background:var(--black2);border-top:0.5px solid var(--border);padding:60p
   footer{grid-template-columns:1fr;padding:40px 20px;gap:32px}
   .footer-bottom{padding:20px;flex-direction:column;gap:8px}
 }
+
+.internal-links-section{padding:60px 48px;background:var(--black3)}
+.internal-links-inner{max-width:1200px;margin:0 auto}
+.internal-links-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin-top:8px}
+.link-card{display:block;background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:16px 20px;font-size:.875rem;color:var(--muted);text-decoration:none;transition:all .18s;letter-spacing:.02em}
+.link-card:hover{color:var(--white);border-color:var(--border2);background:var(--black3)}
+@media(max-width:900px){.internal-links-section{padding:40px 20px}}
 </style>
 </head>
 <body>
@@ -210,6 +217,14 @@ footer{background:var(--black2);border-top:0.5px solid var(--border);padding:60p
   </div>
 </div>
 
+
+<section class="internal-links-section">
+  <div class="internal-links-inner">
+    <div class="section-pre">Meer informatie</div>
+    <h2 class="section-title" style="margin-bottom:24px">Gerelateerde <em>bestemmingen en gidsen</em></h2>
+    <div class="internal-links-grid"><a href="/roquebrune-cap-martin" class="link-card">Roquebrune-Cap-Martin</a><a href="/menton" class="link-card">Menton</a><a href="/eze" class="link-card">Èze</a><a href="/beaulieu-sur-mer" class="link-card">Beaulieu-sur-Mer</a><a href="/cap-dantibes" class="link-card">Cap d'Antibes</a><a href="/cote-dazur" class="link-card">Côte d'Azur</a></div>
+  </div>
+</section>
 <section class="cta-section">
   <div class="section-pre">Klaar om te starten?</div>
   <h2>Laat Trovai uw woning vinden<br>in <em>Monaco</em></h2>
