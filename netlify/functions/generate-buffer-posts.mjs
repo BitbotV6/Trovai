@@ -147,10 +147,10 @@ async function genereerPost(content) {
 
 function valideer(tekst) {
   const fouten = [];
-  if (/—/.test(tekst)) fouten.push('emdash');
-  if (/*/.test(tekst)) fouten.push('asterisk');
+  if (tekst.includes('—')) fouten.push('emdash');
+  if (tekst.includes('*')) fouten.push('asterisk');
   if (/in de huidige markt/i.test(tekst)) fouten.push('AI-cliche');
-  if (/https?:///.test(tekst)) fouten.push('externe link in post');
+  if (tekst.includes('http://') || tekst.includes('https://')) fouten.push('externe link in post');
   const emojis = (tekst.match(/p{Emoji_Presentation}/gu) || []).length;
   const hashtags = (tekst.match(/#w+/g) || []).length;
   const woorden = tekst.split(/s+/).length;
