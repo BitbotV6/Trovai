@@ -220,4 +220,4 @@ export default async (req) => {
   }
 };
 
-export const config = { schedule: '0 14 * * 3,4,5' };
+export const config = { schedule: '0 12 * * 3,4,5' };
