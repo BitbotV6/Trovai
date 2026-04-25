@@ -356,11 +356,15 @@ function renderCuracao(p) {
   document.getElementById('l-city').textContent   = city;
   document.getElementById('l-region').textContent = region;
   document.getElementById('l-country').textContent= country;
-  document.getElementById('l-price').textContent  = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
-  document.getElementById('sb-price').textContent = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
+  // Prijs altijd in originele valuta tonen, geen omrekening
+  var priceLabel = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
+  document.getElementById('l-price').textContent  = priceLabel;
+  document.getElementById('sb-price').textContent = priceLabel;
 
-  if (sqm && price > 0) {
-    document.getElementById('l-ppm').textContent = fmt(Math.round(price / sqm)) + ' per m\u00b2';
+  if (sqm && price > 0 && p.currency) {
+    var perSqm = Math.round(price / sqm).toLocaleString(p.currency === 'EUR' ? 'nl-NL' : 'en-US');
+    var prefix = p.currency === 'EUR' ? '\u20ac\u00a0' : (p.currency === 'USD' ? 'USD\u00a0' : (p.currency + '\u00a0'));
+    document.getElementById('l-ppm').textContent = prefix + perSqm + ' per m\u00b2';
   }
 
   // Update agent role + partner badge
@@ -376,12 +380,12 @@ function renderCuracao(p) {
   if (lbPhotos.length === 0 && p.main_image) lbPhotos = [p.main_image];
   renderGallery();
 
-  // Specs bar
+  // Specs bar - geen aparte USD-spec, hoofdprijs toont al de echte valuta
   var specs = [
     beds  ? {l:'Slaapkamers',  v: String(beds)}        : null,
     baths ? {l:'Badkamers',    v: String(baths)}       : null,
     sqm   ? {l:'Woonoppervlak',v: sqm + ' m\u00b2'}    : null,
-    p.price_usd ? {l:'USD prijs', v: '$' + Math.round(p.price_usd).toLocaleString('en-US')} : null
+    p.currency ? {l:'Valuta',  v: p.currency}          : null
   ].filter(Boolean);
   renderSpecs(specs);
 
