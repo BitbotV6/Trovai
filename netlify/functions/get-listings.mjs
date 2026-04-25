@@ -1,11 +1,13 @@
 // Trovai · get-listings.mjs
-// Haalt ECHTE listings op van livingonthecotedazur.com
+// Haalt ECHTE listings op van livingonthecotedazur.com (Cote d'Azur)
+// of athomecuracao.com (Curacao - via /api/get-curacao-listings)
 // URLs gaan naar trovai.nl/listing/[id] zodat de koper op ons domein blijft
-// Minimumprijs: 800.000 euro (afspraak met Ab Kuijer)
+// Cote d'Azur min: 800.000 euro (afspraak Ab Kuijer)
+// Curacao min:     400.000 euro (afspraak Patricia Zegwaard)
 
 const LOCA = 'https://www.livingonthecotedazur.com/wp-json/wc/store/v1/products';
 
-const MIN_PRICE = 800000; // Onder dit bedrag geen listings tonen — afspraak Ab Kuijer
+const MIN_PRICE = 800000; // Cote d'Azur minimum
 
 const CATEGORY_MAP = {
   villa: 'villa',
@@ -80,6 +82,18 @@ async function fetchFromLOCA({ category, minPrice, maxPrice, limit = 9 }) {
   return { listings: data, total };
 }
 
+// Roept de Curacao function aan via internal fetch
+async function fetchFromCuracao(req, payload) {
+  const origin = process.env.URL || `https://${req.headers.get('host')}`;
+  const res = await fetch(`${origin}/api/get-curacao-listings`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload)
+  });
+  if (!res.ok) throw new Error(`Curacao function ${res.status}`);
+  return await res.json();
+}
+
 export default async (req) => {
   const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
 
@@ -89,14 +103,13 @@ export default async (req) => {
   try {
     const { destination, property_type, budget, area } = await req.json();
 
-    // Curacao heeft nog geen live API
+    // ===== Curacao tak =====
     if (destination === 'curacao') {
-      return new Response(JSON.stringify({
-        listings: [], total: 0,
-        message: 'Curaçao selectie volgt via At Home Curaçao — u ontvangt dit per email.'
-      }), { status: 200, headers });
+      const data = await fetchFromCuracao(req, { property_type, budget, area });
+      return new Response(JSON.stringify(data), { status: 200, headers });
     }
 
+    // ===== Cote d'Azur tak (default) =====
     const category = CATEGORY_MAP[property_type] || null;
     const { min: minPrice, max: maxPrice } = parseBudget(budget);
 
@@ -131,12 +144,18 @@ export default async (req) => {
       listings: results,
       total: parseInt(total) || results.length,
       source: 'livingonthecotedazur.com',
+      partner: 'Living on the Cote d\'Azur',
       filters: { category, minPrice, maxPrice, area }
     }), { status: 200, headers });
 
   } catch (err) {
     console.error('get-listings error:', err.message);
-    return new Response(JSON.stringify({ error: 'Listings tijdelijk niet beschikbaar', listings: [], total: 0 }), { status: 500, headers });
+    return new Response(JSON.stringify({
+      error: 'Listings tijdelijk niet beschikbaar',
+      detail: err.message,
+      listings: [],
+      total: 0
+    }), { status: 200, headers });
   }
 };
 
