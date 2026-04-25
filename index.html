@@ -814,7 +814,7 @@ async function submitQ(){
       })
     }).catch(()=>{});
   }
-  if(dest==='cotedazur'||dest==='both'){
+  if(dest==='cotedazur'||dest==='both'||dest==='curacao'){
     try{
       console.log('Fetching listings:', {destination:dest,property_type,budget,area});
       const res=await fetch('/api/get-listings',{method:'POST',headers:{'Content-Type':'application/json'},
