@@ -2,9 +2,9 @@
 // Proxy: haalt detail-pagina van At Home Curacao op (omzeilt CORS)
 // Parseert images, beschrijving, specs uit de HTML
 // Wordt aangeroepen vanaf /listing/cur-[id] op trovai.nl
+// REGEL: prijzen NOOIT omrekenen - exacte valuta + exact bedrag van bron behouden
 
 const ATHOME = 'https://athomecuracao.com';
-const DEFAULT_USD_EUR = 0.92;
 
 function decode(s) {
   if (!s) return '';
@@ -17,28 +17,35 @@ function decode(s) {
     .trim();
 }
 
-function parsePrices(html, usdEurRate) {
+// Parseert prijs zonder valuta-conversie. Behoudt exact het bedrag en de valuta zoals op de bron staat.
+function parsePrices(html) {
+  // EUR eerst (vaste prijs / euro-teken)
   const eurMatch = html.match(/vaste\s*prijs\s*in:\s*€\s*([\d.,]+)/i)
-              || html.match(/€\s*([\d.,]+)(?!\s*\.--)/);
+                || html.match(/€\s*([\d.,]+)(?!\s*\.--)/);
   if (eurMatch) {
     const num = parseInt(eurMatch[1].replace(/[.,]/g, '')) || 0;
-    if (num > 1000) return { price_eur: num, price_usd: 0, source: 'EUR' };
+    if (num > 1000) return { amount: num, currency: 'EUR' };
   }
-  const usdMatch = html.match(/USD\s*([\d.,]+)/i)
-              || html.match(/US\$\s*([\d.,]+)/i);
+  // USD daarna
+  const usdMatch = html.match(/vaste\s*prijs\s*in:\s*US\$?\s*([\d.,]+)/i)
+                || html.match(/USD\s*([\d.,]+)/i)
+                || html.match(/US\$\s*([\d.,]+)/i);
   if (usdMatch) {
     const num = parseInt(usdMatch[1].replace(/[.,]/g, '')) || 0;
-    if (num > 1000) {
-      return { price_eur: Math.round(num * usdEurRate), price_usd: num, source: 'USD' };
-    }
+    if (num > 1000) return { amount: num, currency: 'USD' };
   }
-  return { price_eur: 0, price_usd: 0, source: 'none' };
+  return { amount: 0, currency: null };
 }
 
-// Zoekt zoek-listing URL via REST API of Google indexering. Aangezien we alleen het ID hebben
-// (bijv. 1419108), moeten we de slug vinden. Strategie: gebruik WP REST API search endpoint.
+function formatPrice(amount, currency) {
+  if (!amount || !currency) return 'Prijs op aanvraag';
+  if (currency === 'EUR') return '€ ' + amount.toLocaleString('nl-NL');
+  if (currency === 'USD') return 'USD ' + amount.toLocaleString('en-US');
+  return amount + ' ' + currency;
+}
+
+// Zoekt zoek-listing URL via REST API
 async function findUrlById(id) {
-  // Probeer WP REST API search - werkt op de meeste WP sites
   try {
     const res = await fetch(`${ATHOME}/wp-json/wp/v2/search?search=${id}&per_page=5`, {
       headers: { Accept: 'application/json', 'User-Agent': 'Trovai/1.0' }
@@ -50,7 +57,7 @@ async function findUrlById(id) {
       if (data[0] && data[0].url) return data[0].url;
     }
   } catch (e) {
-    // Negeer, val terug op directe URL guess
+    // Negeer
   }
   return null;
 }
@@ -67,38 +74,30 @@ async function fetchDetail(url) {
   return await res.text();
 }
 
-function parseDetail(html, id, sourceUrl, usdEurRate) {
-  // Title - uit <title> of og:title
+function parseDetail(html, id, sourceUrl) {
+  // Title
   const titleMatch = html.match(/<meta\s+property="og:title"\s+content="([^"]+)"/)
                   || html.match(/<title>([^<]+)<\/title>/);
   const titleRaw = titleMatch ? titleMatch[1] : '';
   const title = decode(titleRaw.replace(/\s*[\|\-–]\s*At\s*Home\s*Cura.*$/i, ''));
 
-  // Description uit og:description of meta description
+  // Description
   const descMatch = html.match(/<meta\s+property="og:description"\s+content="([^"]+)"/)
                  || html.match(/<meta\s+name="description"\s+content="([^"]+)"/);
   const description = descMatch ? decode(descMatch[1]) : '';
 
-  // Images - uit og:image en alle uploads/year/month JPG/PNG die in de page voorkomen
+  // Images
   const ogImage = (html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/) || [])[1];
   const imgRegex = /https:\/\/athomecuracao\.com\/wp-content\/uploads\/[\w/-]+?\.(?:jpg|jpeg|png|webp)/gi;
   const allImages = [...new Set((html.match(imgRegex) || []))];
-  // Filter masthead/logo/icons/avatars
   const images = allImages.filter(u =>
-    !u.includes('athome-curacao-masthead') &&
-    !u.includes('logo') &&
-    !u.includes('icon') &&
-    !u.includes('avatar') &&
-    !/-\d+x\d+\./.test(u.split('/').pop()) === false || true // keep all but logo/avatar
-  ).filter(u =>
-    !u.includes('logo') && !u.includes('icon') && !u.includes('avatar') &&
-    !u.includes('masthead')
+    !u.includes('logo') && !u.includes('icon') && !u.includes('avatar') && !u.includes('masthead')
   );
 
-  // Prijzen
-  const prices = parsePrices(html, usdEurRate);
+  // Prijs (zonder conversie)
+  const prices = parsePrices(html);
 
-  // Specs uit de detail page - vaak in een tabel of lijst
+  // Specs
   const bedsMatch = html.match(/(\d+)\s*slaapkamer/i) || html.match(/Beds[:\s]*(\d+)/i);
   const bathsMatch = html.match(/(\d+)\s*badkamer/i) || html.match(/Baths[:\s]*(\d+)/i);
   const sqftMatch = html.match(/(\d+)\s*sq\s*ft/i);
@@ -127,11 +126,9 @@ function parseDetail(html, id, sourceUrl, usdEurRate) {
     city: area || 'Curaçao',
     region: 'Curaçao',
     country: 'Curaçao',
-    price: prices.price_eur,
-    price_usd: prices.price_usd,
-    price_formatted: prices.price_eur > 0
-      ? '€ ' + prices.price_eur.toLocaleString('nl-NL')
-      : 'Prijs op aanvraag',
+    price: prices.amount,
+    currency: prices.currency,
+    price_formatted: formatPrice(prices.amount, prices.currency),
     beds,
     baths,
     surface_sqm: sqm,
@@ -147,14 +144,13 @@ export default async (req) => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Cache-Control': 'public, max-age=1800' // 30 min
+    'Cache-Control': 'public, max-age=1800'
   };
 
   if (req.method === 'OPTIONS') return new Response('', { status: 200, headers });
 
   const url = new URL(req.url);
   let id = url.searchParams.get('id') || '';
-  // Accepteer zowel 1419108 als cur-1419108
   id = id.replace(/^cur-/, '').replace(/[^\d]/g, '');
 
   if (!id) {
@@ -162,28 +158,19 @@ export default async (req) => {
   }
 
   try {
-    const usdEurRate = parseFloat(process.env.DAILY_USD_EUR) || DEFAULT_USD_EUR;
-
-    // Vind de echte URL (slug + id-nl)
     const sourceUrl = await findUrlById(id);
     if (!sourceUrl) {
-      return new Response(JSON.stringify({
-        error: 'Listing niet gevonden',
-        id
-      }), { status: 404, headers });
+      return new Response(JSON.stringify({ error: 'Listing niet gevonden', id }), { status: 404, headers });
     }
 
     const html = await fetchDetail(sourceUrl);
-    const data = parseDetail(html, id, sourceUrl, usdEurRate);
+    const data = parseDetail(html, id, sourceUrl);
 
     return new Response(JSON.stringify(data), { status: 200, headers });
 
   } catch (err) {
     console.error('get-curacao-listing error:', err.message);
-    return new Response(JSON.stringify({
-      error: err.message,
-      id
-    }), { status: 500, headers });
+    return new Response(JSON.stringify({ error: err.message, id }), { status: 500, headers });
   }
 };
 
