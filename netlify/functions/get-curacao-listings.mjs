@@ -111,6 +111,27 @@ export default async (req) => {
       return new Response(JSON.stringify({ debug: true, paths, stats }, null, 2), { status: 200, headers });
     }
 
+    // === DEBUG2: dump raw blocks for first 2 listings ===
+    if (debug === 'blocks') {
+      const blocks = [];
+      for (let i = 0; i < pages.length && blocks.length < 2; i++) {
+        const html = pages[i];
+        if (typeof html !== 'string') continue;
+        const linkRegex = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/gi;
+        let m;
+        while ((m = linkRegex.exec(html)) !== null && blocks.length < 2) {
+          const start = Math.max(0, m.index - 200);
+          const end = Math.min(html.length, m.index + 1800);
+          blocks.push({
+            url: m[1],
+            id: m[2],
+            block: html.substring(start, end)
+          });
+        }
+      }
+      return new Response(JSON.stringify({ debug: 'blocks', blocks }, null, 2), { status: 200, headers });
+    }
+
     // === Echte parsing ===
     // Strategie: zoek alle <a href="...-nl/"> links naar listing detail pages
     // Voor elke link: pak een blok van ~2000 chars rondom waaruit we titel/prijs/specs halen
