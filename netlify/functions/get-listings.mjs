@@ -155,7 +155,7 @@ export default async (req) => {
       detail: err.message,
       listings: [],
       total: 0
-    }), { status: 200, headers });
+    }), { status: 500, headers });
   }
 };
 
