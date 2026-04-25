@@ -1,46 +1,18 @@
 // Trovai · get-curacao-listings.mjs
 // Haalt ECHTE listings op van athomecuracao.com (At Home Curacao - Patricia Zegwaard)
-// URLs gaan naar trovai.nl/listing/cur-[id] zodat de koper op ons domein blijft
-// Minimumprijs: 400.000 euro - afspraak met Patricia Zegwaard
-//
-// Strategie:
-//   1. Parse HTML van /kopen/ en /kopen/koopappartement/ overzichtspagina's
-//      (daar staan alle listing-cards met prijs, beds, baths, image, url)
-//   2. EUR-prijs uit "vaste prijs in: €" override gebruiken indien aanwezig,
-//      anders USD->EUR converteren met DAILY_USD_EUR rate
-//   3. Filter op prijs en property_type
-//
-// Geen externe deps - regex parsing is hier voldoende en robuust.
+// HTML parser - werkt direct met WP HTML output
 
 const ATHOME = 'https://athomecuracao.com';
 const MIN_PRICE_EUR = 400000;
-
-// Static USD->EUR (kan later via env var of live API)
-// Per april 2026 rond 0.92 EUR per USD - update via env var DAILY_USD_EUR
 const DEFAULT_USD_EUR = 0.92;
 
-// Mapping van quiz property_type naar Curacao categorie-paden
-// Quiz opties: villa, apartment, invest, bungalow (uit qs-cur-1 in index.html)
 const TYPE_PATHS = {
   villa:     ['/kopen/koopwoning/'],
   apartment: ['/kopen/koopappartement/'],
-  invest:    ['/kopen/koopwoning/', '/kopen/koopappartement/', '/vastgoed-investeringen/'],
+  invest:    ['/kopen/koopwoning/', '/kopen/koopappartement/'],
   bungalow:  ['/kopen/koopwoning/'],
   estate:    ['/kopen/koopwoning/'],
-  newbuild:  ['/kopen/nieuwbouw/'],
   open:      ['/kopen/koopwoning/', '/kopen/koopappartement/']
-};
-
-// Optionele wijk-filter (niet actief in huidige quiz, maar voorbereid voor uitbreiding)
-const AREA_MAP = {
-  // luxury beach areas zuid-oost kant
-  janthiel:    ['Jan Thiel', 'Brakkeput', 'Boca Gentil', 'Caracasbaaiweg', 'Spaanse Water'],
-  // resort/villaparks
-  villaparks:  ['Vista Royal', 'Coral Estate', 'Blue Bay', 'Jan Sofat', 'Vredenberg', 'La Privada'],
-  // willemstad omgeving (centraal)
-  willemstad:  ['Mahaai', 'Pietermaai', 'Punda', 'Otrobanda', 'Scharloo', 'Salina'],
-  // westpunt regio (rustig, natuur)
-  westpunt:    ['Westpunt', 'Banda Abou', 'Coral Estate', 'Cas Abou', 'Santa Catharina', 'Christoffel']
 };
 
 function parseBudget(str) {
@@ -56,25 +28,22 @@ function parseBudget(str) {
 
 function decode(s) {
   if (!s) return '';
-  return s
+  return String(s)
     .replace(/&#8211;/g, '–').replace(/&#8217;/g, "'")
     .replace(/&#8220;/g, '"').replace(/&#8221;/g, '"')
     .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
     .replace(/&quot;/g, '"').replace(/&#039;/g, "'")
+    .replace(/<[^>]+>/g, '')
     .trim();
 }
 
-// Parse prijs uit raw block. Retourneert {price_eur, price_usd, currency_source}
 function parsePrices(block, usdEurRate) {
-  // EUR override - "vaste prijs in: € 695,000" of "€ 695.000"
-  const eurMatch = block.match(/vaste\s*prijs\s*in:\s*€\s*([\d.,]+)/i)
+  const eurMatch = block.match(/vaste\s*prijs\s*in[^€]*€\s*([\d.,]+)/i)
               || block.match(/€\s*([\d.,]+)(?!\s*\.--)/);
   if (eurMatch) {
     const num = parseInt(eurMatch[1].replace(/[.,]/g, '')) || 0;
     if (num > 1000) return { price_eur: num, price_usd: 0, source: 'EUR' };
   }
-
-  // USD: "USD 1.047.835.--" of "USD 813.681" of "$ 450,000"
   const usdMatch = block.match(/USD\s*([\d.,]+)/i)
               || block.match(/US\$\s*([\d.,]+)/i)
               || block.match(/\$\s*([\d.,]+)/);
@@ -84,100 +53,13 @@ function parsePrices(block, usdEurRate) {
       return { price_eur: Math.round(num * usdEurRate), price_usd: num, source: 'USD' };
     }
   }
-
   return { price_eur: 0, price_usd: 0, source: 'none' };
-}
-
-// Parse listing cards uit HTML. Elke card heeft een H2 met titel+url, een prijsblok ervoor of erin,
-// en optioneel beds/baths/sqft en image.
-function parseListings(html, usdEurRate) {
-  const listings = [];
-
-  // Split op de individuele property cards. Cards beginnen met "Nieuw " of "Onder bod " of "Exclusief "
-  // gevolgd door image link, dan H2 met titel+url. We pakken vanaf elke H2.
-  // H2 regex: ## [Titel](URL "Titel")  (markdown rendering van de site)
-  // In rauwe HTML zou het <h2><a href="URL">Titel</a></h2> zijn - we werken met markdown renderering
-  
-  const cardRegex = /##\s*\[([^\]]+)\]\(([^)]+)\s*"[^"]*"\)\s*\n([\s\S]*?)(?=\n##\s*\[|$)/g;
-  let m;
-  while ((m = cardRegex.exec(html)) !== null) {
-    const title = decode(m[1]);
-    const url = m[2].trim();
-    const block = m[3];
-
-    if (!url.includes('athomecuracao.com')) continue;
-    
-    // Object ID — strip "-nl" suffix eerst, dan alles wat geen cijfer is
-    const idMatch = block.match(/Object\s*ID\s*([\d-]+(?:-nl)?)/i)
-                 || url.match(/-(\d+)-nl\/?$/)
-                 || url.match(/\/(\d+)\/?$/);
-    const id = idMatch ? String(idMatch[1]).replace(/-?nl$/i, '').replace(/[^\d]/g, '') : '';
-    if (!id) continue;
-
-    // Prijzen
-    const prices = parsePrices(block, usdEurRate);
-
-    // Beds, Baths, sqft
-    const bedsMatch = block.match(/Beds\s*(\d+)/i);
-    const bathsMatch = block.match(/Baths\s*(\d+)/i);
-    const sqftMatch = block.match(/(\d+)\s*sq\s*ft/i);
-
-    const beds = bedsMatch ? parseInt(bedsMatch[1]) : 0;
-    const baths = bathsMatch ? parseInt(bathsMatch[1]) : 0;
-    const sqft = sqftMatch ? parseInt(sqftMatch[1]) : 0;
-    const sqm = sqft ? Math.round(sqft * 0.0929) : 0;
-
-    // Korte beschrijving - eerste tekstparagraaf na de specs
-    const descMatch = block.match(/(?:sq ft|Baths\s*\d+)\s*\n+([\s\S]*?)\[…\s*more\]/i);
-    let description = descMatch ? decode(descMatch[1].replace(/\n+/g, ' ').trim()) : '';
-    if (description.length > 200) description = description.substring(0, 197) + '...';
-
-    // Categorie raden uit URL
-    let category = 'Woning';
-    if (url.includes('koopappartement')) category = 'Appartement';
-    else if (url.includes('kavels') || url.includes('bouwkavel')) category = 'Kavel';
-    else if (url.includes('nieuwbouw')) category = 'Nieuwbouw';
-    else if (title.toLowerCase().includes('villa')) category = 'Villa';
-    else if (title.toLowerCase().includes('penthouse')) category = 'Penthouse';
-    else if (title.toLowerCase().includes('appartement')) category = 'Appartement';
-
-    // Wijk raden uit titel
-    let area = '';
-    const allAreas = Object.values(AREA_MAP).flat();
-    for (const a of allAreas) {
-      if (title.includes(a)) { area = a; break; }
-    }
-
-    listings.push({
-      id: 'cur-' + id,
-      raw_id: id,
-      name: title,
-      city: area || 'Curaçao',
-      category,
-      price: prices.price_eur,
-      price_usd: prices.price_usd,
-      price_source: prices.source,
-      price_formatted: prices.price_eur > 0
-        ? '€ ' + prices.price_eur.toLocaleString('nl-NL')
-        : 'Prijs op aanvraag',
-      beds: beds ? `${beds} slaapkamers` : '',
-      baths: baths ? `${baths} badkamers` : '',
-      surface: sqm ? `${sqm} m²` : '',
-      image: '', // images worden lazy-loaded op de overzichtspagina als data-URI placeholder
-                 // detail page haalt echte images op via get-curacao-listing
-      url: `https://trovai.nl/listing/cur-${id}`,
-      source_url: url,
-      description
-    });
-  }
-
-  return listings;
 }
 
 async function fetchPage(path) {
   const res = await fetch(`${ATHOME}${path}`, {
     headers: {
-      'User-Agent': 'Mozilla/5.0 (Trovai/1.0; +https://trovai.nl)',
+      'User-Agent': 'Mozilla/5.0 (compatible; Trovai/1.0; +https://trovai.nl)',
       'Accept': 'text/html,application/xhtml+xml',
       'Accept-Language': 'nl-NL,nl;q=0.9'
     }
@@ -190,7 +72,7 @@ export default async (req) => {
   const headers = {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
-    'Cache-Control': 'public, max-age=900' // 15 min cache
+    'Cache-Control': 'public, max-age=300'
   };
 
   if (req.method === 'OPTIONS') return new Response('', { status: 200, headers });
@@ -199,78 +81,134 @@ export default async (req) => {
   }
 
   try {
-    const { property_type, budget, area } = await req.json();
+    const { property_type = 'open', budget = '€ 1.000.000', area, debug } = await req.json();
     const usdEurRate = parseFloat(process.env.DAILY_USD_EUR) || DEFAULT_USD_EUR;
-
     const { min: minPrice, max: maxPrice } = parseBudget(budget);
     const paths = TYPE_PATHS[property_type] || TYPE_PATHS.open;
 
-    // Fetch alle relevante categorie-pagina's parallel
-    const htmls = await Promise.all(paths.map(p => fetchPage(p).catch(e => {
-      console.error(`Curacao fetch ${p} failed:`, e.message);
-      return '';
-    })));
+    // Fetch alle relevante overzichtspagina's parallel
+    const pages = await Promise.all(paths.map(p => fetchPage(p).catch(e => ({ err: e.message, path: p }))));
 
-    // Parse en dedupe op ID
-    const seen = new Set();
-    let all = [];
-    for (const html of htmls) {
-      if (!html) continue;
-      const items = parseListings(html, usdEurRate);
-      for (const it of items) {
-        if (!seen.has(it.id)) {
-          seen.add(it.id);
-          all.push(it);
-        }
+    // === DEBUG MODE ===
+    if (debug) {
+      const stats = pages.map((html, i) => {
+        if (typeof html !== 'string') return { path: paths[i], err: html.err };
+        return {
+          path: paths[i],
+          length: html.length,
+          h2_count: (html.match(/<h2/gi) || []).length,
+          h3_count: (html.match(/<h3/gi) || []).length,
+          article_count: (html.match(/<article/gi) || []).length,
+          property_class_count: (html.match(/class="[^"]*propert[^"]*"/gi) || []).length,
+          listing_class_count: (html.match(/class="[^"]*listing[^"]*"/gi) || []).length,
+          nl_links: (html.match(/href="[^"]*-nl\/?"/gi) || []).slice(0, 3),
+          first_h2: (html.match(/<h2[^>]*>[\s\S]{0,500}<\/h2>/i) || [''])[0],
+          first_link_to_listing: (html.match(/<a[^>]+href="https:\/\/athomecuracao\.com\/[^"]+-nl\/?"[^>]*>[\s\S]{0,300}<\/a>/i) || [''])[0],
+          euro_count: (html.match(/€/g) || []).length,
+          usd_count: (html.match(/USD/g) || []).length
+        };
+      });
+      return new Response(JSON.stringify({ debug: true, paths, stats }, null, 2), { status: 200, headers });
+    }
+
+    // === Echte parsing ===
+    // Strategie: zoek alle <a href="...-nl/"> links naar listing detail pages
+    // Voor elke link: pak een blok van ~2000 chars rondom waaruit we titel/prijs/specs halen
+    const allListings = [];
+    for (let i = 0; i < pages.length; i++) {
+      const html = pages[i];
+      if (typeof html !== 'string') continue;
+
+      const linkRegex = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/gi;
+      const seen = new Set();
+      let m;
+      while ((m = linkRegex.exec(html)) !== null) {
+        const url = m[1];
+        const id = m[2];
+        if (seen.has(id)) continue;
+        seen.add(id);
+
+        // Block: 200 chars before en 1500 chars after de link voor context
+        const start = Math.max(0, m.index - 200);
+        const end = Math.min(html.length, m.index + 1800);
+        const block = html.substring(start, end);
+
+        // Titel uit eerste <h2> of <h3> in het blok, of uit alt= van image
+        let title = '';
+        const titleMatch = block.match(/<h[23][^>]*>[\s\S]*?<a[^>]*>([\s\S]*?)<\/a>[\s\S]*?<\/h[23]>/i)
+                       || block.match(/<h[23][^>]*>([\s\S]*?)<\/h[23]>/i)
+                       || block.match(/title="([^"]+)"/i)
+                       || block.match(/alt="([^"]+)"/i);
+        if (titleMatch) title = decode(titleMatch[1]);
+        if (!title || title.length < 5) continue;
+
+        const prices = parsePrices(block, usdEurRate);
+        const bedsMatch = block.match(/(\d+)\s*Beds?/i) || block.match(/Beds?\s*[:>]?\s*(\d+)/i);
+        const bathsMatch = block.match(/(\d+)\s*Baths?/i) || block.match(/Baths?\s*[:>]?\s*(\d+)/i);
+        const sqftMatch = block.match(/([\d,]+)\s*sq\s*ft/i);
+        const sqmMatch  = block.match(/([\d.,]+)\s*m[\u00b2²]/i);
+
+        const beds = bedsMatch ? parseInt(bedsMatch[1]) : 0;
+        const baths = bathsMatch ? parseInt(bathsMatch[1]) : 0;
+        const sqft = sqftMatch ? parseInt(sqftMatch[1].replace(/,/g, '')) : 0;
+        const sqmRaw = sqmMatch ? parseInt(sqmMatch[1].replace(/[.,]/g, '')) : 0;
+        const sqm = sqmRaw || (sqft ? Math.round(sqft * 0.0929) : 0);
+
+        // Image uit blok of er net voor (lazy-loaded src kan in data-src zitten)
+        const imgMatch = block.match(/<img[^>]+(?:src|data-src|data-lazy-src)="(https:\/\/athomecuracao\.com\/wp-content\/uploads\/[^"]+\.(?:jpg|jpeg|png|webp))"/i);
+        const image = imgMatch ? imgMatch[1] : '';
+
+        let category = 'Woning';
+        if (paths[i].includes('koopappartement')) category = 'Appartement';
+        else if (title.toLowerCase().includes('villa')) category = 'Villa';
+        else if (title.toLowerCase().includes('penthouse')) category = 'Penthouse';
+
+        allListings.push({
+          id: 'cur-' + id,
+          raw_id: id,
+          name: title,
+          city: 'Curaçao',
+          category,
+          price: prices.price_eur,
+          price_usd: prices.price_usd,
+          price_source: prices.source,
+          price_formatted: prices.price_eur > 0
+            ? '€ ' + prices.price_eur.toLocaleString('nl-NL')
+            : 'Prijs op aanvraag',
+          beds: beds ? `${beds} slaapkamers` : '',
+          baths: baths ? `${baths} badkamers` : '',
+          surface: sqm ? `${sqm} m²` : '',
+          image,
+          url: `https://trovai.nl/listing/cur-${id}`,
+          source_url: url,
+          description: ''
+        });
       }
     }
 
-    const totalUnfiltered = all.length;
-
-    // Filter: alleen met geldige EUR prijs binnen budget en boven minimum
-    let filtered = all.filter(p =>
-      p.price >= Math.max(MIN_PRICE_EUR, minPrice) && p.price <= maxPrice
+    // Filter op prijs en sorteer
+    let filtered = allListings.filter(l =>
+      l.price >= MIN_PRICE_EUR && l.price >= minPrice * 0.8 && l.price <= maxPrice * 1.3
     );
 
-    // Fallback als budget te smal: verbreed naar minPrice = MIN_PRICE_EUR + 1.6x maxPrice
     if (filtered.length < 3) {
-      filtered = all.filter(p =>
-        p.price >= MIN_PRICE_EUR && p.price <= Math.ceil(maxPrice * 1.6)
-      );
+      filtered = allListings.filter(l => l.price >= MIN_PRICE_EUR);
     }
 
-    // Optionele wijk-filter
-    if (area && AREA_MAP[area] && filtered.length > 3) {
-      const preferred = AREA_MAP[area];
-      const byArea = filtered.filter(p =>
-        preferred.some(a => p.name.includes(a) || p.city.includes(a))
-      );
-      if (byArea.length >= 2) filtered = byArea;
-    }
-
-    // Sorteer op prijs aflopend (hoogste eerst, past bij luxe positionering)
     filtered.sort((a, b) => b.price - a.price);
 
-    const results = filtered.slice(0, 5);
-
     return new Response(JSON.stringify({
-      listings: results,
-      total: totalUnfiltered,
+      listings: filtered.slice(0, 9),
+      total: filtered.length,
       source: 'athomecuracao.com',
       partner: 'At Home Curaçao',
-      filters: {
-        property_type: property_type || 'open',
-        minPrice: Math.max(MIN_PRICE_EUR, minPrice),
-        maxPrice,
-        area: area || null,
-        usd_eur_rate: usdEurRate
-      }
+      filters: { property_type, minPrice, maxPrice, area, usd_eur_rate: usdEurRate, raw_count: allListings.length }
     }), { status: 200, headers });
 
   } catch (err) {
-    console.error('get-curacao-listings error:', err.message, err.stack);
+    console.error('get-curacao-listings error:', err.message);
     return new Response(JSON.stringify({
-      error: 'Curaçao listings tijdelijk niet beschikbaar',
+      error: 'Listings tijdelijk niet beschikbaar',
       detail: err.message,
       listings: [],
       total: 0
