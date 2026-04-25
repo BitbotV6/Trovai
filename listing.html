@@ -69,8 +69,6 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 .details-table tr:last-child{border-bottom:none}
 .details-table td{padding:11px 0;font-size:13px}
 .details-table td:first-child{color:var(--muted);width:45%}
-.loca-link{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;border-bottom:0.5px solid var(--border);padding-bottom:2px;transition:color 0.2s}
-.loca-link:hover{color:var(--gold);border-color:var(--gold)}
 .sidebar{position:sticky;top:90px}
 .sidebar-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:28px;margin-bottom:16px}
 .sidebar-price{font-family:'Instrument Serif',serif;font-size:28px;color:var(--gold);margin-bottom:2px}
@@ -96,6 +94,7 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 .agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:18px;color:var(--black);flex-shrink:0}
 .agent-name{font-size:13px;font-weight:500;color:var(--white)}
 .agent-role{font-size:11px;color:var(--muted);margin-top:2px}
+.partner-badge{display:inline-block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,242,238,0.45);background:rgba(255,255,255,0.03);border:0.5px solid var(--border);padding:4px 10px;border-radius:2px;margin-top:8px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
 .fade-in{animation:fadeUp 0.4s both}
 @media(max-width:900px){
@@ -208,7 +207,8 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
           <div class="agent-av">R</div>
           <div>
             <div class="agent-name">Roelof Methorst</div>
-            <div class="agent-role">Trovai &middot; C&ocirc;te d&rsquo;Azur specialist</div>
+            <div class="agent-role" id="agent-role">Trovai &middot; C&ocirc;te d&rsquo;Azur specialist</div>
+            <div class="partner-badge" id="partner-badge" style="display:none"></div>
           </div>
         </div>
       </div>
@@ -220,6 +220,7 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 var cur = null;
 var lbPhotos = [];
 var lbIdx = 0;
+var listingType = 'loca'; // 'loca' of 'curacao'
 
 function getAttr(p, name) {
   var attrs = p.attributes || [];
@@ -246,26 +247,34 @@ function showEl(id) {
   document.getElementById(id).style.display = 'block';
 }
 
+// ============ LOAD ============
 async function loadListing() {
-  var parts = window.location.pathname.split('/');
-  var id = '';
-  for (var i = parts.length - 1; i >= 0; i--) {
-    if (parts[i] && !isNaN(Number(parts[i]))) { id = parts[i]; break; }
-  }
+  var parts = window.location.pathname.split('/').filter(Boolean);
+  var raw = parts[parts.length - 1] || '';
+  // Curacao: cur-1419108  /  LOCA: 12345
+  var isCuracao = /^cur-\d+/i.test(raw);
+  var id = isCuracao ? raw.replace(/^cur-/i, '') : raw.replace(/[^\d]/g, '');
+
   if (!id) { showEl('error-div'); return; }
+
+  listingType = isCuracao ? 'curacao' : 'loca';
+  var endpoint = isCuracao ? '/api/get-curacao-listing?id=' + id : '/api/get-listing?id=' + id;
+
   try {
-    var res = await fetch('/api/get-listing?id=' + id);
+    var res = await fetch(endpoint);
     if (!res.ok) throw new Error('HTTP ' + res.status);
     var p = await res.json();
-    if (!p || !p.id) throw new Error('Geen data');
+    if (!p || (!p.id && !p.raw_id)) throw new Error('Geen data');
     cur = p;
-    renderListing(p);
-  } catch(e) {
+    if (isCuracao) renderCuracao(p);
+    else renderListing(p);
+  } catch (e) {
     console.error('Listing fout:', e.message);
     showEl('error-div');
   }
 }
 
+// ============ LOCA RENDER (Cote d'Azur) ============
 function renderListing(p) {
   var price  = parseInt((p.prices && p.prices.price) || 0);
   var city   = getAttr(p, 'City');
@@ -294,19 +303,121 @@ function renderListing(p) {
     if (sqm > 0) document.getElementById('l-ppm').textContent = fmt(Math.round(price / sqm)) + ' per m\u00b2';
   }
 
-  var locaEl = document.getElementById('l-loca'); if (locaEl && p.permalink) locaEl.href = p.permalink;
-
   // Gallery
   lbPhotos = (p.images || []).map(function(i){ return i.src; }).filter(Boolean);
   renderGallery();
 
   // Specs bar
   var specs = [
-    beds   ? {l:'Slaapkamers',  v: beds}            : null,
+    beds   ? {l:'Slaapkamers',  v: beds}             : null,
     rooms  ? {l:'Kamers',       v: rooms}            : null,
     surf   ? {l:'Woonoppervlak',v: surf + ' m\u00b2'}: null,
     land   ? {l:'Perceel',      v: land + ' m\u00b2'}: null
   ].filter(Boolean);
+  renderSpecs(specs);
+
+  // Description
+  var raw = cleanHTML(p.description || p.short_description || '').trim();
+  renderDescription(raw);
+
+  // Details table
+  var rows = [
+    ['Type woning',     cat],
+    ['Slaapkamers',     beds],
+    ['Aantal kamers',   rooms],
+    ['Woonoppervlak',   surf   ? surf + ' m\u00b2' : ''],
+    ['Perceeloppervlak',land   ? land + ' m\u00b2' : ''],
+    ['Bouwtype',        constr],
+    ['Stad',            city],
+    ['Regio',           region],
+    ['Land',            country]
+  ].filter(function(r){ return r[1]; });
+  renderDetails(rows);
+
+  showEl('listing');
+}
+
+// ============ CURACAO RENDER ============
+function renderCuracao(p) {
+  var price  = parseInt(p.price || 0);
+  var name   = p.name || 'Cura\u00e7ao woning';
+  var city   = p.city || 'Cura\u00e7ao';
+  var region = p.region || 'Cura\u00e7ao';
+  var country= p.country || 'Cura\u00e7ao';
+  var beds   = p.beds || 0;
+  var baths  = p.baths || 0;
+  var sqm    = p.surface_sqm || 0;
+  var cat    = inferCategory(name);
+
+  document.title = name + ' \u2014 Trovai';
+  document.getElementById('bc-city').textContent  = city;
+  document.getElementById('l-tag').textContent    = cat;
+  document.getElementById('l-title').textContent  = name;
+  document.getElementById('l-city').textContent   = city;
+  document.getElementById('l-region').textContent = region;
+  document.getElementById('l-country').textContent= country;
+  document.getElementById('l-price').textContent  = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
+  document.getElementById('sb-price').textContent = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
+
+  if (sqm && price > 0) {
+    document.getElementById('l-ppm').textContent = fmt(Math.round(price / sqm)) + ' per m\u00b2';
+  }
+
+  // Update agent role + partner badge
+  document.getElementById('agent-role').textContent = 'Trovai \u00b7 Cura\u00e7ao specialist';
+  var pb = document.getElementById('partner-badge');
+  if (p.partner) {
+    pb.textContent = 'i.s.m. ' + p.partner;
+    pb.style.display = 'inline-block';
+  }
+
+  // Gallery
+  lbPhotos = (p.images || []).filter(Boolean);
+  if (lbPhotos.length === 0 && p.main_image) lbPhotos = [p.main_image];
+  renderGallery();
+
+  // Specs bar
+  var specs = [
+    beds  ? {l:'Slaapkamers',  v: String(beds)}        : null,
+    baths ? {l:'Badkamers',    v: String(baths)}       : null,
+    sqm   ? {l:'Woonoppervlak',v: sqm + ' m\u00b2'}    : null,
+    p.price_usd ? {l:'USD prijs', v: '$' + Math.round(p.price_usd).toLocaleString('en-US')} : null
+  ].filter(Boolean);
+  renderSpecs(specs);
+
+  // Description
+  renderDescription(p.description || '');
+
+  // Details table
+  var rows = [
+    ['Type woning',     cat],
+    ['Slaapkamers',     beds || ''],
+    ['Badkamers',       baths || ''],
+    ['Woonoppervlak',   sqm ? sqm + ' m\u00b2' : ''],
+    ['Wijk',            city !== 'Cura\u00e7ao' ? city : ''],
+    ['Regio',           region],
+    ['Land',            country],
+    ['Object ID',       p.raw_id || ''],
+    ['Partner',         p.partner || '']
+  ].filter(function(r){ return r[1]; });
+  renderDetails(rows);
+
+  showEl('listing');
+}
+
+function inferCategory(title) {
+  var t = (title || '').toLowerCase();
+  if (t.indexOf('penthouse') > -1) return 'Penthouse';
+  if (t.indexOf('appartement') > -1) return 'Appartement';
+  if (t.indexOf('villa') > -1) return 'Villa';
+  if (t.indexOf('bungalow') > -1) return 'Bungalow';
+  if (t.indexOf('kavel') > -1) return 'Kavel';
+  if (t.indexOf('resort') > -1) return 'Resort';
+  return 'Woning';
+}
+
+// ============ SHARED RENDERERS ============
+function renderSpecs(specs) {
   var specsEl = document.getElementById('l-specs');
   if (specs.length) {
     specsEl.style.gridTemplateColumns = 'repeat(' + specs.length + ',1fr)';
@@ -316,10 +427,11 @@ function renderListing(p) {
   } else {
     specsEl.style.display = 'none';
   }
+}
 
-  // Description — HTML stripped, split in paragraphs
-  var raw = cleanHTML(p.description || p.short_description || '').trim();
+function renderDescription(raw) {
   var descEl = document.getElementById('l-desc');
+  raw = (raw || '').trim();
   if (raw) {
     var paras = raw.split(/\n\s*\n/).filter(function(x){ return x.trim(); });
     if (!paras.length) paras = [raw];
@@ -350,33 +462,26 @@ function renderListing(p) {
   } else {
     descEl.innerHTML = '<p style="color:var(--muted)">Neem contact op voor een volledige omschrijving.</p>';
   }
+}
 
-  // Details table
-  var rows = [
-    ['Type woning',     cat],
-    ['Slaapkamers',     beds],
-    ['Aantal kamers',   rooms],
-    ['Woonoppervlak',   surf   ? surf + ' m\u00b2' : ''],
-    ['Perceeloppervlak',land   ? land + ' m\u00b2' : ''],
-    ['Bouwtype',        constr],
-    ['Stad',            city],
-    ['Regio',           region],
-    ['Land',            country]
-  ].filter(function(r){ return r[1]; });
+function renderDetails(rows) {
   document.getElementById('l-details').innerHTML = rows.map(function(r){
     return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
   }).join('');
-
-  showEl('listing');
 }
 
+// ============ GALLERY / LIGHTBOX ============
 function renderGallery() {
-  if (!lbPhotos.length) return;
+  if (!lbPhotos.length) {
+    document.getElementById('l-gallery').innerHTML =
+      '<div style="height:280px;background:var(--black2);border:0.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">Foto\'s op aanvraag</div>';
+    return;
+  }
   var main = '<div class="gallery-main" id="gallery-main-wrap" onclick="openLB(0)">' +
     '<img id="gallery-main-img" src="' + lbPhotos[0] + '" alt="" loading="eager">' +
     '<div class="gallery-count" id="gallery-count">1 / ' + lbPhotos.length + '</div>' +
     '</div>';
-  var thumbs = lbPhotos.map(function(src, i){
+  var thumbs = lbPhotos.slice(0, 14).map(function(src, i){
     return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + src + '" alt="" loading="lazy"></div>';
   }).join('');
   document.getElementById('l-gallery').innerHTML = main + '<div class="gallery-thumbs">' + thumbs + '</div>';
@@ -422,6 +527,7 @@ document.addEventListener('keydown', function(e){
   if (e.key === 'ArrowRight') lbNav(1);
 });
 
+// ============ CONTACT FORM ============
 async function submitContact() {
   var name  = document.getElementById('cf-name').value.trim();
   var email = document.getElementById('cf-email').value.trim();
@@ -431,6 +537,22 @@ async function submitContact() {
   var btn = document.getElementById('cf-btn');
   btn.textContent = 'Versturen...';
   btn.style.opacity = '0.6';
+
+  var listingName = '';
+  var listingPrice = '';
+  var listingId = window.location.pathname.split('/').filter(Boolean).pop();
+  var destination = listingType === 'curacao' ? 'curacao' : 'cotedazur';
+
+  if (cur) {
+    listingName = listingType === 'curacao' ? (cur.name || '') : cleanHTML(cur.name || '');
+    if (listingType === 'curacao') {
+      listingPrice = cur.price_formatted || (cur.price ? fmt(cur.price) : '');
+    } else {
+      var p = parseInt((cur.prices && cur.prices.price) || 0);
+      listingPrice = p > 0 ? fmt(p) : '';
+    }
+  }
+
   try {
     await fetch('/api/send-email', {
       method: 'POST',
@@ -438,11 +560,11 @@ async function submitContact() {
       body: JSON.stringify({
         form_type: 'listing_inquiry',
         name: name, email: email, phone: phone,
-        message: msg || ('Interesse in: ' + (cur ? cleanHTML(cur.name) : '')),
-        listing_id: window.location.pathname.split('/').filter(Boolean).pop(),
-        listing_name: cur ? cleanHTML(cur.name) : '',
-        listing_price: cur && parseInt(cur.prices && cur.prices.price) > 0
-          ? fmt(parseInt(cur.prices.price)) : ''
+        message: msg || ('Interesse in: ' + listingName),
+        listing_id: listingId,
+        listing_name: listingName,
+        listing_price: listingPrice,
+        destination: destination
       })
     });
   } catch(e) {}
