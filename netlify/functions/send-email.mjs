@@ -50,7 +50,7 @@ export default async (req) => {
         Bedankt, ${name}.
       </h1>
       <p style="font-size:15px;color:rgba(244,242,238,0.65);line-height:1.8;margin:0 0 28px">
-        Uw aanvraag is ontvangen. Ons team neemt binnen <strong style="color:#F4F2EE">24 uur</strong> persoonlijk contact op met een selectie properties die perfect aansluiten bij uw wensen.
+        Uw aanvraag is ontvangen. We sturen u binnen <strong style="color:#F4F2EE">24 uur</strong> een email met een selectie.
       </p>
 
       <!-- Summary box -->
@@ -60,6 +60,35 @@ export default async (req) => {
         ${budget ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(244,242,238,0.06)"><span style="color:rgba(244,242,238,0.45);font-size:13px">Budget</span><span style="color:#F4F2EE;font-size:13px">${budget}</span></div>` : ''}
         ${phone ? `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid rgba(244,242,238,0.06)"><span style="color:rgba(244,242,238,0.45);font-size:13px">WhatsApp</span><span style="color:#F4F2EE;font-size:13px">${phone}</span></div>` : ''}
         ${message ? `<div style="padding:8px 0"><span style="color:rgba(244,242,238,0.45);font-size:13px;display:block;margin-bottom:6px">Uw bericht</span><span style="color:#F4F2EE;font-size:13px">${message}</span></div>` : ''}
+      </div>
+
+      <!-- Voorkeuren sectie -->
+      <div style="background:rgba(244,242,238,0.03);border:1px solid rgba(244,242,238,0.08);border-radius:4px;padding:24px;margin-bottom:32px">
+        <div style="font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:#C8A96A;margin-bottom:12px">Pas uw voorkeuren aan</div>
+        <p style="font-size:13px;color:rgba(244,242,238,0.6);line-height:1.7;margin:0 0 16px">
+          Hoe wilt u dat we contact met u opnemen? Kies hieronder uw voorkeur:
+        </p>
+        
+        <div style="margin-bottom:12px">
+          <a href="https://trovai.nl/voorkeuren?email=${encodeURIComponent(email)}&pref=call" 
+             style="display:inline-block;background:rgba(200,169,106,0.15);border:1px solid rgba(200,169,106,0.3);color:#C8A96A;padding:10px 20px;border-radius:3px;text-decoration:none;font-size:13px;margin-right:8px;margin-bottom:8px">
+            📞 Bel mij graag binnen 24 uur
+          </a>
+          <a href="https://trovai.nl/voorkeuren?email=${encodeURIComponent(email)}&pref=whatsapp" 
+             style="display:inline-block;background:rgba(200,169,106,0.15);border:1px solid rgba(200,169,106,0.3);color:#C8A96A;padding:10px 20px;border-radius:3px;text-decoration:none;font-size:13px;margin-right:8px;margin-bottom:8px">
+            💬 WhatsApp is prima
+          </a>
+        </div>
+        <div>
+          <a href="https://trovai.nl/voorkeuren?email=${encodeURIComponent(email)}&pref=email" 
+             style="display:inline-block;background:rgba(244,242,238,0.05);border:1px solid rgba(244,242,238,0.1);color:rgba(244,242,238,0.7);padding:10px 20px;border-radius:3px;text-decoration:none;font-size:13px;margin-bottom:8px">
+            ✉️ Email is voldoende, bel me niet
+          </a>
+        </div>
+        
+        <p style="font-size:11px;color:rgba(244,242,238,0.35);margin:16px 0 0;line-height:1.5">
+          Geen keuze gemaakt? Dan sturen we u standaard een email. U kunt ons daarna altijd bereiken via de contactgegevens hieronder.
+        </p>
       </div>
 
       <p style="font-size:14px;color:rgba(244,242,238,0.5);line-height:1.7;margin:0 0 8px">
