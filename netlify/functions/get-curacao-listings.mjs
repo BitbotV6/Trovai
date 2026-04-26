@@ -211,7 +211,7 @@ export default async (req) => {
         const sqmRaw = sqmMatch ? parseInt(sqmMatch[1].replace(/[.,]/g, '')) : 0;
         const sqm = sqmRaw || (sqft ? Math.round(sqft * 0.0929) : 0);
 
-        const imgMatch = block.match(/<img[^>]+(?:src|data-src|data-lazy-src)="(https:\/\/athomecuracao\.com\/wp-content\/uploads\/[^"]+\.(?:jpg|jpeg|png|webp))"/i);
+        const imgMatch = block.match(/<img[^>]+(?:src|data-src|data-lazy-src)="(https:\/\/athomecuracao\.com\/wp-content\/uploads\/[^"]+?\.(?:jpg|jpeg|png|webp)(?:\?[^"]*)?)"/i);
         const image = imgMatch ? imgMatch[1] : '';
 
         let category = 'Woning';
