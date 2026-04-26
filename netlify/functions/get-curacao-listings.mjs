@@ -29,7 +29,7 @@ function parseBudget(str) {
 function decode(s) {
   if (!s) return '';
   return String(s)
-    .replace(/&#8211;/g, '–').replace(/&#8217;/g, "'")
+    .replace(/&#8211;/g, '-').replace(/&#8217;/g, "'")
     .replace(/&#8220;/g, '"').replace(/&#8221;/g, '"')
     .replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ')
     .replace(/&quot;/g, '"').replace(/&#039;/g, "'")
@@ -63,6 +63,60 @@ function formatPrice(amount, currency) {
   if (currency === 'EUR') return '€ ' + amount.toLocaleString('nl-NL');
   if (currency === 'USD') return 'USD ' + amount.toLocaleString('en-US');
   return amount + ' ' + currency;
+}
+
+const LINK_RE = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/i;
+const LINK_RE_G = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/gi;
+
+// Verzamelt listing-blokken uit de HTML. Primair: per <article> element (meest robuust,
+// elke article = 1 listing met natuurlijke grenzen). Fallback: link-based met begrenzing
+// tot de volgende link, voor het geval het WP-thema geen articles gebruikt.
+// Dezelfde ID kan meerdere keren voorkomen (preview-strook bovenaan + echte card lager)
+// - per ID kiezen we de variant waar een prijs in het blok staat.
+function collectMatches(html) {
+  const articleRe = /<article\b[^>]*>([\s\S]*?)<\/article>/gi;
+  const articles = [];
+  let am;
+  while ((am = articleRe.exec(html)) !== null) {
+    articles.push({ block: am[0], index: am.index });
+  }
+
+  const byId = new Map();
+
+  if (articles.length > 0) {
+    for (const a of articles) {
+      const lm = a.block.match(LINK_RE);
+      if (!lm) continue;
+      const id = lm[2];
+      if (!byId.has(id)) byId.set(id, []);
+      byId.get(id).push({ id, url: lm[1], index: a.index, block: a.block });
+    }
+  } else {
+    // Fallback: geen <article> tags - blok start exact bij de link, eindigt vóór volgende link
+    // Geen vooraf-bytes om prijs-bleed vanuit vorige listing te voorkomen
+    const allLinks = [];
+    let m;
+    while ((m = LINK_RE_G.exec(html)) !== null) {
+      allLinks.push({ id: m[2], url: m[1], index: m.index });
+    }
+    for (let i = 0; i < allLinks.length; i++) {
+      const cur = allLinks[i];
+      const nextIdx = i + 1 < allLinks.length ? allLinks[i + 1].index : html.length;
+      const end = Math.min(cur.index + 4000, nextIdx);
+      const block = html.substring(cur.index, end);
+      if (!byId.has(cur.id)) byId.set(cur.id, []);
+      byId.get(cur.id).push({ id: cur.id, url: cur.url, index: cur.index, block });
+    }
+  }
+
+  // Per ID: kies kandidaat met prijs in blok, anders laatste kandidaat
+  const chosen = [];
+  for (const [id, candidates] of byId) {
+    let pick = candidates.find(c => parsePrices(c.block).amount > 0);
+    if (!pick) pick = candidates[candidates.length - 1];
+    chosen.push(pick);
+  }
+  return chosen;
 }
 
 async function fetchPage(path) {
@@ -100,6 +154,8 @@ export default async (req) => {
     if (debug) {
       const stats = pages.map((html, i) => {
         if (typeof html !== 'string') return { path: paths[i], err: html.err };
+        const all = collectMatches(html);
+        const withPrice = all.filter(c => parsePrices(c.block).amount > 0).length;
         return {
           path: paths[i],
           length: html.length,
@@ -108,24 +164,18 @@ export default async (req) => {
           article_count: (html.match(/<article/gi) || []).length,
           property_class_count: (html.match(/class="[^"]*property[^"]*"/gi) || []).length,
           listing_class_count: (html.match(/class="[^"]*listing[^"]*"/gi) || []).length,
-          nl_links: (html.match(/href="[^"]*-\d+-nl[^"]*"/gi) || []).slice(0, 3),
+          unique_ids: all.length,
+          ids_with_price: withPrice,
           first_h2: (html.match(/<h2[^>]*>[\s\S]{0,300}?<\/h2>/i) || ['(geen)'])[0]
         };
       });
       const blocks = [];
-      for (let i = 0; i < pages.length; i++) {
+      for (let i = 0; i < pages.length && blocks.length < 2; i++) {
         const html = pages[i];
         if (typeof html !== 'string') continue;
-        const linkRegex = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/gi;
-        let m;
-        while ((m = linkRegex.exec(html)) !== null && blocks.length < 2) {
-          const start = Math.max(0, m.index - 200);
-          const end = Math.min(html.length, m.index + 1800);
-          blocks.push({
-            url: m[1],
-            id: m[2],
-            block: html.substring(start, end)
-          });
+        const matches = collectMatches(html).slice(0, 2);
+        for (const c of matches) {
+          blocks.push({ url: c.url, id: c.id, block: c.block });
         }
       }
       return new Response(JSON.stringify({ debug: true, paths, stats, blocks }, null, 2), { status: 200, headers });
@@ -137,19 +187,8 @@ export default async (req) => {
       const html = pages[i];
       if (typeof html !== 'string') continue;
 
-      const linkRegex = /<a[^>]+href="(https:\/\/athomecuracao\.com\/[a-z0-9\/-]+-(\d+)-nl\/?)"/gi;
-      const seen = new Set();
-      let m;
-      while ((m = linkRegex.exec(html)) !== null) {
-        const url = m[1];
-        const id = m[2];
-        if (seen.has(id)) continue;
-        seen.add(id);
-
-        // Block: 200 chars voor en 1800 chars na de link
-        const start = Math.max(0, m.index - 200);
-        const end = Math.min(html.length, m.index + 1800);
-        const block = html.substring(start, end);
+      const chosen = collectMatches(html);
+      for (const { id, url, block } of chosen) {
 
         // Titel
         let title = '';
@@ -202,13 +241,22 @@ export default async (req) => {
       }
     }
 
+    // Dedupe op id (kan voorkomen als zelfde listing op meerdere paths staat)
+    const dedup = new Map();
+    for (const l of allListings) {
+      if (!dedup.has(l.id) || (dedup.get(l.id).price === 0 && l.price > 0)) {
+        dedup.set(l.id, l);
+      }
+    }
+    const unique = [...dedup.values()];
+
     // Filter: bedrag >= MIN_PRICE en in budgetrange (zelfde getal-vergelijking, ongeacht valuta)
-    let filtered = allListings.filter(l =>
+    let filtered = unique.filter(l =>
       l.price >= MIN_PRICE && l.price >= minPrice * 0.8 && l.price <= maxPrice * 1.3
     );
 
     if (filtered.length < 3) {
-      filtered = allListings.filter(l => l.price >= MIN_PRICE);
+      filtered = unique.filter(l => l.price >= MIN_PRICE);
     }
 
     filtered.sort((a, b) => b.price - a.price);
@@ -218,7 +266,7 @@ export default async (req) => {
       total: filtered.length,
       source: 'athomecuracao.com',
       partner: 'At Home Curaçao',
-      filters: { property_type, minPrice, maxPrice, area, raw_count: allListings.length }
+      filters: { property_type, minPrice, maxPrice, area, raw_count: unique.length }
     }), { status: 200, headers });
 
   } catch (err) {
