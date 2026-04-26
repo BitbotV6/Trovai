@@ -451,6 +451,37 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 
 <!-- QUIZ -->
 <section class="showcase-section"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op de Côte d’Azur</h2><p class="sc-sub">Handgepickte woningen boven € 800.000 · Gratis begeleiding voor kopers</p></div><div class="sc-grid"><a href="/listing/3599285" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/95bf74851f215b7f64f6f7234f2065e6_467b1c251a_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Le Tignet</div><div class="sc-name">Elegant bastide overlooking the Cannes countr</div><div class="sc-price">€ 2.300.000</div><div class="sc-meta">6 slaapkamers</div></div></a><a href="/listing/3599138" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df05f56abaeb16519f369884f89ffb42_cb6d27febf_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Grasse</div><div class="sc-name">Villa for sale in Grasse</div><div class="sc-price">€ 1.850.000</div><div class="sc-meta">4 slaapkamers</div></div></a><a href="/listing/3599130" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df0c40f7aa1b2936861b2f972b7073f3_d618115913_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Theoule sur Mer</div><div class="sc-name">Exceptional Contemporary Villa for sale in Th</div><div class="sc-price">€ 15.225.000</div><div class="sc-meta">7 slaapkamers</div></div></a><a href="/listing/3599203" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Nice</div><div class="sc-name">NICE – PORT DISTRICT – TOP FLOOR – 2-BEDROOM </div><div class="sc-price">€ 875.000</div><div class="sc-meta">2 slaapkamers</div></div></a><a href="/listing/3599146" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/1d770df7d6491f6f88ab3bc7671a0ff0_bb17d2d986_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Cannes</div><div class="sc-name">Bourgeois Apartment For Sale in Cannes</div><div class="sc-price">€ 885.000</div><div class="sc-meta">2 slaapkamers</div></div></a></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
+<section class="showcase-section" id="curacao-showcase" style="display:none"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op Curaçao</h2><p class="sc-sub">Handgepickte woningen boven € 400.000 · i.s.m. At Home Curaçao</p></div><div class="sc-grid" id="cur-sc-grid"></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
+<script>
+(async function loadCuracaoShowcase(){
+  try {
+    const r = await fetch('/api/get-curacao-listings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ property_type: 'open', budget: '€ 1.500.000' })
+    });
+    if (!r.ok) return;
+    const data = await r.json();
+    if (!data.listings || data.listings.length === 0) return;
+    const grid = document.getElementById('cur-sc-grid');
+    if (!grid) return;
+    const escAttr = s => String(s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    const escText = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    grid.innerHTML = data.listings.slice(0, 5).map(function(p){
+      var imgPart = p.image
+        ? '<div class="sc-img" style="background-image:url(' + escAttr(p.image) + ')"><div class="sc-tag">' + escText(p.category||'Woning') + '</div></div>'
+        : '<div class="sc-img" style="background:#1a1a1a"><div class="sc-tag">' + escText(p.category||'Woning') + '</div></div>';
+      var bedsPart = p.beds ? '<div class="sc-meta">' + escText(p.beds) + '</div>' : '';
+      return '<a href="/listing/' + escAttr(p.id) + '" class="sc-card">' + imgPart +
+        '<div class="sc-body"><div class="sc-location">' + escText(p.city||'Curaçao') + '</div>' +
+        '<div class="sc-name">' + escText(p.name) + '</div>' +
+        '<div class="sc-price">' + escText(p.price_formatted) + '</div>' +
+        bedsPart + '</div></a>';
+    }).join('');
+    document.getElementById('curacao-showcase').style.display = '';
+  } catch(e) {}
+})();
+</script>
 <section class="quiz-section" id="quiz">
   <div style="max-width:1200px;margin:0 auto">
     <div class="section-pre">Start uw zoekopdracht</div>
