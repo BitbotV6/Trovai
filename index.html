@@ -822,7 +822,12 @@ async function submitQ(){
       const data=await res.json();
       document.getElementById('qr-loading').style.display='none';
       const al={nice:"Nice & surroundings",cannes:"Cannes & Antibes",monaco:"de Monaco regio",hinterland:"het achterland"};
-      document.getElementById('qr-text').textContent=`Trovai AI matcht ${data.total||''}+ live woningen en selecteerde de beste match voor uw profiel in ${al[area]||"the Côte d'Azur"} binnen ${budget||'uw budget'}.`;
+      
+      const cu={jan_thiel:"Jan Thiel",piscadera:"Piscadera Bay",willemstad:"Willemstad",westpunt:"Westpunt",vredenberg:"Vredenberg",blue_bay:"Blue Bay"};
+      const locLabel = dest==='curacao' ? (cu[area]||"Curaçao")
+                     : dest==='both' ? "de Côte d'Azur en Curaçao"
+                     : (al[area]||"the Côte d'Azur");
+      document.getElementById('qr-text').textContent=`Trovai AI matcht ${data.total||''}+ live woningen en selecteerde de beste match voor uw profiel in ${locLabel} binnen ${budget||'uw budget'}.`;
       if(data.listings&&data.listings.length>0){
         document.getElementById('qr-props').innerHTML=data.listings.map(p=>`<div class="q-prop">${p.image?`<img class="q-prop-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`:''}<div class="q-prop-body"><div class="q-prop-loc">${p.city||'Côte d\'Azur'} · ${p.category||''}</div><div class="q-prop-type">${p.name}</div><div class="q-prop-price">${p.price_formatted}</div>${p.beds?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${p.beds}${p.surface?' · '+p.surface:''}</div>`:''}<a class="q-prop-link" href="${p.url}" target="_blank" rel="noopener">Bekijk listing →</a></div></div>`).join('');
       }else{showStaticProps(dest,area,budget);}
@@ -838,7 +843,11 @@ async function submitQ(){
 }
 function showStaticProps(dest,area,budget){
   const al={nice:"Nice",cannes:"Cannes",monaco:"Monaco",hinterland:"Hinterland"};
-  document.getElementById('qr-text').textContent=`Trovai AI heeft een selectie samengesteld voor ${al[area]||"de Côte d'Azur"} binnen ${budget||'uw budget'}. Uw persoonlijke portfolio arriveert binnen 24 uur.`;
+  const cu={jan_thiel:"Jan Thiel",piscadera:"Piscadera Bay",willemstad:"Willemstad",westpunt:"Westpunt",vredenberg:"Vredenberg",blue_bay:"Blue Bay"};
+  const locLabel = dest==='curacao' ? (cu[area]||"Curaçao")
+                 : dest==='both' ? "de Côte d'Azur en Curaçao"
+                 : (al[area]||"de Côte d'Azur");
+  document.getElementById('qr-text').textContent=`Trovai AI heeft een selectie samengesteld voor ${locLabel} binnen ${budget||'uw budget'}. Uw persoonlijke portfolio arriveert binnen 24 uur.`;
   document.getElementById('qr-props').innerHTML='<div style="font-size:12px;color:var(--muted);padding:8px 0">Uw gepersonaliseerde selectie wordt per email verstuurd.</div>';
 }
 
