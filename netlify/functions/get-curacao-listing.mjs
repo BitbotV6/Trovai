@@ -19,21 +19,31 @@ function decode(s) {
 
 // Parseert prijs zonder valuta-conversie. Behoudt exact het bedrag en de valuta zoals op de bron staat.
 function parsePrices(html) {
-  // EUR eerst (vaste prijs / euro-teken)
-  const eurMatch = html.match(/vaste\s*prijs\s*in:\s*€\s*([\d.,]+)/i)
-                || html.match(/€\s*([\d.,]+)(?!\s*\.--)/);
-  if (eurMatch) {
-    const num = parseInt(eurMatch[1].replace(/[.,]/g, '')) || 0;
-    if (num > 1000) return { amount: num, currency: 'EUR' };
+  // Eerst proberen: hoofd property-price sectie (meest betrouwbaar)
+  const mainPriceMatch = html.match(/<span class="property-price">(?:<strong>.*?<\/strong>)?<span>\s*(USD|€)\s*([\d.,]+)/i);
+  if (mainPriceMatch) {
+    const currency = mainPriceMatch[1] === 'USD' ? 'USD' : 'EUR';
+    const num = parseInt(mainPriceMatch[2].replace(/[.,]/g, '')) || 0;
+    if (num > 1000) return { amount: num, currency };
   }
-  // USD daarna
-  const usdMatch = html.match(/vaste\s*prijs\s*in:\s*US\$?\s*([\d.,]+)/i)
-                || html.match(/USD\s*([\d.,]+)/i)
-                || html.match(/US\$\s*([\d.,]+)/i);
+
+  // Voor Curaçao: USD eerst, dan EUR (USD is primaire valuta op eiland)
+  const usdMatch = html.match(/vaste\s*prijs\s*in\s*USD[:\s]+US\$?\s*([\d.,]+)/i)
+                || html.match(/<span[^>]*>USD<\/span>\s*<span[^>]*>\s*([\d.,]+)/i)
+                || html.match(/USD[\s$]*([\d.,]+)[,.-]{2}/i);
   if (usdMatch) {
     const num = parseInt(usdMatch[1].replace(/[.,]/g, '')) || 0;
     if (num > 1000) return { amount: num, currency: 'USD' };
   }
+
+  // EUR als fallback
+  const eurMatch = html.match(/vaste\s*prijs\s*in\s*Euros?[:\s]+€\s*([\d.,]+)/i)
+                || html.match(/<span[^>]*>€<\/span>\s*<span[^>]*>\s*([\d.,]+)/i);
+  if (eurMatch) {
+    const num = parseInt(eurMatch[1].replace(/[.,]/g, '')) || 0;
+    if (num > 1000) return { amount: num, currency: 'EUR' };
+  }
+
   return { amount: 0, currency: null };
 }
 
