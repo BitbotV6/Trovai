@@ -176,6 +176,24 @@ export default async (req) => {
     const html = await fetchDetail(sourceUrl);
     const data = parseDetail(html, id, sourceUrl);
 
+    if (new URL(req.url).searchParams.get('debug') === '1') {
+      const _eurAll = [...html.matchAll(/\u20ac\s*[\d.,]+(?:[.,]--)?/g)].slice(0,15).map(m => m[0]);
+      const _usdAll = [...html.matchAll(/(?:USD|US\$|\$)\s*[\d.,]+/g)].slice(0,15).map(m => m[0]);
+      const _propMatch = html.match(/<span[^>]*property-price[^>]*>([\s\S]{0,800})<\/span>/i);
+      const _vasteAll = [...html.matchAll(/vaste\s*prijs[^<]{0,80}/gi)].map(m => m[0]);
+      const _teKoopIdx = html.search(/Te\s*Koop/i);
+      return new Response(JSON.stringify({
+        _debug: true,
+        parsed: { price: data.price, currency: data.currency, fmt: data.price_formatted, beds: data.beds, baths: data.baths },
+        eurMatches: _eurAll,
+        usdMatches: _usdAll,
+        vasteHits: _vasteAll,
+        propertyPriceSpan: _propMatch ? _propMatch[0].slice(0, 800) : null,
+        teKoopAt: _teKoopIdx,
+        teKoopCtx: _teKoopIdx >= 0 ? html.slice(_teKoopIdx, _teKoopIdx + 400) : null,
+        htmlLen: html.length
+      }, null, 2), { status: 200, headers });
+    }
     return new Response(JSON.stringify(data), { status: 200, headers });
 
   } catch (err) {
