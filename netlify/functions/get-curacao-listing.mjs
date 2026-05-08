@@ -19,34 +19,39 @@ function decode(s) {
 
 // Parseert prijs zonder valuta-conversie. Behoudt exact het bedrag en de valuta zoals op de bron staat.
 function parsePrices(html) {
-  // Eerst proberen: hoofd property-price sectie (meest betrouwbaar)
-  const mainPriceMatch = html.match(/<span class="property-price">(?:<strong>.*?<\/strong>)?<span>\s*(USD|€)\s*([\d.,]+)/i);
-  if (mainPriceMatch) {
-    const currency = mainPriceMatch[1] === 'USD' ? 'USD' : 'EUR';
-    const num = parseInt(mainPriceMatch[2].replace(/[.,]/g, '')) || 0;
-    if (num > 1000) return { amount: num, currency };
+  // 1. PRIMAIR: vaste prijs in Euros (owner-set prijs voor Curacao listings, stabiel)
+  const eurVaste = html.match(/vaste\s*prijs\s*in\s*Euros?[:\s]+€\s*([\d.,]+)/i);
+  if (eurVaste) {
+    const num = parseInt(eurVaste[1].replace(/[.,]/g, '')) || 0;
+    if (num > 1000) return { amount: num, currency: 'EUR' };
   }
 
-  // Voor Curaçao: USD eerst, dan EUR (USD is primaire valuta op eiland)
-  const usdMatch = html.match(/vaste\s*prijs\s*in\s*USD[:\s]+US\$?\s*([\d.,]+)/i)
-                || html.match(/<span[^>]*>USD<\/span>\s*<span[^>]*>\s*([\d.,]+)/i)
-                || html.match(/USD[\s$]*([\d.,]+)[,.-]{2}/i);
-  if (usdMatch) {
-    const num = parseInt(usdMatch[1].replace(/[.,]/g, '')) || 0;
+  // 2. FALLBACK: vaste prijs in USD (alleen letterlijk "USD", niet "US$")
+  const usdVaste = html.match(/vaste\s*prijs\s*in\s*USD[:\s]+US\$?\s*([\d.,]+)/i);
+  if (usdVaste) {
+    const num = parseInt(usdVaste[1].replace(/[.,]/g, '')) || 0;
     if (num > 1000) return { amount: num, currency: 'USD' };
   }
 
-  // EUR als fallback
-  const eurMatch = html.match(/vaste\s*prijs\s*in\s*Euros?[:\s]+€\s*([\d.,]+)/i)
-                || html.match(/<span[^>]*>€<\/span>\s*<span[^>]*>\s*([\d.,]+)/i);
-  if (eurMatch) {
-    const num = parseInt(eurMatch[1].replace(/[.,]/g, '')) || 0;
-    if (num > 1000) return { amount: num, currency: 'EUR' };
+  // 3. FALLBACK: property-price span - HTML strippen, dan EUR/USD eruit
+  const propIdx = html.search(/<span[^>]*class="property-price"/i);
+  if (propIdx >= 0) {
+    const window_ = html.slice(propIdx, propIdx + 1500);
+    const stripped = window_.replace(/<[^>]+>/g, ' ').replace(/&nbsp;/g, ' ').replace(/\s+/g, ' ');
+    const e = stripped.match(/€\s*([\d.,]+)/);
+    if (e) {
+      const num = parseInt(e[1].replace(/[.,]/g, '')) || 0;
+      if (num > 1000) return { amount: num, currency: 'EUR' };
+    }
+    const u = stripped.match(/USD\s*([\d.,]+)/i);
+    if (u) {
+      const num = parseInt(u[1].replace(/[.,]/g, '')) || 0;
+      if (num > 1000) return { amount: num, currency: 'USD' };
+    }
   }
 
   return { amount: 0, currency: null };
 }
-
 function formatPrice(amount, currency) {
   if (!amount || !currency) return 'Prijs op aanvraag';
   if (currency === 'EUR') return '€ ' + amount.toLocaleString('nl-NL');
@@ -108,8 +113,8 @@ function parseDetail(html, id, sourceUrl) {
   const prices = parsePrices(html);
 
   // Specs
-  const bedsMatch = html.match(/(\d+)\s*slaapkamer/i) || html.match(/Beds[:\s]*(\d+)/i);
-  const bathsMatch = html.match(/(\d+)\s*badkamer/i) || html.match(/Baths[:\s]*(\d+)/i);
+  const bedsMatch = html.match(/(\d+)\s*slaapkamer/i) || html.match(/Beds[:\s]*(\d+)/i) || html.match(/Slaapkamer\w*[\s\S]{0,150}?>\s*(\d+)/i) || html.match(/Beds?\b[\s\S]{0,150}?>\s*(\d+)/i);
+  const bathsMatch = html.match(/(\d+)\s*badkamer/i) || html.match(/Baths[:\s]*(\d+)/i) || html.match(/Badkamer\w*[\s\S]{0,150}?>\s*(\d+)/i) || html.match(/Baths?\b[\s\S]{0,150}?>\s*(\d+)/i);
   const sqftMatch = html.match(/(\d+)\s*sq\s*ft/i);
   const sqmMatch = html.match(/(\d+)\s*m[²2]/i);
 
@@ -176,24 +181,6 @@ export default async (req) => {
     const html = await fetchDetail(sourceUrl);
     const data = parseDetail(html, id, sourceUrl);
 
-    if (new URL(req.url).searchParams.get('debug') === '1') {
-      const _eurAll = [...html.matchAll(/\u20ac\s*[\d.,]+(?:[.,]--)?/g)].slice(0,15).map(m => m[0]);
-      const _usdAll = [...html.matchAll(/(?:USD|US\$|\$)\s*[\d.,]+/g)].slice(0,15).map(m => m[0]);
-      const _propMatch = html.match(/<span[^>]*property-price[^>]*>([\s\S]{0,800})<\/span>/i);
-      const _vasteAll = [...html.matchAll(/vaste\s*prijs[^<]{0,80}/gi)].map(m => m[0]);
-      const _teKoopIdx = html.search(/Te\s*Koop/i);
-      return new Response(JSON.stringify({
-        _debug: true,
-        parsed: { price: data.price, currency: data.currency, fmt: data.price_formatted, beds: data.beds, baths: data.baths },
-        eurMatches: _eurAll,
-        usdMatches: _usdAll,
-        vasteHits: _vasteAll,
-        propertyPriceSpan: _propMatch ? _propMatch[0].slice(0, 800) : null,
-        teKoopAt: _teKoopIdx,
-        teKoopCtx: _teKoopIdx >= 0 ? html.slice(_teKoopIdx, _teKoopIdx + 400) : null,
-        htmlLen: html.length
-      }, null, 2), { status: 200, headers });
-    }
     return new Response(JSON.stringify(data), { status: 200, headers });
 
   } catch (err) {
