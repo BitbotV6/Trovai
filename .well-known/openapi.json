@@ -1,0 +1,135 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Trovai Listings API",
+    "version": "1.0.0",
+    "summary": "Read-only zoek- en detailendpoints voor luxe vastgoed aan de Côte d'Azur en op Curaçao.",
+    "description": "Publieke endpoints van Trovai (trovai.nl). Prijzen worden getoond in de oorspronkelijke valuta van de bron (EUR voor de Côte d'Azur, USD voor Curaçao) en worden niet omgerekend.",
+    "contact": {
+      "name": "Trovai",
+      "email": "info@trovai.nl",
+      "url": "https://trovai.nl/"
+    }
+  },
+  "servers": [
+    { "url": "https://trovai.nl/api", "description": "Productie" }
+  ],
+  "paths": {
+    "/get-listings": {
+      "post": {
+        "operationId": "searchListings",
+        "summary": "Zoek listings aan de Côte d'Azur of op Curaçao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "destination": {
+                    "type": "string",
+                    "enum": ["cote-dazur", "curacao"],
+                    "default": "cote-dazur",
+                    "description": "Bestemming. 'curacao' routeert intern door naar de Curaçao-bron."
+                  },
+                  "property_type": {
+                    "type": "string",
+                    "enum": ["villa", "apartment", "estate", "open"],
+                    "description": "Type woning. 'open' = geen filter."
+                  },
+                  "budget": {
+                    "type": "string",
+                    "description": "Budget als tekst, bijv. '€ 1.000.000' of '2.000.000+'. Minimum Côte d'Azur is € 800.000."
+                  },
+                  "area": {
+                    "type": "string",
+                    "description": "Gewenst gebied of stad, bijv. 'Cannes' of 'Jan Thiel'."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Lijst met gevonden listings",
+            "content": { "application/json": {} }
+          },
+          "405": { "description": "Methode niet toegestaan (alleen POST)" }
+        }
+      }
+    },
+    "/get-curacao-listings": {
+      "post": {
+        "operationId": "searchCuracaoListings",
+        "summary": "Zoek listings op Curaçao",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "property_type": {
+                    "type": "string",
+                    "enum": ["villa", "apartment", "estate", "open"],
+                    "default": "open"
+                  },
+                  "budget": {
+                    "type": "string",
+                    "description": "Budget als tekst. Prijzen in USD; minimum Curaçao is $ 400.000."
+                  },
+                  "area": { "type": "string", "description": "Gebied op Curaçao, bijv. 'Jan Thiel' of 'Blauwbaai'." }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": { "description": "Lijst met Curaçao-listings", "content": { "application/json": {} } },
+          "405": { "description": "Methode niet toegestaan (alleen POST)" }
+        }
+      }
+    },
+    "/get-listing": {
+      "get": {
+        "operationId": "getListing",
+        "summary": "Haal één Côte d'Azur-listing op",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "integer" },
+            "description": "Numeriek listing-ID."
+          }
+        ],
+        "responses": {
+          "200": { "description": "De gevraagde listing", "content": { "application/json": {} } },
+          "400": { "description": "Ontbrekend of ongeldig ID" },
+          "404": { "description": "Listing niet gevonden" }
+        }
+      }
+    },
+    "/get-curacao-listing": {
+      "get": {
+        "operationId": "getCuracaoListing",
+        "summary": "Haal één Curaçao-listing op",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "schema": { "type": "string" },
+            "description": "Listing-ID."
+          }
+        ],
+        "responses": {
+          "200": { "description": "De gevraagde listing", "content": { "application/json": {} } },
+          "400": { "description": "Ontbrekend of ongeldig ID" },
+          "404": { "description": "Listing niet gevonden" }
+        }
+      }
+    }
+  }
+}
