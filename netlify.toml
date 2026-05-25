@@ -32,6 +32,20 @@
   [headers.values]
     X-Frame-Options = "DENY"
     X-Content-Type-Options = "nosniff"
+    Link = "</.well-known/api-catalog>; rel=\"api-catalog\", </sitemap.xml>; rel=\"sitemap\""
+
+# Agent discovery: serve the API catalog with the correct media type (RFC 9727)
+[[headers]]
+  for = "/.well-known/api-catalog"
+  [headers.values]
+    Content-Type = "application/linkset+json"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/.well-known/openapi.json"
+  [headers.values]
+    Content-Type = "application/openapi+json"
+    Cache-Control = "public, max-age=3600"
 
 # UTF-8 charset
 [[headers]]
