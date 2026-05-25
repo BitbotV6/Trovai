@@ -1,0 +1,39 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://trovai.nl/api/",
+      "service-desc": [
+        {
+          "href": "https://trovai.nl/.well-known/openapi.json",
+          "type": "application/openapi+json",
+          "title": "Trovai listings API – OpenAPI description"
+        }
+      ],
+      "service-doc": [
+        {
+          "href": "https://trovai.nl/",
+          "type": "text/html",
+          "title": "Trovai – luxe vastgoed Côte d'Azur & Curaçao"
+        }
+      ]
+    },
+    {
+      "anchor": "https://trovai.nl/api/get-listings",
+      "service-desc": [
+        {
+          "href": "https://trovai.nl/.well-known/openapi.json",
+          "type": "application/openapi+json"
+        }
+      ]
+    },
+    {
+      "anchor": "https://trovai.nl/api/get-curacao-listings",
+      "service-desc": [
+        {
+          "href": "https://trovai.nl/.well-known/openapi.json",
+          "type": "application/openapi+json"
+        }
+      ]
+    }
+  ]
+}
