@@ -15,3 +15,4 @@ User-agent: anthropic-ai
 Disallow: /
 
 Sitemap: https://trovai.nl/sitemap.xml
+Sitemap: https://trovai.nl/sitemap-listings.xml
