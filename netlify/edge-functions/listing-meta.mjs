@@ -62,10 +62,12 @@ function slugifyCity(name) {
 
 function typeLabel(cat) {
   const c = (cat || "").toLowerCase();
+  // Volgorde: villa/landgoed vóór appartement, zodat "villa met appartement"
+  // niet als Appartement wordt gelabeld.
   if (c.includes("penthouse")) return "Penthouse";
-  if (c.includes("appartement") || c.includes("apartment") || c.includes("flat")) return "Appartement";
   if (c.includes("villa")) return "Villa";
   if (c.includes("bastide") || c.includes("mas") || c.includes("domaine") || c.includes("estate") || c.includes("landgoed")) return "Landgoed";
+  if (c.includes("appartement") || c.includes("apartment") || c.includes("flat")) return "Appartement";
   if (c.includes("maison") || c.includes("house") || c.includes("huis") || c.includes("woning")) return "Woning";
   if (c.includes("terrain") || c.includes("plot") || c.includes("land") || c.includes("kavel") || c.includes("bouwgrond")) return "Bouwgrond";
   return "Woning";
