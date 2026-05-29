@@ -32,6 +32,57 @@ const REGION_LINKS = {
   },
 };
 
+// Korte gebiedscontext per stad/wijk (unieke, leesbare tekst i.p.v. dunne content).
+const AREA_CONTEXT = {
+  "Jan Thiel": "Jan Thiel is een van de meest geliefde gebieden van Curaçao, bekend om zijn boulevard, stranden en uitstekende voorzieningen.",
+  "Vista Royal": "Vista Royal is een gewilde, groene woonwijk vlak bij Jan Thiel en de mooiste stranden van het eiland.",
+  "Jan Sofat": "Jan Sofat is een exclusieve gated community aan het Spaanse Water, geliefd bij internationale kopers.",
+  "Boca Gentil": "Boca Gentil is een prestigieus resortgebied aan zee, met privéstranden en jachthavenfaciliteiten.",
+  "Willemstad": "Willemstad, de UNESCO-werelderfgoedhoofdstad, combineert historische charme met een levendig stadsleven.",
+  "Piscadera": "Piscadera ligt centraal aan de kust, dicht bij Willemstad, resorts en uitstekende duiklocaties.",
+  "Blue Bay": "Blue Bay is een beveiligd resort met golfbaan, eigen strand en een gewild internationaal karakter.",
+  "Coral Estate": "Coral Estate is een luxe kustresort aan de westkant van het eiland, met spectaculaire zonsondergangen.",
+  "Cannes": "Cannes staat wereldwijd bekend om zijn glamour, de Croisette en een uiterst stabiele luxe-vastgoedmarkt.",
+  "Nice": "Nice combineert een kosmopolitische stadssfeer met een eigen luchthaven en het hele jaar door een aangenaam klimaat.",
+  "Antibes": "Antibes en Cap d'Antibes behoren tot de meest exclusieve adressen van de Rivièra, met jachthavens en privévilla's.",
+  "Mougins": "Mougins is een geliefd kunstenaarsdorp boven Cannes, bekend om zijn rust, gastronomie en privacy.",
+  "Saint-Tropez": "Saint-Tropez is het iconische zomerse epicentrum van de Rivièra, met jachthaven, stranden en discrete landgoederen.",
+  "Théoule-sur-Mer": "Théoule-sur-Mer ligt aan de rode rotsen van het Estérel-massief, met uitzonderlijke zeezichten.",
+  "Grasse": "Grasse, de parfumhoofdstad, biedt authentieke Provençaalse charme op korte afstand van de kust.",
+  "Valbonne": "Valbonne is een geliefd Provençaals dorp in het achterland, dicht bij Sophia-Antipolis en de kust.",
+};
+
+// apimo-afbeeldingen hebben formaatvarianten (_1920/_1024/_800-original); kleiner = sneller.
+function optimizeImg(src, size) {
+  if (!src) return src;
+  if (src.includes("media.apimo.pro")) {
+    return src.replace("_1920-original", "_" + size + "-original").replace("_1024-original", "_" + size + "-original");
+  }
+  return src;
+}
+
+function joinNL(arr) {
+  if (arr.length <= 1) return arr.join("");
+  return arr.slice(0, -1).join(", ") + " en " + arr[arr.length - 1];
+}
+
+// Splitst lange tekstblokken in leesbare paragrafen van ~2-3 zinnen.
+function splitParas(text) {
+  const blocks = text.split(/\n\s*\n/).map((s) => s.trim()).filter(Boolean);
+  const out = [];
+  for (const block of blocks) {
+    if (block.length <= 320) { out.push(block); continue; }
+    const sentences = block.match(/[^.!?]+[.!?]+(?:\s|$)/g) || [block];
+    let buf = "";
+    for (const s of sentences) {
+      buf += s;
+      if (buf.length >= 240) { out.push(buf.trim()); buf = ""; }
+    }
+    if (buf.trim()) out.push(buf.trim());
+  }
+  return out;
+}
+
 function jsonScriptSafe(obj) {
   return JSON.stringify(obj).replace(/</g, "\\u003c").replace(/-->/g, "--\\>");
 }
@@ -220,29 +271,29 @@ function buildHeadInjection(d) {
   };
 }
 
-// Beschrijvende, unieke tekst per woning (locatie, kenmerken, context).
+// Beschrijvende, unieke tekst per woning: bronomschrijving (leesbaar opgedeeld)
+// + datagedreven samenvatting + gebiedscontext + Trovai-dienstverlening.
 function buildDescriptionHtml(d) {
-  const paras = (d.description || "")
-    .split(/\n\s*\n/)
-    .map((x) => x.trim())
-    .filter(Boolean);
-  let html = paras.map((p) => `<p>${htmlEscape(p)}</p>`).join("");
+  let src = (d.description || "").trim();
+  // Afgekapte bronzin netjes afronden (bv. "...comfort," -> "...comfort.").
+  if (src && !/[.!?"'）]$/.test(src)) src = src.replace(/[,;:\s]+$/, "") + ".";
+  const paras = src ? splitParas(src) : [];
 
-  const t = typeLabel(d.category);
-  const feat = [];
-  if (d.beds) feat.push(d.beds.toLowerCase().includes("slaapkamer") ? d.beds : d.beds + " slaapkamers");
-  if (d.surface) feat.push("een woonoppervlak van " + d.surface);
-  if (d.land) feat.push("een perceel van " + d.land);
-  const featTxt = feat.length ? " met " + feat.join(", ") : "";
+  const t = typeLabel(d.category).toLowerCase();
+  const feats = [];
+  if (d.beds) feats.push(d.beds.toLowerCase().includes("slaapkamer") ? d.beds : d.beds + " slaapkamers");
+  if (d.rooms) feats.push(d.rooms + " kamers");
+  if (d.surface) feats.push("een woonoppervlak van " + d.surface);
+  if (d.land) feats.push("een perceel van " + d.land);
+  const place = d.city && d.region && d.city !== d.region ? `${d.city}, ${d.region}` : (d.city || d.region);
+  const summary = `Deze ${t} in ${place} ${feats.length ? "beschikt over " + joinNL(feats) : "wordt aangeboden via Trovai"}. De vraagprijs bedraagt ${d.priceFormatted}.`;
 
-  const ctx =
-    `Deze ${t.toLowerCase()}${featTxt} bevindt zich in ${d.city || d.region}` +
-    `${d.city && d.region && d.city !== d.region ? `, ${d.region}` : ""}. ` +
-    `De vraagprijs bedraagt ${d.priceFormatted}. ` +
-    `${d.city || d.region} is een gewilde bestemming voor internationale kopers van luxe vastgoed. ` +
-    `Trovai begeleidt u als onafhankelijke private buyer's advisor van eerste bezichtiging tot aan de notaris — discreet en volledig aan uw zijde.`;
-  html += `<p>${htmlEscape(ctx)}</p>`;
-  return html;
+  const areaTxt = AREA_CONTEXT[d.city] || AREA_CONTEXT[d.region] ||
+    `${d.region} is een gewilde bestemming voor internationale kopers van luxe vastgoed.`;
+  const service = `Trovai begeleidt u als onafhankelijke private buyer's advisor — van eerste bezichtiging tot aan de notaris, discreet en volledig aan uw zijde.`;
+
+  return paras.concat([summary, areaTxt, service])
+    .map((p) => `<p>${htmlEscape(p)}</p>`).join("");
 }
 
 // Interne links: regio-hub, relevante stadspagina's en gerelateerde woningen.
@@ -340,7 +391,7 @@ export default async (request, context) => {
     .replace('<div class="desc-text" id="l-desc"></div>', `<div class="desc-text" id="l-desc">${buildDescriptionHtml(d)}</div>`)
     .replace(
       '<div class="gallery" id="l-gallery"></div>',
-      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(d.image)}" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
+      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(optimizeImg(d.image, 1024))}" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
     )
     // interne links-blok vlak voor </main>
     .replace(/<\/main>/i, buildRelatedHtml(d) + "</main>");
