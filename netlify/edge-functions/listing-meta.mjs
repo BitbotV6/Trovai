@@ -265,7 +265,7 @@ function buildNoscriptBody(d, title) {
     htmlEscape(descSnippet)
   }</p>
     <p style="font-size:14px;color:#A8B5A4;margin:0 0 12px">
-      Trovai begeleidt Nederlandse en Belgische kopers bij de aankoop van vastgoed op de Côte d'Azur en op Curaçao. Gratis voor kopers — commissie betaald door verkoper.
+      Trovai begeleidt internationale kopers bij de aankoop van vastgoed op de Côte d'Azur en op Curaçao. Onze advisering wordt aan verkoopzijde gefinancierd — volledige loyaliteit aan de koper.
     </p>
     <p style="font-size:14px">
       <a href="/${d.region_slug}" style="color:#C8A96A;margin-right:16px">Meer woningen in ${

@@ -16,7 +16,7 @@ const THEMAS = [
   { slug: 'cannes',       titel: 'Cannes vastgoedmarkt',      focus: 'Concreet over Cannes. Actuele prijzen, wijken, waarom het een stabiele investering is.' },
   { slug: 'curacao',      titel: 'Curaçao als investering',   focus: 'Waarom Curaçao onderschat wordt. Rendement, rechtssysteem, prijs. Gebruik actuele marktdata als die beschikbaar is.' },
   { slug: 'koopproces',   titel: 'Koopproces Frankrijk',      focus: 'Praktisch: hoe werkt een vastgoedkoop in Frankrijk. Compromis, notaris, kosten. Concreet en zonder jargon.' },
-  { slug: 'gratis',       titel: 'Hoe Trovai geld verdient',  focus: 'Transparant uitleggen waarom Trovai gratis is voor kopers. Het commissiemodel. Alignement van belangen.' },
+  { slug: 'verdienmodel', titel: 'Hoe Trovai geld verdient',  focus: 'Transparant uitleggen dat de advisering aan verkoopzijde wordt gefinancierd, met volledige loyaliteit aan de koper. Alignement van belangen.' },
   { slug: 'nice',         titel: 'Nice vastgoedmarkt',        focus: 'Nice als alternatief voor Cannes. Betaalbaarder, eigen luchthaven, levendig het hele jaar. Actuele marktinfo verwerken.' },
   { slug: 'saint-tropez', titel: 'Golf van Saint-Tropez',     focus: 'Saint-Tropez, Ramatuelle, Gassin. Zomer vs jaar-rond. Prijzen en alternatieven.' },
   { slug: 'fiscaal',      titel: 'Belasting tweede woning',   focus: 'Hoe werkt belasting op een Franse tweede woning vanuit Nederland. Box 3, verdrag, taxe foncière.' },
@@ -97,7 +97,7 @@ async function genereerPost(thema, context) {
 
   const vandaag = new Date().toLocaleDateString('nl-NL', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
 
-  const system = `Je bent de stem van Trovai (trovai.nl) op LinkedIn. Je schrijft in het Nederlands voor Nederlandse en Belgische kopers van luxe vastgoed op de Côte d'Azur en Curaçao.
+  const system = `Je bent de stem van Trovai (trovai.nl) op LinkedIn. Je schrijft in het Nederlands voor internationale Nederlandstalige kopers van luxe vastgoed op de Côte d'Azur en Curaçao.
 
 STIJLREGELS:
 - Schrijf vanuit Trovai als merk, niet vanuit een persoon ("ik")

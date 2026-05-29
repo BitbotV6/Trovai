@@ -11,7 +11,7 @@ const MARKTDATA = {
     offmarket_percentage: '40%', offmarket_drempel: 'boven 2 miljoen euro',
     topgebieden: ['Nice', 'Cannes', 'Antibes', 'Mougins', 'Monaco-corridor'],
     fiscale_structuur: 'SCI (familiale holding) voor erfbelastingoptimalisatie',
-    commissie: 'verkopende partij betaalt, koper betaalt niets aan Trovai',
+    commissie: 'advisering wordt aan verkoopzijde gefinancierd; volledige loyaliteit aan de koper',
   },
   curacao: {
     rendement: '6 tot 8 procent netto via Airbnb',
@@ -22,7 +22,7 @@ const MARKTDATA = {
   },
 };
 
-const SYSTEEM_PROMPT = `Je schrijft LinkedIn posts voor Trovai. Trovai is een Nederlandse AI-service die kopers begeleidt bij het kopen van een woning aan de Cote d'Azur of op Curacao. De service is gratis voor de koper.
+const SYSTEEM_PROMPT = `Je schrijft LinkedIn posts voor Trovai. Trovai is een AI-gedreven private buyer's advisory die internationale Nederlandstalige kopers begeleidt bij het kopen van een woning aan de Cote d'Azur of op Curacao. De advisering wordt aan verkoopzijde gefinancierd; de loyaliteit ligt volledig bij de koper.
 
 SCHRIJFREGELS (zonder uitzondering):
 Schrijf in de wij-vorm als Trovai.
@@ -50,7 +50,7 @@ const INSTRUCTIES = {
   mythe:              `Weerleg een misverstand met feiten. Begin met de mythe als stellende zin, dan de werkelijkheid in 2 tot 3 alineas met cijfers.`,
   marktupdate:        `Beknopte update over wat er nu beweegt. 2 tot 3 concrete signalen. Wat betekent dit voor een potentiele koper?`,
   vergelijking:       `Vergelijk Cote d'Azur en Curacao op een specifiek aspect. Beide kanten in 2 tot 3 zinnen. Geen conclusie, laat de lezer kiezen.`,
-  aankoopproces:      `Aankoopproces in alineas, geen lijst. Begin met een verrassing. Noem dat de service gratis is voor de koper.`,
+  aankoopproces:      `Aankoopproces in alineas, geen lijst. Begin met een verrassing. Noem dat de advisering aan verkoopzijde wordt gefinancierd, met volledige loyaliteit aan de koper.`,
   verhuur_strategie:  `Begin met een concreet verhuurcijfer. Welke periodes lucratief? Hoe werkt beheer? Vraag: verhuur, eigen gebruik, of beide?`,
   thought_leadership: `Observatie over hoe de markt verandert. Concreet inzicht. Warm, deskundig, menselijk. Geen verkooppraatje.`,
 };
