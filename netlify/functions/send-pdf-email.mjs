@@ -19,7 +19,7 @@ export default async (req) => {
 
     const destLabel = destination === 'cotedazur' ? "Côte d'Azur" : destination === 'curacao' ? 'Curaçao' : 'Côte d\'Azur & Curaçao';
     const typeLabel = { villa: 'Villa', apartment: 'Appartement', estate: 'Domaine / Estate', open: 'Alle types' }[property_type] || property_type;
-    const areaLabel = { nice: 'Nice & omgeving', cannes: 'Cannes & Antibes', monaco: 'Monaco & Menton', hinterland: 'Hinterland' }[area] || area || destLabel;
+    const areaLabel = { nice: 'Nice en omgeving', cannes: 'Cannes en Antibes', monaco: 'Monaco en Menton', hinterland: 'Achterland' }[area] || area || destLabel;
 
     const listingsHtml = (listings || []).map((l, i) => `
       <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:24px;border:1px solid #e8e4dc;border-radius:4px;overflow:hidden;background:#ffffff;">
@@ -105,7 +105,7 @@ export default async (req) => {
 
   <tr><td style="background:#f8f7f4;padding:36px 48px;border-top:1px solid #e8e4dc;">
     <div style="font-family:Georgia,serif;font-size:16px;color:#1a1a18;margin-bottom:8px;">Interesse in een of meerdere woningen?</div>
-    <div style="font-size:13px;color:#888;margin-bottom:20px;line-height:1.65;">Trovai begeleidt u gratis — de commissie wordt betaald door de verkoper.</div>
+    <div style="font-size:13px;color:#888;margin-bottom:20px;line-height:1.65;">Onze advisering wordt aan verkoopzijde gefinancierd — volledige loyaliteit aan de koper.</div>
     <table cellpadding="0" cellspacing="0"><tr>
       <td style="background:#C8A96A;border-radius:2px;margin-right:12px;">
         <a href="mailto:info@trovai.nl?subject=Interesse in mijn Trovai selectie" style="display:inline-block;padding:12px 28px;font-family:Arial,sans-serif;font-size:11px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#080A0F;text-decoration:none;">Email ons →</a>
@@ -124,7 +124,7 @@ export default async (req) => {
         <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-top:4px;">info@trovai.nl · trovai.nl · +31 6 11 38 05 62</div>
       </td>
       <td align="right" valign="middle">
-        <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.1em;text-transform:uppercase;">Gratis voor kopers</div>
+        <div style="font-size:10px;color:rgba(255,255,255,0.2);letter-spacing:0.1em;text-transform:uppercase;">Onafhankelijk · aan koperszijde</div>
       </td>
     </tr></table>
   </td></tr>

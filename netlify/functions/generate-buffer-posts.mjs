@@ -21,7 +21,7 @@ const MARKTDATA = {
     offmarket_drempel: 'boven 2 miljoen euro',
     topgebieden: ['Nice', 'Cannes', 'Antibes', 'Mougins', 'Monaco-corridor'],
     fiscale_structuur: 'SCI (familiale holding) voor erfbelastingoptimalisatie',
-    commissie: 'verkopende partij betaalt, koper betaalt niets aan Trovai',
+    commissie: 'advisering wordt aan verkoopzijde gefinancierd; volledige loyaliteit aan de koper',
     knight_frank: 'top 5 prime residentieel wereldwijd 2024',
   },
   curacao: {
@@ -62,7 +62,7 @@ const MATRIX = [
 
 const DUE_AT_UTC = { 3: 14, 4: 15, 5: 13 };
 
-const SYSTEEM_PROMPT = `Je schrijft LinkedIn posts voor Trovai. Trovai is een Nederlandse AI-service die kopers begeleidt bij het kopen van een woning aan de Cote d'Azur of op Curacao. De service is gratis voor de koper.
+const SYSTEEM_PROMPT = `Je schrijft LinkedIn posts voor Trovai. Trovai is een AI-gedreven private buyer's advisory die internationale Nederlandstalige kopers begeleidt bij het kopen van een woning aan de Cote d'Azur of op Curacao. De advisering wordt aan verkoopzijde gefinancierd; de loyaliteit ligt volledig bij de koper.
 
 SCHRIJFREGELS (zonder uitzondering):
 Schrijf in de wij-vorm als Trovai.
@@ -90,7 +90,7 @@ const INSTRUCTIES = {
   mythe:              `Weerleg een misverstand met feiten. Begin met de mythe als stellende zin, dan de werkelijkheid in 2 tot 3 alineas met cijfers.`,
   marktupdate:        `Beknopte update over wat er nu beweegt. 2 tot 3 concrete signalen. Wat betekent dit voor een potentiele koper?`,
   vergelijking:       `Vergelijk Cote d'Azur en Curacao op een specifiek aspect. Beide kanten in 2 tot 3 zinnen. Geen conclusie, laat de lezer kiezen.`,
-  aankoopproces:      `Aankoopproces in alineas, geen lijst. Begin met een verrassing. Noem dat de service gratis is voor de koper.`,
+  aankoopproces:      `Aankoopproces in alineas, geen lijst. Begin met een verrassing. Noem dat de advisering aan verkoopzijde wordt gefinancierd, met volledige loyaliteit aan de koper.`,
   verhuur_strategie:  `Begin met een concreet verhuurcijfer. Welke periodes lucratief? Hoe werkt beheer? Vraag: verhuur, eigen gebruik, of beide?`,
   thought_leadership: `Observatie over hoe de markt verandert. Concreet inzicht. Warm, deskundig, menselijk. Geen verkooppraatje.`,
 };
@@ -137,7 +137,7 @@ async function genereerPost(content) {
       model: 'claude-sonnet-4-5-20251022',
       max_tokens: 900,
       system: SYSTEEM_PROMPT,
-      messages: [{ role: 'user', content: `Schrijf een LinkedIn post voor Trovai.\nTYPE: ${content.type}\nINSTRUCTIE: ${INSTRUCTIES[content.type]}\nMARKTDATA:\n${JSON.stringify(marktData, null, 2)}\nCONTEXT: Seizoen ${seizoen}, doelgroep Nederlanders en Belgen budget 150.000 tot 5 miljoen euro.\n${content.link ? 'Link komt in eerste comment, NIET in de post.' : 'Geen link.'}\nAlleen de post tekst, geen aanhalingstekens of introductie.` }],
+      messages: [{ role: 'user', content: `Schrijf een LinkedIn post voor Trovai.\nTYPE: ${content.type}\nINSTRUCTIE: ${INSTRUCTIES[content.type]}\nMARKTDATA:\n${JSON.stringify(marktData, null, 2)}\nCONTEXT: Seizoen ${seizoen}, doelgroep internationale Nederlandstalige kopers budget 150.000 tot 5 miljoen euro.\n${content.link ? 'Link komt in eerste comment, NIET in de post.' : 'Geen link.'}\nAlleen de post tekst, geen aanhalingstekens of introductie.` }],
     }),
   });
   if (!res.ok) { const f = await res.text(); throw new Error(`Claude ${res.status}: ${f}`); }
@@ -145,15 +145,38 @@ async function genereerPost(content) {
   return data.content[0].text.trim();
 }
 
+function isWhitespace(ch) {
+  return ch === ' ' || ch === '\n' || ch === '\t' || ch === '\r' || ch === '\f' || ch === '\v';
+}
+
+function telWoorden(tekst) {
+  let n = 0, inWord = false;
+  for (const ch of tekst) {
+    if (isWhitespace(ch)) { inWord = false; }
+    else if (!inWord) { n++; inWord = true; }
+  }
+  return n;
+}
+
 function valideer(tekst) {
   const fouten = [];
   if (tekst.includes('—')) fouten.push('emdash');
   if (tekst.includes('*')) fouten.push('asterisk');
-  if (/in de huidige markt/i.test(tekst)) fouten.push('AI-cliche');
+  if (tekst.toLowerCase().includes('in de huidige markt')) fouten.push('AI-cliche');
   if (tekst.includes('http://') || tekst.includes('https://')) fouten.push('externe link in post');
-  const emojis = (tekst.match(/p{Emoji_Presentation}/gu) || []).length;
-  const hashtags = (tekst.match(/#w+/g) || []).length;
-  const woorden = tekst.split(/s+/).length;
+  // Emoji-telling zonder regex: tel codepoints in de emoji-plannen (>= U+1F000).
+  let emojis = 0;
+  for (const ch of tekst) { if (ch.codePointAt(0) >= 0x1F000) emojis++; }
+  // Hashtags zonder regex: tel '#' gevolgd door een letter of cijfer.
+  let hashtags = 0;
+  for (let i = 0; i < tekst.length - 1; i++) {
+    if (tekst[i] === '#') {
+      const n = tekst[i + 1];
+      const isLetterOrDigit = (n >= 'a' && n <= 'z') || (n >= 'A' && n <= 'Z') || (n >= '0' && n <= '9');
+      if (isLetterOrDigit) hashtags++;
+    }
+  }
+  const woorden = telWoorden(tekst);
   if (emojis > 2) fouten.push(emojis + ' emoji');
   if (hashtags > 5) fouten.push(hashtags + ' hashtags');
   if (woorden > 320) fouten.push('te lang ' + woorden);

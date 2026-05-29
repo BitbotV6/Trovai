@@ -272,7 +272,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 .sc-tag{position:absolute;top:12px;left:12px;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.45);background:rgba(8,10,15,0.75);backdrop-filter:blur(6px);padding:4px 10px;border-radius:2px}
 .sc-body{padding:18px 20px}
 .sc-location{font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.sc-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--white);margin-bottom:8px;line-height:1.3}
+.sc-name{font-family:'Instrument Serif',serif;font-size:16px;color:var(--white);margin-bottom:8px;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:42px}
 .sc-price{font-size:18px;font-family:'Instrument Serif',serif;color:var(--gold);margin-bottom:6px}
 .sc-meta{font-size:11px;color:var(--muted)}
 .sc-cta{text-align:center;padding-top:8px;border-top:0.5px solid var(--border)}
@@ -282,6 +282,12 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 @media(max-width:900px){.sc-grid{grid-template-columns:1fr 1fr}.showcase-inner{padding:0 20px}}
 @media(max-width:600px){.sc-grid{grid-template-columns:1fr}}
 
+/* EXPANSION MARKETS */
+.expansion-row{display:flex;align-items:center;justify-content:center;gap:18px;flex-wrap:wrap;margin-top:40px;padding-top:32px;border-top:0.5px solid var(--border)}
+.expansion-label{font-size:10px;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted)}
+.expansion-tags{display:flex;gap:10px;flex-wrap:wrap}
+.expansion-tag{font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.3);background:rgba(200,169,106,0.04);padding:6px 16px;border-radius:2px}
+@media(max-width:600px){.expansion-row{flex-direction:column;gap:14px}}
 </style>
 </head>
 <body>
@@ -351,7 +357,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
         <div class="dest-overlay"></div>
         <div class="dest-pattern"></div>
         <div class="dest-content">
-          <div class="dest-tag azure-tag">Frankrijk · Ibiza · Portugal · Dubai</div>
+          <div class="dest-tag azure-tag">Franse Rivièra · Menton tot Saint-Tropez</div>
           <div class="dest-name">Côte d'Azur</div>
           <p class="dest-desc">De Franse Rivièra — van Menton tot Saint-Tropez. 5.000+ woningen via ons partnernetwerk. Villa's van €800K tot €30M+. Off-market toegang inbegrepen.</p>
           <div class="dest-props">
@@ -378,6 +384,14 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
           </div>
           <a href="#quiz" class="dest-arrow">Bekijk Curaçao →</a>
         </div>
+      </div>
+    </div>
+    <div class="expansion-row">
+      <span class="expansion-label">Uitbreidingsmarkten · binnenkort</span>
+      <div class="expansion-tags">
+        <span class="expansion-tag">Ibiza</span>
+        <span class="expansion-tag">Portugal</span>
+        <span class="expansion-tag">Dubai</span>
       </div>
     </div>
   </div>
@@ -409,7 +423,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
             <div class="step-num">3</div>
             <div class="step-body">
               <h3>Persoonlijke expert neemt over</h3>
-              <p>Een expert beoordeelt uw AI-matched portfolio, voegt lokale context toe, regelt bezichtigingen en begeleidt u tot aan de notaris. Gratis voor de koper.</p>
+              <p>Een expert beoordeelt uw AI-matched portfolio, voegt lokale context toe, regelt bezichtigingen en begeleidt u tot aan de notaris. Onze advisering wordt aan verkoopzijde gefinancierd — volledige loyaliteit aan de koper.</p>
             </div>
           </div>
           <div class="how-step">
@@ -451,7 +465,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 </section>
 
 <!-- QUIZ -->
-<section class="showcase-section"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op de Côte d’Azur</h2><p class="sc-sub">Handgepickte woningen boven € 800.000 · Onafhankelijk advies</p></div><div class="sc-grid"><a href="/listing/3599285" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/95bf74851f215b7f64f6f7234f2065e6_467b1c251a_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Le Tignet</div><div class="sc-name">Elegant bastide overlooking the Cannes countr</div><div class="sc-price">€ 2.300.000</div><div class="sc-meta">6 slaapkamers</div></div></a><a href="/listing/3599138" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df05f56abaeb16519f369884f89ffb42_cb6d27febf_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Grasse</div><div class="sc-name">Villa for sale in Grasse</div><div class="sc-price">€ 1.850.000</div><div class="sc-meta">4 slaapkamers</div></div></a><a href="/listing/3599130" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df0c40f7aa1b2936861b2f972b7073f3_d618115913_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Theoule sur Mer</div><div class="sc-name">Exceptional Contemporary Villa for sale in Th</div><div class="sc-price">€ 15.225.000</div><div class="sc-meta">7 slaapkamers</div></div></a><a href="/listing/3599203" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Nice</div><div class="sc-name">NICE – PORT DISTRICT – TOP FLOOR – 2-BEDROOM </div><div class="sc-price">€ 875.000</div><div class="sc-meta">2 slaapkamers</div></div></a><a href="/listing/3599146" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/1d770df7d6491f6f88ab3bc7671a0ff0_bb17d2d986_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Cannes</div><div class="sc-name">Bourgeois Apartment For Sale in Cannes</div><div class="sc-price">€ 885.000</div><div class="sc-meta">2 slaapkamers</div></div></a></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
+<section class="showcase-section"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op de Côte d’Azur</h2><p class="sc-sub">Handgepickte woningen boven € 800.000 · Onafhankelijk advies</p></div><div class="sc-grid"><a href="/listing/3599285" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/95bf74851f215b7f64f6f7234f2065e6_467b1c251a_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Le Tignet</div><div class="sc-name">Elegant bastide overlooking the Cannes countryside</div><div class="sc-price">€ 2.300.000</div><div class="sc-meta">6 slaapkamers</div></div></a><a href="/listing/3599138" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df05f56abaeb16519f369884f89ffb42_cb6d27febf_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Grasse</div><div class="sc-name">Villa for sale in Grasse</div><div class="sc-price">€ 1.850.000</div><div class="sc-meta">4 slaapkamers</div></div></a><a href="/listing/3599130" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/df0c40f7aa1b2936861b2f972b7073f3_d618115913_1920-original.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Theoule sur Mer</div><div class="sc-name">Exceptional Contemporary Villa for sale in Theoule-sur-Mer</div><div class="sc-price">€ 15.225.000</div><div class="sc-meta">7 slaapkamers</div></div></a><a href="/listing/3599203" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Nice</div><div class="sc-name">Nice – beautiful apartment with panoramic view</div><div class="sc-price">€ 875.000</div><div class="sc-meta">2 slaapkamers</div></div></a><a href="/listing/3599146" class="sc-card"><div class="sc-img" style="background-image:url(https://media.apimo.pro/cache/1d770df7d6491f6f88ab3bc7671a0ff0_bb17d2d986_1920-original.jpg)"><div class="sc-tag">Appartement</div></div><div class="sc-body"><div class="sc-location">Cannes</div><div class="sc-name">Fifth-floor Bourgeois Apartment For Sale in Cannes</div><div class="sc-price">€ 885.000</div><div class="sc-meta">2 slaapkamers</div></div></a></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
 <section class="showcase-section" id="curacao-showcase"><div class="showcase-inner"><div class="sc-header"><div class="sc-label">Geselecteerde woningen</div><h2 class="sc-title">Luxe vastgoed op Curaçao</h2><p class="sc-sub">Handgepickte woningen boven € 400.000 · Onafhankelijk advies</p></div><style>.sc-featured{display:flex;background:var(--black2,#0c0e14);border:0.5px solid var(--border,#222);border-radius:3px;overflow:hidden;text-decoration:none;color:inherit;margin:0 0 36px;transition:border-color 0.3s}.sc-featured:hover{border-color:var(--gold,#c8a96a)}.sc-featured-img{flex:1.4;min-height:380px;background-size:cover;background-position:center;position:relative}.sc-featured-badge{position:absolute;top:18px;left:18px;background:var(--gold,#c8a96a);color:#0a0a0a;padding:6px 12px;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;border-radius:2px;font-weight:600}.sc-featured-body{flex:1;padding:42px 38px;display:flex;flex-direction:column;justify-content:center}.sc-featured-loc{font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(200,169,106,0.7);margin-bottom:14px}.sc-featured-name{font-family:'Instrument Serif',serif;font-size:28px;line-height:1.25;color:#f4f2ee;margin:0 0 18px;font-weight:400}.sc-featured-price{font-size:22px;color:var(--gold,#c8a96a);font-weight:500;margin-bottom:12px}.sc-featured-meta{font-size:12px;color:rgba(244,242,238,0.5);margin-bottom:24px}.sc-featured-cta{display:inline-block;padding:11px 22px;border:0.5px solid var(--gold,#c8a96a);color:var(--gold,#c8a96a);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;border-radius:2px;align-self:flex-start;transition:all 0.2s}.sc-featured:hover .sc-featured-cta{background:var(--gold,#c8a96a);color:#0a0a0a}@media(max-width:768px){.sc-featured{flex-direction:column}.sc-featured-img{min-height:240px}.sc-featured-body{padding:28px 24px}.sc-featured-name{font-size:22px}}</style><a class="sc-featured" id="cur-featured" href="/listing/cur-1433459"><div class="sc-featured-img" id="cur-featured-img" style="background-image:url(https://athomecuracao.com/wp-content/uploads/2026/01/Most-Exclusive-Villa-Seafront-at-Boca-Gentil-For-Sale_20251213121051_0441_D.jpg)"><span class="sc-featured-badge">Uitgelicht · Direct aan zee</span></div><div class="sc-featured-body"><div class="sc-featured-loc" id="cur-featured-loc">Boca Gentil</div><h3 class="sc-featured-name" id="cur-featured-name">Meest exclusieve luxe villa direct aan zee met zwembaden op Boca Gentil</h3><div class="sc-featured-price" id="cur-featured-price">€ 16.000.000</div><div class="sc-featured-meta" id="cur-featured-meta">1.200 m² · 5 slaapkamers</div><span class="sc-featured-cta">Bekijk woning →</span></div></a><div class="sc-grid" id="cur-sc-grid"><a href="/listing/cur-1419108" class="sc-card"><div class="sc-img" style="background-image:url(https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Jan Sofat</div><div class="sc-name">Spectaculaire villa met panoramisch uitzicht en 2 appartementen</div><div class="sc-price">€ 2.500.000</div><div class="sc-meta">7 slaapkamers</div></div></a><a href="/listing/cur-1421898" class="sc-card"><div class="sc-img" style="background-image:url(https://athomecuracao.com/wp-content/uploads/2025/03/Luxe-villa-met-Prive-Zwembad-in-Vista-Royal-te-Koop-30.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Vista Royal</div><div class="sc-name">Luxe villa met privé zwembad in Vista Royal</div><div class="sc-price">USD 1.265.000</div><div class="sc-meta">6 slaapkamers</div></div></a><a href="/listing/cur-1428687" class="sc-card"><div class="sc-img" style="background-image:url(https://athomecuracao.com/wp-content/uploads/2025/10/Luxe-Villa-met-Appartement-en-2-Zwembaden-Vista-Royal-te-Koop00045.jpeg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Jan Thiel</div><div class="sc-name">Luxe villa met appartement en 2 zwembaden</div><div class="sc-price">€ 1.200.000</div><div class="sc-meta">3 slaapkamers</div></div></a><a href="/listing/cur-1432882" class="sc-card"><div class="sc-img" style="background-image:url(https://athomecuracao.com/wp-content/uploads/2025/12/IMG_3075.jpg)"><div class="sc-tag">Villa</div></div><div class="sc-body"><div class="sc-location">Piscadera</div><div class="sc-name">Prachtige villa met zwembad en zeezicht in Piscadera</div><div class="sc-price">USD 1.200.000</div><div class="sc-meta">5 slaapkamers</div></div></a></div><div class="sc-cta"><p class="sc-cta-text">Wilt u een persoonlijke selectie op basis van uw wensen?</p><a href="#quiz" class="sc-cta-btn">Start de AI-match →</a></div></div></section>
 <script>
 (async function loadCuracaoShowcase(){
@@ -508,7 +522,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 <section class="quiz-section" id="quiz">
   <div style="max-width:1200px;margin:0 auto">
     <div class="section-pre">Start uw zoekopdracht</div>
-    <h2 class="section-title">Laat Trovai <em>find your home.</em></h2>
+    <h2 class="section-title">Laat Trovai <em>uw woning vinden.</em></h2>
     <p class="section-sub">2 minuten. Directe AI-match. Een persoonlijk portfolio — inclusief off-market panden — binnen 24 uur.</p>
     <div class="quiz-wrap">
       <div class="quiz-shell">
@@ -523,7 +537,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
             <div class="q-title">Wat is uw droombestemming?</div>
             <div class="q-sub">Trovai doorzoekt beide markten tegelijk.</div>
             <div class="q-dest-grid">
-              <div class="q-dest az" onclick="pickDest(this,'cotedazur')"><span class="q-dest-ico">🇫🇷</span><span class="q-dest-name">Côte d'Azur</span><span class="q-dest-sub">Franse Rivièra + Ibiza, Portugal, Dubai</span></div>
+              <div class="q-dest az" onclick="pickDest(this,'cotedazur')"><span class="q-dest-ico">🇫🇷</span><span class="q-dest-name">Côte d'Azur</span><span class="q-dest-sub">Franse Rivièra · Menton tot Saint-Tropez</span></div>
               <div class="q-dest tl" onclick="pickDest(this,'curacao')"><span class="q-dest-ico">🌊</span><span class="q-dest-name">Curaçao</span><span class="q-dest-sub">Caribisch gebied · het hele jaar zon</span></div>
             </div>
             <div class="q-dest-grid" style="margin-bottom:0">
@@ -537,9 +551,9 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
             <div class="q-eyebrow">Côte d'Azur · Vraag 1 van 4</div>
             <div class="q-title">Welk deel van de Rivièra?</div>
             <div class="q-opts">
-              <div class="q-opt" onclick="pick(this,'cda_area','nice','sel-az')"><span class="q-opt-ico">🏙</span><span class="q-opt-title">Nice & surroundings</span><span class="q-opt-sub">Stadsenergie, kosmopolitisch</span></div>
-              <div class="q-opt" onclick="pick(this,'cda_area','cannes','sel-az')"><span class="q-opt-ico">🎬</span><span class="q-opt-title">Cannes & Antibes</span><span class="q-opt-sub">Glamour, strand, jachthaven</span></div>
-              <div class="q-opt" onclick="pick(this,'cda_area','monaco','sel-az')"><span class="q-opt-ico">🏎</span><span class="q-opt-title">Monaco & Menton</span><span class="q-opt-sub">Prestige, grensstreek</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','nice','sel-az')"><span class="q-opt-ico">🏙</span><span class="q-opt-title">Nice en omgeving</span><span class="q-opt-sub">Stadsenergie, kosmopolitisch</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','cannes','sel-az')"><span class="q-opt-ico">🎬</span><span class="q-opt-title">Cannes en Antibes</span><span class="q-opt-sub">Glamour, strand, jachthaven</span></div>
+              <div class="q-opt" onclick="pick(this,'cda_area','monaco','sel-az')"><span class="q-opt-ico">🏎</span><span class="q-opt-title">Monaco en Menton</span><span class="q-opt-sub">Prestige, grensstreek</span></div>
               <div class="q-opt" onclick="pick(this,'cda_area','hinterland','sel-az')"><span class="q-opt-ico">🌿</span><span class="q-opt-title">Achterland dorpen</span><span class="q-opt-sub">Rust, natuur, authentiek</span></div>
             </div>
             <div class="q-nav"><button class="q-back" onclick="goQ('qs-0')">← Terug</button><button class="q-next" id="cdn1" disabled onclick="goQ('qs-cda-2')">Verder</button></div>
@@ -666,7 +680,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
         <p>Trovai is een AI-gedreven vastgoedplatform dat internationale kopers verbindt met luxe woningen op de Côte d'Azur en op Curaçao. Onze technologie werkt dag en nacht — kwalificerend, matchend en nurturend, volledig automatisch.</p>
         <p>Trovai opereert via een <strong style="color:var(--white);font-weight:400">zorgvuldig samengesteld netwerk</strong> van lokale specialisten — met toegang tot 5.000+ kwalitatieve panden op de Côte d'Azur, volledige eilanddekking op Curaçao en meertalige begeleiding ter plaatse. Wij treden op als <strong style="color:var(--white);font-weight:400">uw private buyer's advisor</strong>: onafhankelijk, discreet en uitsluitend in uw belang.</p>
         <div class="about-cards">
-          <div class="about-card"><h4>Côte d'Azur</h4><p>5.000+ woningen. Off-market toegang. Frankrijk, Ibiza, Portugal, Dubai.</p></div>
+          <div class="about-card"><h4>Côte d'Azur</h4><p>5.000+ woningen. Off-market toegang. Van Menton tot Saint-Tropez.</p></div>
           <div class="about-card"><h4>Curaçao</h4><p>Volledige eilanddekking. Vertrouwd rechtssysteem. Villa's tot resort-appartementen.</p></div>
           <div class="about-card"><h4>AI-gedreven</h4><p>Directe matching. 24/7 beschikbaar. Leert continu uw voorkeuren.</p></div>
           <div class="about-card"><h4>Private advisory</h4><p>Onze advisering wordt aan verkoopzijde gefinancierd. Volledige loyaliteit aan de koper.</p></div>
@@ -758,8 +772,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
       <h4>Bestemmingen</h4>
       <a href="#destinations">Côte d'Azur</a>
       <a href="#destinations">Curaçao</a>
-      <a href="#destinations">Ibiza</a>
-      <a href="#destinations">Portugal</a>
+      <span style="display:block;margin-top:10px;font-size:11px;letter-spacing:0.06em;color:rgba(244,242,238,0.3)">Binnenkort · Ibiza · Portugal · Dubai</span>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
@@ -871,17 +884,16 @@ async function submitQ(){
   }
   if(dest==='cotedazur'||dest==='both'||dest==='curacao'){
     try{
-      console.log('Fetching listings:', {destination:dest,property_type,budget,area});
       const res=await fetch('/api/get-listings',{method:'POST',headers:{'Content-Type':'application/json'},
         body:JSON.stringify({destination:dest,property_type,budget,area})});
       const data=await res.json();
       document.getElementById('qr-loading').style.display='none';
-      const al={nice:"Nice & surroundings",cannes:"Cannes & Antibes",monaco:"de Monaco regio",hinterland:"het achterland"};
+      const al={nice:"Nice en omgeving",cannes:"Cannes en Antibes",monaco:"de Monaco-regio",hinterland:"het achterland"};
       
       const cu={jan_thiel:"Jan Thiel",piscadera:"Piscadera Bay",willemstad:"Willemstad",westpunt:"Westpunt",vredenberg:"Vredenberg",blue_bay:"Blue Bay"};
       const locLabel = dest==='curacao' ? (cu[area]||"Curaçao")
                      : dest==='both' ? "de Côte d'Azur en Curaçao"
-                     : (al[area]||"the Côte d'Azur");
+                     : (al[area]||"de Côte d'Azur");
       document.getElementById('qr-text').textContent=`Trovai AI matcht ${data.total||''}+ live woningen en selecteerde de beste match voor uw profiel in ${locLabel} binnen ${budget||'uw budget'}.`;
       if(data.listings&&data.listings.length>0){
         document.getElementById('qr-props').innerHTML=data.listings.map(p=>`<div class="q-prop">${p.image?`<img class="q-prop-img" src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.style.display='none'">`:''}<div class="q-prop-body"><div class="q-prop-loc">${p.city||'Côte d\'Azur'} · ${p.category||''}</div><div class="q-prop-type">${p.name}</div><div class="q-prop-price">${p.price_formatted}</div>${p.beds?`<div style="font-size:11px;color:var(--muted);margin-top:2px">${p.beds}${p.surface?' · '+p.surface:''}</div>`:''}<a class="q-prop-link" href="${p.url}" target="_blank" rel="noopener">Bekijk listing →</a></div></div>`).join('');

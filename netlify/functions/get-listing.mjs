@@ -1,10 +1,42 @@
 // Trovai · get-listing.mjs
-// Proxy: haalt één woning op van LOCA API (omzeilt CORS)
+// Proxy: haalt één woning op van LOCA API (omzeilt CORS).
+// Toegang beperkt tot trovai.nl (hotlink-/CORS-bescherming).
 const LOCA = 'https://www.livingonthecotedazur.com/wp-json/wc/store/v1/products';
 
+function ownHost() {
+  try { return new URL(process.env.URL || '').hostname.toLowerCase(); } catch (e) { return ''; }
+}
+
+// Alleen trovai.nl (en eigen Netlify-host + localhost) mag de endpoint aanroepen.
+// Server-to-server calls hebben geen Origin/Referer en blijven toegestaan.
+function isAllowed(req) {
+  const origin = (req.headers.get('origin') || '').toLowerCase();
+  const referer = (req.headers.get('referer') || '').toLowerCase();
+  if (!origin && !referer) return true;
+  const hay = origin + ' ' + referer;
+  if (hay.includes('trovai.nl')) return true;
+  if (hay.includes('localhost') || hay.includes('127.0.0.1')) return true;
+  const own = ownHost();
+  if (own && hay.includes(own)) return true;
+  return false;
+}
+
+function corsHeaders(req) {
+  const origin = req.headers.get('origin') || '';
+  const allowOrigin = origin && isAllowed(req) ? origin : 'https://trovai.nl';
+  return {
+    'Content-Type': 'application/json',
+    'Access-Control-Allow-Origin': allowOrigin,
+    'Access-Control-Allow-Methods': 'GET, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    'Vary': 'Origin'
+  };
+}
+
 export default async (req) => {
-  const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
-  if (req.method === 'OPTIONS') return new Response('', { status: 200, headers });
+  const headers = corsHeaders(req);
+  if (req.method === 'OPTIONS') return new Response('', { status: 204, headers });
+  if (!isAllowed(req)) return new Response(JSON.stringify({ error: 'Forbidden' }), { status: 403, headers });
 
   const url = new URL(req.url);
   const id = url.searchParams.get('id');
