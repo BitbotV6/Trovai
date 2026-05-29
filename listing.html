@@ -239,6 +239,7 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 var cur = null;
 var lbPhotos = [];
 var lbIdx = 0;
+var galleryAlt = '';
 var listingType = 'loca'; // 'loca' of 'curacao'
 
 function getAttr(p, name) {
@@ -288,7 +289,7 @@ async function loadListing() {
     if (isCuracao) renderCuracao(p);
     else renderListing(p);
   } catch (e) {
-    console.error('Listing fout:', e.message);
+    document.getElementById('listing').style.display = 'none';
     showEl('error-div');
   }
 }
@@ -307,8 +308,9 @@ function renderListing(p) {
   var cat    = (p.categories && p.categories[0] && p.categories[0].name) || '';
   var name   = cleanHTML(p.name || '');
 
-  document.title = name + ' \u2014 Trovai';
-  document.getElementById('bc-city').textContent  = city || cat || 'Woning';
+  document.title = (cat || 'Woning') + ' in ' + (city || 'Côte d’Azur') + ' | Trovai';
+  galleryAlt = name + (city ? ' — ' + city : '');
+  document.getElementById('bc-city').textContent  = name;
   document.getElementById('l-tag').textContent    = cat  || 'Woning';
   document.getElementById('l-title').textContent  = name;
   document.getElementById('l-city').textContent   = city;
@@ -368,8 +370,9 @@ function renderCuracao(p) {
   var sqm    = p.surface_sqm || 0;
   var cat    = inferCategory(name);
 
-  document.title = name + ' \u2014 Trovai';
-  document.getElementById('bc-city').textContent  = city;
+  document.title = cat + ' in ' + city + ' | Trovai';
+  galleryAlt = name + (city ? ' \u2014 ' + city : '');
+  document.getElementById('bc-city').textContent  = name;
   document.getElementById('l-tag').textContent    = cat;
   document.getElementById('l-title').textContent  = name;
   document.getElementById('l-city').textContent   = city;
@@ -500,12 +503,13 @@ function renderGallery() {
       '<div style="height:280px;background:var(--black2);border:0.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">Foto\'s op aanvraag</div>';
     return;
   }
+  var altBase = galleryAlt || 'Woning via Trovai';
   var main = '<div class="gallery-main" id="gallery-main-wrap" onclick="openLB(0)">' +
-    '<img id="gallery-main-img" src="' + lbPhotos[0] + '" alt="" loading="eager">' +
+    '<img id="gallery-main-img" src="' + lbPhotos[0] + '" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
     '<div class="gallery-count" id="gallery-count">1 / ' + lbPhotos.length + '</div>' +
     '</div>';
   var thumbs = lbPhotos.slice(0, 14).map(function(src, i){
-    return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + src + '" alt="" loading="lazy"></div>';
+    return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + src + '" alt="' + altBase + ' — foto ' + (i+1) + '" width="160" height="80" decoding="async" loading="lazy"></div>';
   }).join('');
   document.getElementById('l-gallery').innerHTML = main + '<div class="gallery-thumbs">' + thumbs + '</div>';
 }
