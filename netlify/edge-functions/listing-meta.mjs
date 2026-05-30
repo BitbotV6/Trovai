@@ -58,6 +58,11 @@ function nImg(src, w, q) {
   return "/.netlify/images?url=" + encodeURIComponent(src) + "&w=" + w + "&q=" + (q || 72);
 }
 
+// Responsive srcset: mobiel krijgt een lichte variant, desktop/retina een grotere.
+function nSrcset(src, widths, q) {
+  return widths.map((w) => `${nImg(src, w, q)} ${w}w`).join(", ");
+}
+
 // Sectiekop in de omschrijving (kort, geen eindleesteken) -> vetgedrukt renderen.
 function isHeading(p) {
   return p.length < 42 && p.split(" ").length <= 5 && !/[.!?:]$/.test(p);
@@ -413,7 +418,7 @@ export default async (request, context) => {
     .replace('<div class="desc-text" id="l-desc"></div>', `<div class="desc-text" id="l-desc">${buildDescriptionHtml(d)}</div>`)
     .replace(
       '<div class="gallery" id="l-gallery"></div>',
-      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(nImg(d.image, 1280, 72))}" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
+      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(nImg(d.image, 800, 68))}" srcset="${htmlEscape(nSrcset(d.image, [480, 640, 800, 1280], 68))}" sizes="(max-width:900px) 100vw, 760px" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
     )
     // interne links-blok vlak voor </main>
     .replace(/<\/main>/i, buildRelatedHtml(d) + "</main>");
