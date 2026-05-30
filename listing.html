@@ -267,6 +267,9 @@ function nImg(src, w, q) {
   if (!src) return src;
   return '/.netlify/images?url=' + encodeURIComponent(src) + '&w=' + w + '&q=' + (q || 72);
 }
+function nSrcset(src, widths, q) {
+  return widths.map(function(w){ return nImg(src, w, q) + ' ' + w + 'w'; }).join(', ');
+}
 
 function showEl(id) {
   document.getElementById('loading').style.display = 'none';
@@ -511,7 +514,7 @@ function renderGallery() {
   }
   var altBase = galleryAlt || 'Woning via Trovai';
   var main = '<div class="gallery-main" id="gallery-main-wrap" onclick="openLB(0)">' +
-    '<img id="gallery-main-img" src="' + nImg(lbPhotos[0], 1280, 72) + '" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
+    '<img id="gallery-main-img" src="' + nImg(lbPhotos[0], 800, 68) + '" srcset="' + nSrcset(lbPhotos[0], [480,640,800,1280], 68) + '" sizes="(max-width:900px) 100vw, 760px" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
     '<div class="gallery-count" id="gallery-count">1 / ' + lbPhotos.length + '</div>' +
     '</div>';
   var thumbs = lbPhotos.slice(0, 8).map(function(src, i){
@@ -523,7 +526,7 @@ function renderGallery() {
 function setPhoto(idx) {
   lbIdx = idx;
   var img = document.getElementById('gallery-main-img');
-  if (img) img.src = nImg(lbPhotos[idx], 1280, 72);
+  if (img) { img.srcset = nSrcset(lbPhotos[idx], [480,640,800,1280], 68); img.src = nImg(lbPhotos[idx], 800, 68); }
   var cnt = document.getElementById('gallery-count');
   if (cnt) cnt.textContent = (idx+1) + ' / ' + lbPhotos.length;
   document.querySelectorAll('.gallery-thumb').forEach(function(t, i){ t.classList.toggle('active', i===idx); });
