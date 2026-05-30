@@ -4,6 +4,10 @@
 [functions]
   directory = "netlify/functions"
 
+# Netlify Image CDN: resize + moderne formaten (WebP/AVIF) voor externe bronafbeeldingen
+[images]
+  remote_images = ["https://media.apimo.pro/.*", "https://athomecuracao.com/.*"]
+
 # Listing detail pagina
 [[redirects]]
   from = "/listing/*"

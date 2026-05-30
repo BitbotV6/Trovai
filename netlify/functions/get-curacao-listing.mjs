@@ -17,6 +17,34 @@ function decode(s) {
     .trim();
 }
 
+// Haalt de VOLLEDIGE omschrijving uit de body (#overview entry-content),
+// niet de afgekapte og:description. Geeft alinea's terug, gescheiden door lege regels.
+function extractFullDescription(html) {
+  const k = html.indexOf('id="overview"');
+  if (k < 0) return '';
+  const openEnd = html.indexOf('>', k);
+  if (openEnd < 0) return '';
+  // Loop tot de bijbehorende </div> via diepte-telling (geneste divs).
+  let i = openEnd + 1, depth = 1, end = -1;
+  while (i < html.length) {
+    const nd = html.indexOf('<div', i);
+    const cd = html.indexOf('</div>', i);
+    if (cd < 0) break;
+    if (nd >= 0 && nd < cd) { depth++; i = nd + 4; }
+    else { depth--; if (depth === 0) { end = cd; break; } i = cd + 6; }
+  }
+  if (end < 0) return '';
+  const frag = html.slice(openEnd + 1, end);
+  const blocks = frag.match(/<p\b[^>]*>([\s\S]*?)<\/p>/gi) || [];
+  const paras = [];
+  for (const b of blocks) {
+    const t = decode(b).replace(/\s+/g, ' ').trim();
+    if (!t || t.toLowerCase() === 'property description') continue;
+    if (t !== paras[paras.length - 1]) paras.push(t); // opeenvolgende duplicaten weg
+  }
+  return paras.join('\n\n');
+}
+
 // Parseert prijs zonder valuta-conversie. Behoudt exact het bedrag en de valuta zoals op de bron staat.
 function parsePrices(html) {
   // 1. PRIMAIR: vaste prijs in Euros (owner-set prijs voor Curacao listings, stabiel)
@@ -96,10 +124,11 @@ function parseDetail(html, id, sourceUrl) {
   const titleRaw = titleMatch ? titleMatch[1] : '';
   const title = decode(titleRaw.replace(/\s*[\|\-–]\s*At\s*Home\s*Cura.*$/i, ''));
 
-  // Description
+  // Description — volledige body-omschrijving; val terug op og:description als die ontbreekt
   const descMatch = html.match(/<meta\s+property="og:description"\s+content="([^"]+)"/)
                  || html.match(/<meta\s+name="description"\s+content="([^"]+)"/);
-  const description = descMatch ? decode(descMatch[1]) : '';
+  const ogDesc = descMatch ? decode(descMatch[1]) : '';
+  const description = extractFullDescription(html) || ogDesc;
 
   // Images
   const ogImage = (html.match(/<meta\s+property="og:image"\s+content="([^"]+)"/) || [])[1];

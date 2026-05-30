@@ -262,10 +262,10 @@ function fmt(n) {
   return '\u20ac\u00a0' + Math.round(n).toLocaleString('nl-NL');
 }
 
-// apimo-afbeeldingen hebben kleinere formaatvarianten (_1920/_1024/_800-original)
-function optimizeImg(src, size) {
-  if (!src || src.indexOf('media.apimo.pro') === -1) return src;
-  return src.replace('_1920-original', '_' + size + '-original').replace('_1024-original', '_' + size + '-original');
+// Netlify Image CDN: resize + WebP/AVIF (auto via Accept) voor alle bronafbeeldingen
+function nImg(src, w, q) {
+  if (!src) return src;
+  return '/.netlify/images?url=' + encodeURIComponent(src) + '&w=' + w + '&q=' + (q || 72);
 }
 
 function showEl(id) {
@@ -511,11 +511,11 @@ function renderGallery() {
   }
   var altBase = galleryAlt || 'Woning via Trovai';
   var main = '<div class="gallery-main" id="gallery-main-wrap" onclick="openLB(0)">' +
-    '<img id="gallery-main-img" src="' + optimizeImg(lbPhotos[0], 1024) + '" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
+    '<img id="gallery-main-img" src="' + nImg(lbPhotos[0], 1280, 72) + '" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
     '<div class="gallery-count" id="gallery-count">1 / ' + lbPhotos.length + '</div>' +
     '</div>';
   var thumbs = lbPhotos.slice(0, 8).map(function(src, i){
-    return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + optimizeImg(src, 800) + '" alt="' + altBase + ' — foto ' + (i+1) + '" width="160" height="80" decoding="async" loading="lazy" fetchpriority="low"></div>';
+    return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + nImg(src, 400, 68) + '" alt="' + altBase + ' — foto ' + (i+1) + '" width="160" height="80" decoding="async" loading="lazy" fetchpriority="low"></div>';
   }).join('');
   document.getElementById('l-gallery').innerHTML = main + '<div class="gallery-thumbs">' + thumbs + '</div>';
 }
@@ -523,7 +523,7 @@ function renderGallery() {
 function setPhoto(idx) {
   lbIdx = idx;
   var img = document.getElementById('gallery-main-img');
-  if (img) img.src = optimizeImg(lbPhotos[idx], 1024);
+  if (img) img.src = nImg(lbPhotos[idx], 1280, 72);
   var cnt = document.getElementById('gallery-count');
   if (cnt) cnt.textContent = (idx+1) + ' / ' + lbPhotos.length;
   document.querySelectorAll('.gallery-thumb').forEach(function(t, i){ t.classList.toggle('active', i===idx); });
@@ -531,7 +531,7 @@ function setPhoto(idx) {
 
 function openLB(idx) {
   lbIdx = idx;
-  document.getElementById('lb-img').src = lbPhotos[idx];
+  document.getElementById('lb-img').src = nImg(lbPhotos[idx], 2000, 82);
   document.getElementById('lightbox').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
@@ -543,7 +543,7 @@ function closeLB() {
 
 function lbNav(dir) {
   lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
-  document.getElementById('lb-img').src = lbPhotos[lbIdx];
+  document.getElementById('lb-img').src = nImg(lbPhotos[lbIdx], 2000, 82);
 }
 
 document.getElementById('lightbox').addEventListener('click', function(e){
