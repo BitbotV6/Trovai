@@ -52,13 +52,15 @@ const AREA_CONTEXT = {
   "Valbonne": "Valbonne is een geliefd Provençaals dorp in het achterland, dicht bij Sophia-Antipolis en de kust.",
 };
 
-// apimo-afbeeldingen hebben formaatvarianten (_1920/_1024/_800-original); kleiner = sneller.
-function optimizeImg(src, size) {
+// Netlify Image CDN: resize + WebP/AVIF (auto via Accept-header) voor externe bronafbeeldingen.
+function nImg(src, w, q) {
   if (!src) return src;
-  if (src.includes("media.apimo.pro")) {
-    return src.replace("_1920-original", "_" + size + "-original").replace("_1024-original", "_" + size + "-original");
-  }
-  return src;
+  return "/.netlify/images?url=" + encodeURIComponent(src) + "&w=" + w + "&q=" + (q || 72);
+}
+
+// Sectiekop in de omschrijving (kort, geen eindleesteken) -> vetgedrukt renderen.
+function isHeading(p) {
+  return p.length < 42 && p.split(" ").length <= 5 && !/[.!?:]$/.test(p);
 }
 
 function joinNL(arr) {
@@ -95,6 +97,19 @@ function htmlEscape(s) {
 
 function stripTags(s) {
   return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+// Zet omschrijving om naar platte tekst MET behoud van alinea's (\n\n).
+// Curaçao-bron levert al \n\n; LOCA levert HTML (<p>/<br>) -> alinea's.
+function descToText(s) {
+  return String(s ?? "")
+    .replace(/<\/(?:p|div|h[1-6]|li)>/gi, "\n\n")
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/[ \t ]+/g, " ")
+    .split("\n").map((l) => l.trim()).join("\n")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
 }
 
 function getAttr(p, name) {
@@ -154,7 +169,7 @@ function normaliseLoca(p, canonical) {
   const construction = getAttr(p, "Type of construction");
   const price = parseInt((p.prices && p.prices.price) || 0, 10);
   const priceFormatted = price > 0 ? "€" + price.toLocaleString("nl-NL") : "Prijs op aanvraag";
-  const description = stripTags(p.description || p.short_description || "");
+  const description = descToText(p.description || p.short_description || "");
   const image = (p.images && p.images[0] && p.images[0].src) || "https://trovai.nl/og-image.svg";
   const category = (p.categories && p.categories[0] && p.categories[0].name) || "Woning";
   return {
@@ -174,7 +189,7 @@ function normaliseCuracao(p, canonical) {
   const surface = p.surface_sqm ? p.surface_sqm + " m²" : "";
   const price = parseInt(p.price || 0, 10);
   const priceFormatted = p.price_formatted || (price > 0 ? "€" + price.toLocaleString("nl-NL") : "Prijs op aanvraag");
-  const description = stripTags(p.description || "");
+  const description = descToText(p.description || "");
   const image = p.main_image || (p.images && p.images[0]) || "https://trovai.nl/og-image.svg";
   return {
     name, city, region, country,
@@ -271,29 +286,33 @@ function buildHeadInjection(d) {
   };
 }
 
-// Beschrijvende, unieke tekst per woning: bronomschrijving (leesbaar opgedeeld)
-// + datagedreven samenvatting + gebiedscontext + Trovai-dienstverlening.
+// Omschrijving: toont de VOLLEDIGE bronomschrijving (leesbaar opgedeeld, met
+// sectiekoppen). Vult alleen aan met samenvatting/gebiedscontext als de bron dun is.
 function buildDescriptionHtml(d) {
   let src = (d.description || "").trim();
   // Afgekapte bronzin netjes afronden (bv. "...comfort," -> "...comfort.").
-  if (src && !/[.!?"'）]$/.test(src)) src = src.replace(/[,;:\s]+$/, "") + ".";
+  if (src && !/[.!?"'）]$/.test(src) && !/\n/.test(src)) src = src.replace(/[,;:\s]+$/, "") + ".";
   const paras = src ? splitParas(src) : [];
 
-  const t = typeLabel(d.category).toLowerCase();
-  const feats = [];
-  if (d.beds) feats.push(d.beds.toLowerCase().includes("slaapkamer") ? d.beds : d.beds + " slaapkamers");
-  if (d.rooms) feats.push(d.rooms + " kamers");
-  if (d.surface) feats.push("een woonoppervlak van " + d.surface);
-  if (d.land) feats.push("een perceel van " + d.land);
-  const place = d.city && d.region && d.city !== d.region ? `${d.city}, ${d.region}` : (d.city || d.region);
-  const summary = `Deze ${t} in ${place} ${feats.length ? "beschikt over " + joinNL(feats) : "wordt aangeboden via Trovai"}. De vraagprijs bedraagt ${d.priceFormatted}.`;
+  const extra = [];
+  // Alleen aanvullen wanneer de bron echt dun is (anders niet herhalen).
+  if (src.length < 300) {
+    const t = typeLabel(d.category).toLowerCase();
+    const feats = [];
+    if (d.beds) feats.push(d.beds.toLowerCase().includes("slaapkamer") ? d.beds : d.beds + " slaapkamers");
+    if (d.rooms) feats.push(d.rooms + " kamers");
+    if (d.surface) feats.push("een woonoppervlak van " + d.surface);
+    if (d.land) feats.push("een perceel van " + d.land);
+    const place = d.city && d.region && d.city !== d.region ? `${d.city}, ${d.region}` : (d.city || d.region);
+    extra.push(`Deze ${t} in ${place} ${feats.length ? "beschikt over " + joinNL(feats) : "wordt aangeboden via Trovai"}. De vraagprijs bedraagt ${d.priceFormatted}.`);
+    extra.push(AREA_CONTEXT[d.city] || AREA_CONTEXT[d.region] ||
+      `${d.region} is een gewilde bestemming voor internationale kopers van luxe vastgoed.`);
+  }
+  extra.push(`Trovai begeleidt u als onafhankelijke private buyer's advisor — van eerste bezichtiging tot aan de notaris, discreet en volledig aan uw zijde.`);
 
-  const areaTxt = AREA_CONTEXT[d.city] || AREA_CONTEXT[d.region] ||
-    `${d.region} is een gewilde bestemming voor internationale kopers van luxe vastgoed.`;
-  const service = `Trovai begeleidt u als onafhankelijke private buyer's advisor — van eerste bezichtiging tot aan de notaris, discreet en volledig aan uw zijde.`;
-
-  return paras.concat([summary, areaTxt, service])
-    .map((p) => `<p>${htmlEscape(p)}</p>`).join("");
+  return paras.concat(extra).map((p) =>
+    isHeading(p) ? `<p><strong>${htmlEscape(p)}</strong></p>` : `<p>${htmlEscape(p)}</p>`
+  ).join("");
 }
 
 // Interne links: regio-hub, relevante stadspagina's en gerelateerde woningen.
@@ -391,7 +410,7 @@ export default async (request, context) => {
     .replace('<div class="desc-text" id="l-desc"></div>', `<div class="desc-text" id="l-desc">${buildDescriptionHtml(d)}</div>`)
     .replace(
       '<div class="gallery" id="l-gallery"></div>',
-      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(optimizeImg(d.image, 1024))}" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
+      `<div class="gallery" id="l-gallery"><div class="gallery-main"><img src="${htmlEscape(nImg(d.image, 1280, 72))}" alt="${htmlEscape(d.name + " — " + (d.city || d.region))}" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>`,
     )
     // interne links-blok vlak voor </main>
     .replace(/<\/main>/i, buildRelatedHtml(d) + "</main>");
