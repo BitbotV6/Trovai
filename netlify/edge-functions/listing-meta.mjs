@@ -247,9 +247,12 @@ function buildBreadcrumb(d) {
 function buildTitle(d) {
   const t = typeLabel(d.category);
   const place = d.city || d.region;
-  let title = `${t} in ${place} | Trovai`;
-  if (title.length > 60) title = `${t} in ${place}`;
-  if (title.length > 60) title = title.slice(0, 59).trim() + "…";
+  // Prijs maakt de title uniek wanneer meerdere woningen in dezelfde plaats vallen.
+  const price = d.priceFormatted && d.priceFormatted !== "Prijs op aanvraag" ? d.priceFormatted : "";
+  let title = price ? `${t} in ${place} · ${price} | Trovai` : `${t} in ${place} | Trovai`;
+  if (title.length > 60 && price) title = `${t} in ${place} · ${price}`; // suffix weg, prijs behouden
+  if (title.length > 60) title = `${t} in ${place} | Trovai`;
+  if (title.length > 60) title = `${t} in ${place}`.slice(0, 59).trim() + "…";
   return title;
 }
 
@@ -295,8 +298,8 @@ function buildDescriptionHtml(d) {
   const paras = src ? splitParas(src) : [];
 
   const extra = [];
-  // Alleen aanvullen wanneer de bron echt dun is (anders niet herhalen).
-  if (src.length < 300) {
+  // Aanvullen met samenvatting + gebiedscontext wanneer de bron (nog) te dun is.
+  if (src.length < 900) {
     const t = typeLabel(d.category).toLowerCase();
     const feats = [];
     if (d.beds) feats.push(d.beds.toLowerCase().includes("slaapkamer") ? d.beds : d.beds + " slaapkamers");
