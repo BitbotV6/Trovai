@@ -153,15 +153,15 @@ function parseDetail(html, id, sourceUrl) {
             : sqftMatch ? Math.round(parseInt(sqftMatch[1]) * 0.0929)
             : 0;
 
-  // Wijk uit titel raden
+  // Wijk bepalen: de woningnaam/titel noemt de échte wijk; de omschrijving noemt
+  // vaak ook naburige gebieden (bv. "nabij Jan Thiel"), dus titel heeft voorrang.
   const wijken = ['Jan Thiel', 'Jan Sofat', 'Vista Royal', 'Boca Gentil', 'Coral Estate',
-                  'Blue Bay', 'Brakkeput', 'Mahaai', 'Westpunt', 'Pietermaai',
+                  'Blue Bay', 'Brakkeput', 'Mahaai', 'Westpunt', 'Pietermaai', 'Piscadera',
                   'Spaanse Water', 'Vredenberg', 'La Privada', 'Cas Grandi', 'Matancia',
                   'Santa Catharina', 'Trai Seru', 'Seru Lora', 'Curasol', 'Salinja'];
   let area = '';
-  for (const w of wijken) {
-    if (title.includes(w) || description.includes(w)) { area = w; break; }
-  }
+  for (const w of wijken) { if (title.includes(w)) { area = w; break; } }
+  if (!area) { for (const w of wijken) { if (description.includes(w)) { area = w; break; } } }
 
   return {
     id: 'cur-' + id,
