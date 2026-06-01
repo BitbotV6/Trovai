@@ -79,9 +79,11 @@ export default async (request, context) => {
   });
 
   const newHeaders = new Headers(response.headers);
+  newHeaders.delete("Location");
   newHeaders.set("Content-Type", "text/html; charset=UTF-8");
-  newHeaders.set("Cache-Control", "public, max-age=1800");
-  newHeaders.set("Netlify-CDN-Cache-Control", "public, durable, s-maxage=86400, stale-while-revalidate=86400");
+  // Kort, niet-durable: voorkomt dat een onverhoopt foute respons lang blijft hangen.
+  newHeaders.set("Cache-Control", "public, max-age=600");
+  newHeaders.set("Netlify-CDN-Cache-Control", "public, s-maxage=600");
 
   return new Response(newHtml, { status: 200, headers: newHeaders });
 };

@@ -87,8 +87,22 @@ function htmlEscape(s) {
 function stripTags(s) {
   return String(s ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
-function descToText(s) {
+// Decodeert HTML-entities (bv. LOCA-titels met &#8211;) zodat ze niet dubbel
+// geëscaped worden weergegeven.
+function htmlDecode(s) {
   return String(s ?? "")
+    .replace(/&#x([0-9a-f]+);/gi, (_, h) => String.fromCodePoint(parseInt(h, 16)))
+    .replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(parseInt(n, 10)))
+    .replace(/&nbsp;/g, " ")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&apos;/g, "'")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
+    .replace(/&amp;/g, "&");
+}
+function descToText(s) {
+  const txt = String(s ?? "")
     .replace(/<\/(?:p|div|h[1-6]|li)>/gi, "\n\n")
     .replace(/<br\s*\/?>/gi, "\n")
     .replace(/<[^>]+>/g, " ")
@@ -96,6 +110,7 @@ function descToText(s) {
     .split("\n").map((l) => l.trim()).join("\n")
     .replace(/\n{3,}/g, "\n\n")
     .trim();
+  return htmlDecode(txt);
 }
 function getAttr(p, name) {
   const a = (p.attributes || []).find((x) => x.name === name);
@@ -121,7 +136,7 @@ function typeLabel(cat) {
 }
 
 export function normaliseLoca(p, canonical) {
-  const name = stripTags(p.name || "Woning op de Côte d'Azur");
+  const name = htmlDecode(stripTags(p.name || "Woning op de Côte d'Azur"));
   const city = getAttr(p, "City");
   const region = getAttr(p, "Region") || "Côte d'Azur";
   const country = getAttr(p, "Country") || "Frankrijk";
@@ -145,7 +160,7 @@ export function normaliseLoca(p, canonical) {
 }
 
 export function normaliseCuracao(p, canonical) {
-  const name = p.name || "Curaçao woning";
+  const name = htmlDecode(p.name || "Curaçao woning");
   const city = p.city || "";
   const region = p.region || "Curaçao";
   const country = p.country || "Curaçao";
