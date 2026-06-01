@@ -40,9 +40,10 @@ async function fetchJson(url) {
 }
 
 function writePage(slug, htmlOut) {
-  const dir = join(ROOT, "listing", slug);
-  mkdirSync(dir, { recursive: true });
-  writeFileSync(join(dir, "index.html"), htmlOut);
+  // Plat bestand listing/<slug>.html i.p.v. directory-index, zodat /listing/<slug>
+  // direct wordt geserveerd zonder trailing-slash-redirect.
+  mkdirSync(join(ROOT, "listing"), { recursive: true });
+  writeFileSync(join(ROOT, "listing", slug + ".html"), htmlOut);
 }
 
 async function buildOne(template, { slug, id, isCuracao, apiUrl }) {

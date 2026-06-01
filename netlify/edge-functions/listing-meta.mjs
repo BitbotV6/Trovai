@@ -45,7 +45,9 @@ export default async (request, context) => {
   const id = isCuracao ? raw.replace(/^cur-/i, "") : raw.replace(/[^\d]/g, "");
 
   const response = await context.next();
-  if (!id || !response.headers.get("content-type")?.includes("text/html")) {
+  // Laat alles wat geen 200 text/html is ongemoeid (o.a. redirects naar
+  // trailing-slash, 404's, assets) — anders lekt een Location-header door.
+  if (!id || response.status !== 200 || !response.headers.get("content-type")?.includes("text/html")) {
     return response;
   }
   const html = await response.text();
