@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQYEBBMJ69"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BQYEBBMJ69');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+
+
+
+
+
+
+
+
+
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--black:#080A0F;--black2:#0C0E14;--white:#F4F2EE;--gold:#C8A96A;--gold2:#A8853A;--muted:rgba(244,242,238,0.45);--border:rgba(244,242,238,0.08);--border2:rgba(244,242,238,0.14)}
+body{background:var(--black);color:var(--white);font-family:'Geist',sans-serif;font-weight:300;min-height:100vh}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,10,15,0.95);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.logo{display:flex;align-items:baseline;gap:2px}
+.logo-t{font-family:'Instrument Serif',serif;font-size:20px;color:var(--white)}
+.logo-dot{width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:1px;margin-bottom:3px}
+.nav-back{font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.2s}
+.nav-back:hover{color:var(--white)}
+main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
+#loading{text-align:center;padding:120px 0}
+.spin{display:inline-block;width:28px;height:28px;border:2px solid var(--border);border-top-color:var(--gold);border-radius:50%;animation:spin 0.8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:13px;color:var(--muted);margin-top:16px}
+#error-div{display:none;text-align:center;padding:120px 0;color:var(--muted)}
+#listing{display:none}
+.breadcrumb{font-size:11px;color:var(--muted);letter-spacing:0.06em;margin-bottom:24px}
+.breadcrumb a{color:var(--muted);text-decoration:none}
+.breadcrumb a:hover{color:var(--gold)}
+.breadcrumb span{margin:0 6px;opacity:0.4}
+.listing-tag{display:inline-block;font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--gold);border:0.5px solid rgba(200,169,106,0.35);padding:4px 12px;border-radius:2px;margin-bottom:14px}
+.listing-title{font-family:'Instrument Serif',serif;font-size:clamp(26px,3.5vw,44px);font-weight:400;color:var(--white);line-height:1.15;margin-bottom:12px}
+.listing-location{font-size:14px;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.loc-dot{width:4px;height:4px;border-radius:50%;background:var(--gold);opacity:0.6;flex-shrink:0}
+.listing-price-row{display:flex;align-items:baseline;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.listing-price{font-family:'Instrument Serif',serif;font-size:36px;color:var(--gold)}
+.listing-price-sqm{font-size:13px;color:var(--muted)}
+.gallery{margin-bottom:40px}
+.gallery-main{position:relative;border-radius:4px;overflow:hidden;margin-bottom:4px;height:480px;cursor:pointer;background:var(--black2)}
+.gallery-main img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s}
+.gallery-main:hover img{transform:scale(1.01)}
+.gallery-count{position:absolute;bottom:16px;right:16px;background:rgba(8,10,15,0.75);backdrop-filter:blur(8px);color:var(--white);font-size:12px;padding:6px 14px;border-radius:2px;letter-spacing:0.06em}
+.gallery-thumbs{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+.gallery-thumb{height:80px;border-radius:2px;overflow:hidden;cursor:pointer;opacity:0.55;transition:opacity 0.2s;border:1.5px solid transparent}
+.gallery-thumb:hover,.gallery-thumb.active{opacity:1;border-color:var(--gold)}
+.gallery-thumb img{width:100%;height:100%;object-fit:cover;display:block}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:500;display:none;align-items:center;justify-content:center}
+.lightbox.open{display:flex}
+.lightbox-img{max-width:90vw;max-height:90vh;object-fit:contain;border-radius:2px}
+.lb-close{position:absolute;top:20px;right:28px;color:var(--white);font-size:32px;cursor:pointer;opacity:0.7;background:none;border:none;line-height:1}
+.lb-close:hover{opacity:1}
+.lb-prev,.lb-next{position:absolute;top:50%;transform:translateY(-50%);color:var(--white);font-size:28px;cursor:pointer;opacity:0.6;background:none;border:none;padding:20px;line-height:1}
+.lb-prev:hover,.lb-next:hover{opacity:1}
+.lb-prev{left:20px}
+.lb-next{right:20px}
+.listing-body{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start}
+.specs-bar{display:grid;grid-template-columns:repeat(4,1fr);border:0.5px solid var(--border);border-radius:3px;margin-bottom:36px;background:var(--black2);overflow:hidden}
+.spec-item{padding:18px 20px;border-right:0.5px solid var(--border)}
+.spec-item:last-child{border-right:none}
+.spec-label{font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
+.spec-val{font-size:16px;font-weight:400;color:var(--white)}
+.section-title{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;padding-bottom:10px;border-bottom:0.5px solid var(--border)}
+.desc-section{margin-bottom:36px}
+.desc-text{font-size:15px;color:rgba(244,242,238,0.75);line-height:1.85}
+.desc-text p{margin-bottom:14px}
+.desc-more-btn{margin-top:8px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:var(--gold);cursor:pointer;border:none;background:none;font-family:'Geist',sans-serif;padding:0}
+.details-section{margin-bottom:36px}
+.details-table{width:100%;border-collapse:collapse}
+.details-table tr{border-bottom:0.5px solid var(--border)}
+.details-table tr:last-child{border-bottom:none}
+.details-table td{padding:11px 0;font-size:13px}
+.details-table td:first-child{color:var(--muted);width:45%}
+.sidebar{position:sticky;top:90px}
+.sidebar-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:28px;margin-bottom:16px}
+.sidebar-price{font-family:'Instrument Serif',serif;font-size:28px;color:var(--gold);margin-bottom:2px}
+.sidebar-price-note{font-size:11px;color:var(--muted);margin-bottom:20px}
+.sidebar-divider{height:0.5px;background:var(--border);margin:20px 0}
+.sidebar-heading{font-size:14px;font-weight:500;color:var(--white);margin-bottom:6px}
+.sidebar-sub{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:20px}
+.form-field{margin-bottom:12px}
+.form-label{font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-bottom:5px;display:block}
+.form-input,.form-textarea{background:rgba(255,255,255,0.03);border:0.5px solid var(--border);border-radius:2px;color:var(--white);font-family:'Geist',sans-serif;font-size:13px;font-weight:300;padding:10px 12px;outline:none;width:100%;transition:border-color 0.2s}
+.form-input:focus,.form-textarea:focus{border-color:rgba(200,169,106,0.45)}
+.form-input::placeholder,.form-textarea::placeholder{color:rgba(244,242,238,0.2)}
+.form-textarea{resize:vertical;min-height:80px}
+.btn-gold{display:block;width:100%;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;border:none;padding:14px;border-radius:2px;cursor:pointer;text-align:center;margin-bottom:10px;transition:opacity 0.2s}
+.btn-gold:hover{opacity:0.88}
+.btn-wa{display:block;background:transparent;border:0.5px solid rgba(37,211,102,0.35);color:rgba(37,211,102,0.8);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px;border-radius:2px;text-decoration:none;text-align:center;margin-bottom:8px;transition:all 0.2s}
+.btn-wa:hover{background:rgba(37,211,102,0.08);color:#25D366}
+.btn-ghost{display:block;background:transparent;border:0.5px solid var(--border2);color:var(--muted);font-family:'Geist',sans-serif;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;padding:12px;border-radius:2px;text-decoration:none;text-align:center;transition:all 0.2s}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold)}
+.form-success{background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:2px;padding:12px 16px;font-size:13px;color:#5FD4C0;display:none;margin-top:10px}
+.free-note{text-align:center;font-size:11px;color:rgba(244,242,238,0.22);margin-top:14px;line-height:1.6}
+.agent-card{background:var(--black2);border:0.5px solid var(--border);border-radius:4px;padding:20px 24px;display:flex;align-items:center;gap:16px}
+.agent-av{width:44px;height:44px;border-radius:50%;background:linear-gradient(135deg,var(--gold),var(--gold2));display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:18px;color:var(--black);flex-shrink:0}
+.agent-name{font-size:13px;font-weight:500;color:var(--white)}
+.agent-role{font-size:11px;color:var(--muted);margin-top:2px}
+.partner-badge{display:inline-block;font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(244,242,238,0.45);background:rgba(255,255,255,0.03);border:0.5px solid var(--border);padding:4px 10px;border-radius:2px;margin-top:8px}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.fade-in{animation:fadeUp 0.4s both}
+@media(max-width:900px){
+  nav{padding:14px 20px}
+  main{padding:80px 20px 60px}
+  .listing-body{grid-template-columns:1fr}
+  .sidebar{position:static}
+  .specs-bar{grid-template-columns:1fr 1fr}
+  .spec-item:nth-child(2){border-right:none}
+  .spec-item:nth-child(3),.spec-item:nth-child(4){border-top:0.5px solid var(--border)}
+  .gallery-main{height:260px}
+  .gallery-thumbs{grid-template-columns:repeat(4,1fr)}
+}
+</style>
+
+<title>Villa in Jan Sofat · € 2.500.000 | Trovai</title>
+<meta name="description" content="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willems">
+<link rel="canonical" href="https://trovai.nl/listing/cur-1419108">
+<meta name="robots" content="index, follow">
+<link rel="preconnect" href="https://media.apimo.pro" crossorigin>
+<link rel="preconnect" href="https://athomecuracao.com" crossorigin>
+<meta property="og:type" content="product">
+<meta property="og:url" content="https://trovai.nl/listing/cur-1419108">
+<meta property="og:title" content="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop · € 2.500.000">
+<meta property="og:description" content="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willems">
+<meta property="og:image" content="https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg">
+<meta property="og:site_name" content="Trovai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop · € 2.500.000">
+<meta name="twitter:description" content="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willems">
+<meta name="twitter:image" content="https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","@id":"https://trovai.nl/listing/cur-1419108","name":"Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop","description":"Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willems","url":"https://trovai.nl/listing/cur-1419108","image":"https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg","category":"Villa","brand":{"@type":"Organization","name":"Trovai"},"offers":{"@type":"Offer","priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://trovai.nl/listing/cur-1419108","seller":{"@type":"Organization","name":"Trovai","url":"https://trovai.nl"},"price":2500000}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Trovai","item":"https://trovai.nl/"},{"@type":"ListItem","position":2,"name":"Curaçao","item":"https://trovai.nl/curacao"},{"@type":"ListItem","position":3,"name":"Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop","item":"https://trovai.nl/listing/cur-1419108"}]}</script>
+
+<style>
+.related-section{max-width:1200px;margin:0 auto;padding:48px 48px 8px;border-top:0.5px solid var(--border,rgba(244,242,238,0.08))}
+.rel-title{font-family:'Instrument Serif',serif;font-weight:400;font-size:24px;color:var(--white,#F4F2EE);margin:0 0 20px}
+.rel-grid{display:flex;flex-wrap:wrap;gap:12px}
+.rel-link{display:inline-block;font-size:13px;letter-spacing:0.04em;color:var(--gold,#C8A96A);border:0.5px solid rgba(200,169,106,0.35);background:rgba(200,169,106,0.04);padding:9px 16px;border-radius:2px;text-decoration:none;transition:all 0.2s}
+.rel-link:hover{background:rgba(200,169,106,0.12)}
+@media(max-width:900px){.related-section{padding:36px 20px 8px}}
+</style><script>window.__PRELOADED={"type":"curacao","data":{"id":"cur-1419108","raw_id":"1419108","name":"Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop","city":"Jan Sofat","region":"Curaçao","country":"Curaçao","price":2500000,"currency":"EUR","price_formatted":"€ 2.500.000","beds":7,"baths":5,"surface_sqm":995,"images":["https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop13-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop13-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop76-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop76-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop40-2-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop40-2-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop49-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop49-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop58-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop58-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop61-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop61-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop74-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop74-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop55-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop55-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop15-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop15-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop16-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop16-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop19-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop19-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop31-2-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop31-2-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop22-2-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop22-2-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop37-2-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop37-2-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop64-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop64-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop11-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop11-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop89-2048x1366.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop89-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop79-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop79-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop83-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop83-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop97-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop97-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop94-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop94-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop03-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop03-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop00-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop00-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop86-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop86-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop87-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop87-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop90-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop90-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop28-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop28-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop31-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop31-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop34-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop34-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop37-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop37-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop40-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop40-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop43-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop43-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop46-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop46-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop53-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop53-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop48-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop48-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop59-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop59-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop05-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop05-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop07-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop07-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop09-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop09-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop08-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop08-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop_D-1-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop_D-1-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop3-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop3-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop4-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop4-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop7-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop7-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop9-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop9-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop20-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop20-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop10-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop10-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop_D-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop_D-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop8-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop8-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop12-2048x1152.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop12-640x360.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop24-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop24-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop22-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop22-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop27-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop27-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop21-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop21-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop92-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop92-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop88-2048x1365.jpg","https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop88-640x427.jpg","https://athomecuracao.com/wp-content/uploads/2026/03/Ruime-Villa-La-Privada-met-Zeezicht-en-Zwembad-Te-Koop60-1-398x266.jpg","https://athomecuracao.com/wp-content/uploads/2026/04/Royale-Kavel-met-Bouwvergunning-in-Seru-Lora-te-Koop-398x266.jpg","https://athomecuracao.com/wp-content/uploads/2026/03/Villa-Cas-Grandi-zwembad-398x266.png","https://athomecuracao.com/wp-content/uploads/2023/08/vidanova-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/rbc-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/orco-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/mcb-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/firstcaribbeanbank-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/chb-150x150-1-100x100.jpg","https://athomecuracao.com/wp-content/uploads/2023/08/bancodicaribe-150x150-1-100x100.jpg"],"main_image":"https://athomecuracao.com/wp-content/uploads/2024/12/Spectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg","description":"Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willemstad. De ligging aan het Spaanse water brengt een heerlijke wind met zich mee. In de buurt zijn vele voorzieningen te vinden in de vorm van horeca, mini malls en benzinestations. Bekende stranden zoals de Caracasbaai en Jan Thiel Beach met al haar voorzieningen zijn nog geen 10 minuten rijden. Mambo Boulevard is eveneens circa 10 minuten rijden. Het centrum van Willemstad is circa 15 minuten rijden.\n\nVilla\n\nDeze exclusieve villa is ruim 995 m2 groot. Het is voorzien van twee losse appartementen, geïntegreerd in de bebouwing. De villa heeft vijf slaapkamers, waarvan er vier op de begane grond zijn gesitueerd en de master bedroom op de bovenste verdieping . De master bedroom is ruim 200 m2 met een eigen zwembad. De woonkamer op de eerste verdieping is 5 m. hoog met een grote Amerikaanse keuken. Totaal heeft de villa vier zwembaden waarvan twee zwembaden voorzien van glazen platen.\n\nOp de Begane grond van het huis zijn vier slaapkamers gesitueerd met twee badkamers en techniek ruimte/opslag. Een van de slaapkamers is voorzien van een beamer en multimedia installatie. Deze functioneert als bioscoopkamer. Alle kamers zijn voorzien van airconditioning.\n\nMet een speciaal ontworpen ronde wenteltrap kom je op de eerste verdieping. Deze voelt aan als een balzaal met 5 m. hoge plafonds en glazen platen waar je het zwembad door ziet. Dit geeft een uniek licht in de woonkamer. Een grote Amerikaanse keuken met eiland, bar en TV. De woonkamer heeft een Oost Terras voor het ontbijt waar de zon opkomt en Zuid Terras waar genoten kan worden van de middag zon voorzien van buitenkeuken en zwembad. De woonkamer is geheel voorzien van airconditioning.\n\nVia de prachtige wenteltrap kom je op de tweede verdieping, die volledig is ingericht als één royale master bedroom. Er is een elegante douche met drie regendouchekoppen aanwezig. Deze is gepositioneerd achter het bed en toegankelijk vanaf beide zijden. Ook beschikt het er een inloopkast, make-uptafel en een speciaal opmaat gemaakt bed. De master heeft een terras van 150 m2 met eigen zwembad van 40 m3. Het zwembad heeft een panoramisch uitzicht van 240 graden, uitkijkend op de zee en de jachthaven van Jan Sofat.\n\nAppartementen\n\nDe begane grond heeft twee appartementen, die een eigen poort hebben op het terrein en zijn los van het grote huis. De appartementen hebben een eigen keuken, badkamer en een slaapkamer. De appartementen zijn 85m2 groot inclusief tuin en eigen zwembad.\n\nExclusief inventaris.\n\nVraagprijs: € 2.500.000,- k.k\n\nBekijk video hier:\n\nLet op: de video in deze advertentie is AI-gegenereerd en dient ter visuele presentatie van de woning. Aan de beelden kunnen geen rechten worden ontleend.","source_url":"https://athomecuracao.com/kopen/spectaculaire-villa-met-panoramisch-uitzicht-zwembaden-en-2-appartementen-op-jan-sofat-te-koop-1419108-nl/","partner":"At Home Curaçao"}};window.__PRERENDERED=1;</script></head>
+<body>
+
+<nav>
+  <div class="logo"><span class="logo-t">Trovai</span><div class="logo-dot"></div></div>
+  <a href="/#quiz" class="nav-back">&#8592; Terug naar zoeken</a>
+</nav>
+
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lb-close">&#10005;</button>
+  <button class="lb-prev" id="lb-prev">&#8592;</button>
+  <img class="lightbox-img" id="lb-img" src="" alt="">
+  <button class="lb-next" id="lb-next">&#8594;</button>
+</div>
+
+<main>
+  <div id="loading" style="display:none"><div class="spin"></div><div class="loading-text">Woning laden...</div></div>
+  <div id="error-div">
+    <p style="margin-bottom:16px">Deze woning kon niet worden geladen.</p>
+    <a href="/#quiz" style="color:var(--gold)">&#8592; Terug naar zoeken</a>
+  </div>
+
+  <div id="listing" class="fade-in" style="display:block">
+    <div class="breadcrumb"><a href="/">Trovai</a><span>/</span><a href="/curacao">Curaçao</a><span>/</span><span id="bc-city">Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop</span></div>
+
+    <div style="margin-bottom:28px">
+      <div class="listing-tag" id="l-tag">Villa</div>
+      <h1 class="listing-title" id="l-title">Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop</h1>
+      <div class="listing-location">
+        <span id="l-city">Jan Sofat</span>
+        <div class="loc-dot"></div>
+        <span id="l-region">Curaçao</span>
+        <div class="loc-dot"></div>
+        <span id="l-country">Curaçao</span>
+      </div>
+      <div class="listing-price-row">
+        <div class="listing-price" id="l-price">€ 2.500.000</div>
+        <div class="listing-price-sqm" id="l-ppm"></div>
+      </div>
+    </div>
+
+    <div class="gallery" id="l-gallery"><div class="gallery-main"><img src="/.netlify/images?url=https%3A%2F%2Fathomecuracao.com%2Fwp-content%2Fuploads%2F2024%2F12%2FSpectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg&amp;w=800&amp;q=68" srcset="/.netlify/images?url=https%3A%2F%2Fathomecuracao.com%2Fwp-content%2Fuploads%2F2024%2F12%2FSpectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg&amp;w=480&amp;q=68 480w, /.netlify/images?url=https%3A%2F%2Fathomecuracao.com%2Fwp-content%2Fuploads%2F2024%2F12%2FSpectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg&amp;w=640&amp;q=68 640w, /.netlify/images?url=https%3A%2F%2Fathomecuracao.com%2Fwp-content%2Fuploads%2F2024%2F12%2FSpectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg&amp;w=800&amp;q=68 800w, /.netlify/images?url=https%3A%2F%2Fathomecuracao.com%2Fwp-content%2Fuploads%2F2024%2F12%2FSpectaculaire-villa-met-Panoramisch-Uitzicht-Zwembaden-en-2-Appartementen-op-Jan-Sofat-te-Koop06-2-1400x933.jpg&amp;w=1280&amp;q=68 1280w" sizes="(max-width:900px) 100vw, 760px" alt="Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop — Jan Sofat" width="1200" height="800" fetchpriority="high" decoding="async" style="width:100%;height:100%;object-fit:cover"></div></div>
+
+    <div class="listing-body">
+      <div>
+        <div class="specs-bar" id="l-specs"></div>
+
+        <div class="desc-section">
+          <div class="section-title">Omschrijving</div>
+          <div class="desc-text" id="l-desc"><p>Spectaculaire villa met Panoramisch Uitzicht Zwembaden en 2 Appartementen op Jan Sofat te Koop. De wijk Jan Sofat is centraal gelegen ten oosten van Willemstad. De ligging aan het Spaanse water brengt een heerlijke wind met zich mee. In de buurt zijn vele voorzieningen te vinden in de vorm van horeca, mini malls en benzinestations.</p><p>Bekende stranden zoals de Caracasbaai en Jan Thiel Beach met al haar voorzieningen zijn nog geen 10 minuten rijden. Mambo Boulevard is eveneens circa 10 minuten rijden. Het centrum van Willemstad is circa 15 minuten rijden.</p><p><strong>Villa</strong></p><p>Deze exclusieve villa is ruim 995 m2 groot. Het is voorzien van twee losse appartementen, geïntegreerd in de bebouwing. De villa heeft vijf slaapkamers, waarvan er vier op de begane grond zijn gesitueerd en de master bedroom op de bovenste verdieping .</p><p>De master bedroom is ruim 200 m2 met een eigen zwembad. De woonkamer op de eerste verdieping is 5 m. hoog met een grote Amerikaanse keuken. Totaal heeft de villa vier zwembaden waarvan twee zwembaden voorzien van glazen platen.</p><p>Op de Begane grond van het huis zijn vier slaapkamers gesitueerd met twee badkamers en techniek ruimte/opslag. Een van de slaapkamers is voorzien van een beamer en multimedia installatie. Deze functioneert als bioscoopkamer. Alle kamers zijn voorzien van airconditioning.</p><p>Met een speciaal ontworpen ronde wenteltrap kom je op de eerste verdieping. Deze voelt aan als een balzaal met 5 m. hoge plafonds en glazen platen waar je het zwembad door ziet. Dit geeft een uniek licht in de woonkamer. Een grote Amerikaanse keuken met eiland, bar en TV.</p><p>De woonkamer heeft een Oost Terras voor het ontbijt waar de zon opkomt en Zuid Terras waar genoten kan worden van de middag zon voorzien van buitenkeuken en zwembad. De woonkamer is geheel voorzien van airconditioning.</p><p>Via de prachtige wenteltrap kom je op de tweede verdieping, die volledig is ingericht als één royale master bedroom. Er is een elegante douche met drie regendouchekoppen aanwezig. Deze is gepositioneerd achter het bed en toegankelijk vanaf beide zijden.</p><p>Ook beschikt het er een inloopkast, make-uptafel en een speciaal opmaat gemaakt bed. De master heeft een terras van 150 m2 met eigen zwembad van 40 m3. Het zwembad heeft een panoramisch uitzicht van 240 graden, uitkijkend op de zee en de jachthaven van Jan Sofat.</p><p><strong>Appartementen</strong></p><p>De begane grond heeft twee appartementen, die een eigen poort hebben op het terrein en zijn los van het grote huis. De appartementen hebben een eigen keuken, badkamer en een slaapkamer. De appartementen zijn 85m2 groot inclusief tuin en eigen zwembad.</p><p>Exclusief inventaris.</p><p><strong>Vraagprijs: € 2.500.000,- k.k</strong></p><p>Bekijk video hier:</p><p>Let op: de video in deze advertentie is AI-gegenereerd en dient ter visuele presentatie van de woning. Aan de beelden kunnen geen rechten worden ontleend.</p><p>Trovai begeleidt u als onafhankelijke private buyer&#39;s advisor — van eerste bezichtiging tot aan de notaris, discreet en volledig aan uw zijde.</p></div>
+        </div>
+
+        <div class="details-section">
+          <div class="section-title">Woningdetails</div>
+          <table class="details-table" id="l-details"></table>
+        </div>
+
+        <div style="margin-bottom:36px;padding:24px;background:rgba(200,169,106,0.06);border:0.5px solid rgba(200,169,106,0.2);border-radius:3px;text-align:center"><div style="font-size:13px;color:rgba(244,242,238,0.6);margin-bottom:14px;line-height:1.6">Wilt u een persoonlijke selectie op basis van uw eigen wensen en budget?</div><a href="/#quiz" style="display:inline-block;background:linear-gradient(135deg,#C8A96A,#A8853A);color:#080A0F;font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:12px 28px;border-radius:2px;text-decoration:none">Start de AI-match &#8594;</a></div>
+      </div>
+
+      <div class="sidebar">
+        <div class="sidebar-card">
+          <div class="sidebar-price" id="sb-price">€ 2.500.000</div>
+          <div class="sidebar-price-note">Vraagprijs &middot; Private advisory</div>
+          <div class="sidebar-divider"></div>
+          <div class="sidebar-heading">Interesse in deze woning?</div>
+          <div class="sidebar-sub">Trovai begeleidt u onafhankelijk van eerste bezichtiging tot notaris — uw private buyer's advisor ter plaatse.</div>
+          <div class="form-field">
+            <label class="form-label">Uw naam</label>
+            <input class="form-input" id="cf-name" placeholder="Jan de Vries">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Email</label>
+            <input class="form-input" id="cf-email" type="email" placeholder="jan@email.com">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Telefoon</label>
+            <input class="form-input" id="cf-phone" type="tel" placeholder="+31 6 ...">
+          </div>
+          <div class="form-field">
+            <label class="form-label">Bericht (optioneel)</label>
+            <textarea class="form-textarea" id="cf-msg" placeholder="Ik heb interesse en wil graag meer informatie..."></textarea>
+          </div>
+          <button class="btn-gold" id="cf-btn" onclick="submitContact()">Vraag informatie aan &#8594;</button>
+          <div class="form-success" id="cf-ok">&#10003; Ontvangen &mdash; we nemen binnen 24 uur contact op.</div>
+          <div class="sidebar-divider"></div>
+          <a href="https://wa.me/31611380562" target="_blank" class="btn-wa">&#128172; WhatsApp direct</a>
+          <a href="/#quiz" class="btn-ghost">&#8592; Andere woningen bekijken</a>
+          <div class="free-note">Trovai · Private buyer's advisory<br>Onafhankelijk &amp; discreet</div>
+        </div>
+        <div class="agent-card">
+          <div class="agent-av">R</div>
+          <div>
+            <div class="agent-name">Roelof Methorst</div>
+            <div class="agent-role" id="agent-role">Trovai &middot; C&ocirc;te d&rsquo;Azur specialist</div>
+            <div class="partner-badge" id="partner-badge" style="display:none"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<section class="related-section" aria-label="Gerelateerde woningen en bestemmingen">
+  <h2 class="rel-title">Ontdek meer in Curaçao</h2>
+  <div class="rel-grid"><a class="rel-link" href="/curacao">Alle woningen in Curaçao</a><a class="rel-link" href="/curacao-jan-thiel">Woningen in Jan Thiel</a><a class="rel-link" href="/curacao-willemstad">Woningen in Willemstad</a><a class="rel-link" href="/curacao-blauwbaai">Woningen in Blauwbaai</a><a class="rel-link" href="/curacao-investering">Investeren op Curaçao</a><a class="rel-link" href="/listing/cur-1433459">Vergelijkbare woning</a><a class="rel-link" href="/listing/cur-1421898">Vergelijkbare woning</a><a class="rel-link" href="/listing/cur-1428687">Vergelijkbare woning</a></div>
+</section></main>
+
+<script>
+var cur = null;
+var lbPhotos = [];
+var lbIdx = 0;
+var galleryAlt = '';
+var listingType = 'loca'; // 'loca' of 'curacao'
+
+function getAttr(p, name) {
+  var attrs = p.attributes || [];
+  for (var i = 0; i < attrs.length; i++) {
+    if (attrs[i].name === name && attrs[i].terms && attrs[i].terms[0]) {
+      return attrs[i].terms[0].name;
+    }
+  }
+  return '';
+}
+
+function cleanHTML(s) {
+  var d = document.createElement('div');
+  d.innerHTML = (s || '');
+  return d.textContent || d.innerText || '';
+}
+
+function fmt(n) {
+  return '\u20ac\u00a0' + Math.round(n).toLocaleString('nl-NL');
+}
+
+// Netlify Image CDN: resize + WebP/AVIF (auto via Accept) voor alle bronafbeeldingen
+function nImg(src, w, q) {
+  if (!src) return src;
+  return '/.netlify/images?url=' + encodeURIComponent(src) + '&w=' + w + '&q=' + (q || 72);
+}
+function nSrcset(src, widths, q) {
+  return widths.map(function(w){ return nImg(src, w, q) + ' ' + w + 'w'; }).join(', ');
+}
+
+function showEl(id) {
+  document.getElementById('loading').style.display = 'none';
+  document.getElementById(id).style.display = 'block';
+}
+
+// ============ LOAD ============
+async function loadListing() {
+  // Statisch voorgerenderde pagina: data zit al in window.__PRELOADED -> geen fetch.
+  if (window.__PRELOADED && window.__PRELOADED.data) {
+    var pre = window.__PRELOADED;
+    listingType = pre.type === 'curacao' ? 'curacao' : 'loca';
+    cur = pre.data;
+    try {
+      if (listingType === 'curacao') renderCuracao(pre.data);
+      else renderListing(pre.data);
+    } catch (e) {
+      var el = document.getElementById('listing'); if (el) el.style.display = 'block';
+    }
+    return;
+  }
+
+  var parts = window.location.pathname.split('/').filter(Boolean);
+  var raw = parts[parts.length - 1] || '';
+  // Curacao: cur-1419108  /  LOCA: 12345
+  var isCuracao = /^cur-\d+/i.test(raw);
+  var id = isCuracao ? raw.replace(/^cur-/i, '') : raw.replace(/[^\d]/g, '');
+
+  if (!id) { showEl('error-div'); return; }
+
+  listingType = isCuracao ? 'curacao' : 'loca';
+  var endpoint = isCuracao ? '/api/get-curacao-listing?id=' + id : '/api/get-listing?id=' + id;
+
+  try {
+    var res = await fetch(endpoint);
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    var p = await res.json();
+    if (!p || (!p.id && !p.raw_id)) throw new Error('Geen data');
+    cur = p;
+    if (isCuracao) renderCuracao(p);
+    else renderListing(p);
+  } catch (e) {
+    document.getElementById('listing').style.display = 'none';
+    showEl('error-div');
+  }
+}
+
+// ============ LOCA RENDER (Cote d'Azur) ============
+function renderListing(p) {
+  var price  = parseInt((p.prices && p.prices.price) || 0);
+  var city   = getAttr(p, 'City');
+  var region = getAttr(p, 'Region');
+  var country= getAttr(p, 'Country');
+  var beds   = getAttr(p, 'Number of beds');
+  var rooms  = getAttr(p, 'Number of rooms');
+  var surf   = getAttr(p, 'Living area');
+  var land   = getAttr(p, 'Land area');
+  var constr = getAttr(p, 'Type of construction');
+  var cat    = (p.categories && p.categories[0] && p.categories[0].name) || '';
+  var name   = cleanHTML(p.name || '');
+
+  if (!window.__PRERENDERED) document.title = (cat || 'Woning') + ' in ' + (city || 'Côte d’Azur') + (price > 0 ? ' · ' + fmt(price) : '') + ' | Trovai';
+  galleryAlt = name + (city ? ' — ' + city : '');
+  document.getElementById('bc-city').textContent  = name;
+  document.getElementById('l-tag').textContent    = cat  || 'Woning';
+  document.getElementById('l-title').textContent  = name;
+  document.getElementById('l-city').textContent   = city;
+  document.getElementById('l-region').textContent = region || 'C\u00f4te d\u2019Azur';
+  document.getElementById('l-country').textContent= country || 'Frankrijk';
+  document.getElementById('l-price').textContent  = price > 0 ? fmt(price) : 'Prijs op aanvraag';
+  document.getElementById('sb-price').textContent = price > 0 ? fmt(price) : 'Prijs op aanvraag';
+
+  if (surf && price > 0) {
+    var sqm = parseInt(surf);
+    if (sqm > 0) document.getElementById('l-ppm').textContent = fmt(Math.round(price / sqm)) + ' per m\u00b2';
+  }
+
+  // Gallery
+  lbPhotos = (p.images || []).map(function(i){ return i.src; }).filter(Boolean);
+  renderGallery();
+
+  // Specs bar
+  var specs = [
+    beds   ? {l:'Slaapkamers',  v: beds}             : null,
+    rooms  ? {l:'Kamers',       v: rooms}            : null,
+    surf   ? {l:'Woonoppervlak',v: surf + ' m\u00b2'}: null,
+    land   ? {l:'Perceel',      v: land + ' m\u00b2'}: null
+  ].filter(Boolean);
+  renderSpecs(specs);
+
+  // Description — alleen renderen als de edge-functie de tekst niet al vulde
+  var raw = cleanHTML(p.description || p.short_description || '').trim();
+  if (!document.getElementById('l-desc').innerHTML.trim()) renderDescription(raw);
+
+  // Details table
+  var rows = [
+    ['Type woning',     cat],
+    ['Slaapkamers',     beds],
+    ['Aantal kamers',   rooms],
+    ['Woonoppervlak',   surf   ? surf + ' m\u00b2' : ''],
+    ['Perceeloppervlak',land   ? land + ' m\u00b2' : ''],
+    ['Bouwtype',        constr],
+    ['Stad',            city],
+    ['Regio',           region],
+    ['Land',            country]
+  ].filter(function(r){ return r[1]; });
+  renderDetails(rows);
+
+  showEl('listing');
+}
+
+// ============ CURACAO RENDER ============
+function renderCuracao(p) {
+  var price  = parseInt(p.price || 0);
+  var name   = p.name || 'Cura\u00e7ao woning';
+  var city   = p.city || 'Cura\u00e7ao';
+  var region = p.region || 'Cura\u00e7ao';
+  var country= p.country || 'Cura\u00e7ao';
+  var beds   = p.beds || 0;
+  var baths  = p.baths || 0;
+  var sqm    = p.surface_sqm || 0;
+  var cat    = inferCategory(name);
+
+  if (!window.__PRERENDERED) document.title = cat + ' in ' + city + ' | Trovai';
+  galleryAlt = name + (city ? ' \u2014 ' + city : '');
+  document.getElementById('bc-city').textContent  = name;
+  document.getElementById('l-tag').textContent    = cat;
+  document.getElementById('l-title').textContent  = name;
+  document.getElementById('l-city').textContent   = city;
+  document.getElementById('l-region').textContent = region;
+  document.getElementById('l-country').textContent= country;
+  // Prijs altijd in originele valuta tonen, geen omrekening
+  var priceLabel = p.price_formatted || (price > 0 ? fmt(price) : 'Prijs op aanvraag');
+  document.getElementById('l-price').textContent  = priceLabel;
+  document.getElementById('sb-price').textContent = priceLabel;
+
+  if (sqm && price > 0 && p.currency) {
+    var perSqm = Math.round(price / sqm).toLocaleString(p.currency === 'EUR' ? 'nl-NL' : 'en-US');
+    var prefix = p.currency === 'EUR' ? '\u20ac\u00a0' : (p.currency === 'USD' ? 'USD\u00a0' : (p.currency + '\u00a0'));
+    document.getElementById('l-ppm').textContent = prefix + perSqm + ' per m\u00b2';
+  }
+
+  // Update agent role + partner badge
+  document.getElementById('agent-role').textContent = 'Trovai \u00b7 Cura\u00e7ao specialist';
+  var pb = document.getElementById('partner-badge');
+  if (p.partner) {
+    pb.textContent = 'i.s.m. ' + p.partner;
+    pb.style.display = 'inline-block';
+  }
+
+  // Gallery
+  lbPhotos = (p.images || []).filter(Boolean);
+  if (lbPhotos.length === 0 && p.main_image) lbPhotos = [p.main_image];
+  renderGallery();
+
+  // Specs bar - geen aparte USD-spec, hoofdprijs toont al de echte valuta
+  var specs = [
+    beds  ? {l:'Slaapkamers',  v: String(beds)}        : null,
+    baths ? {l:'Badkamers',    v: String(baths)}       : null,
+    sqm   ? {l:'Woonoppervlak',v: sqm + ' m\u00b2'}    : null,
+    p.currency ? {l:'Valuta',  v: p.currency}          : null
+  ].filter(Boolean);
+  renderSpecs(specs);
+
+  // Description — alleen renderen als de edge-functie de tekst niet al vulde
+  if (!document.getElementById('l-desc').innerHTML.trim()) renderDescription(p.description || '');
+
+  // Details table
+  var rows = [
+    ['Type woning',     cat],
+    ['Slaapkamers',     beds || ''],
+    ['Badkamers',       baths || ''],
+    ['Woonoppervlak',   sqm ? sqm + ' m\u00b2' : ''],
+    ['Wijk',            city !== 'Cura\u00e7ao' ? city : ''],
+    ['Regio',           region],
+    ['Land',            country],
+    ['Object ID',       p.raw_id || ''],
+    ['Partner',         p.partner || '']
+  ].filter(function(r){ return r[1]; });
+  renderDetails(rows);
+
+  showEl('listing');
+}
+
+function inferCategory(title) {
+  var t = (title || '').toLowerCase();
+  if (t.indexOf('penthouse') > -1) return 'Penthouse';
+  if (t.indexOf('appartement') > -1) return 'Appartement';
+  if (t.indexOf('villa') > -1) return 'Villa';
+  if (t.indexOf('bungalow') > -1) return 'Bungalow';
+  if (t.indexOf('kavel') > -1) return 'Kavel';
+  if (t.indexOf('resort') > -1) return 'Resort';
+  return 'Woning';
+}
+
+// ============ SHARED RENDERERS ============
+function renderSpecs(specs) {
+  var specsEl = document.getElementById('l-specs');
+  if (specs.length) {
+    specsEl.style.gridTemplateColumns = 'repeat(' + specs.length + ',1fr)';
+    specsEl.innerHTML = specs.map(function(s){
+      return '<div class="spec-item"><div class="spec-label">' + s.l + '</div><div class="spec-val">' + s.v + '</div></div>';
+    }).join('');
+  } else {
+    specsEl.style.display = 'none';
+  }
+}
+
+function renderDescription(raw) {
+  var descEl = document.getElementById('l-desc');
+  raw = (raw || '').trim();
+  if (raw) {
+    var paras = raw.split(/\n\s*\n/).filter(function(x){ return x.trim(); });
+    if (!paras.length) paras = [raw];
+    var shortCut = 3;
+    var buildHTML = function(arr) {
+      return arr.map(function(t){ return '<p>' + t.trim() + '</p>'; }).join('');
+    };
+    if (paras.length > shortCut) {
+      descEl.innerHTML = buildHTML(paras.slice(0, shortCut));
+      var btn = document.createElement('button');
+      btn.className = 'desc-more-btn';
+      btn.textContent = 'Lees volledige omschrijving \u2192';
+      btn.onclick = function() {
+        if (btn.textContent.indexOf('Minder') === -1) {
+          descEl.innerHTML = buildHTML(paras);
+          descEl.appendChild(btn);
+          btn.textContent = 'Minder weergeven \u2191';
+        } else {
+          descEl.innerHTML = buildHTML(paras.slice(0, shortCut));
+          descEl.appendChild(btn);
+          btn.textContent = 'Lees volledige omschrijving \u2192';
+        }
+      };
+      descEl.appendChild(btn);
+    } else {
+      descEl.innerHTML = buildHTML(paras);
+    }
+  } else {
+    descEl.innerHTML = '<p style="color:var(--muted)">Neem contact op voor een volledige omschrijving.</p>';
+  }
+}
+
+function renderDetails(rows) {
+  document.getElementById('l-details').innerHTML = rows.map(function(r){
+    return '<tr><td>' + r[0] + '</td><td>' + r[1] + '</td></tr>';
+  }).join('');
+}
+
+// ============ GALLERY / LIGHTBOX ============
+function renderGallery() {
+  if (!lbPhotos.length) {
+    document.getElementById('l-gallery').innerHTML =
+      '<div style="height:280px;background:var(--black2);border:0.5px solid var(--border);border-radius:4px;display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:13px">Foto\'s op aanvraag</div>';
+    return;
+  }
+  var altBase = galleryAlt || 'Woning via Trovai';
+  var main = '<div class="gallery-main" id="gallery-main-wrap" onclick="openLB(0)">' +
+    '<img id="gallery-main-img" src="' + nImg(lbPhotos[0], 800, 68) + '" srcset="' + nSrcset(lbPhotos[0], [480,640,800,1280], 68) + '" sizes="(max-width:900px) 100vw, 760px" alt="' + altBase + '" width="1200" height="800" fetchpriority="high" decoding="async" loading="eager">' +
+    '<div class="gallery-count" id="gallery-count">1 / ' + lbPhotos.length + '</div>' +
+    '</div>';
+  var thumbs = lbPhotos.slice(0, 8).map(function(src, i){
+    return '<div class="gallery-thumb' + (i===0?' active':'') + '" onclick="setPhoto(' + i + ')"><img src="' + nImg(src, 400, 68) + '" alt="' + altBase + ' — foto ' + (i+1) + '" width="160" height="80" decoding="async" loading="lazy" fetchpriority="low"></div>';
+  }).join('');
+  document.getElementById('l-gallery').innerHTML = main + '<div class="gallery-thumbs">' + thumbs + '</div>';
+}
+
+function setPhoto(idx) {
+  lbIdx = idx;
+  var img = document.getElementById('gallery-main-img');
+  if (img) { img.srcset = nSrcset(lbPhotos[idx], [480,640,800,1280], 68); img.src = nImg(lbPhotos[idx], 800, 68); }
+  var cnt = document.getElementById('gallery-count');
+  if (cnt) cnt.textContent = (idx+1) + ' / ' + lbPhotos.length;
+  document.querySelectorAll('.gallery-thumb').forEach(function(t, i){ t.classList.toggle('active', i===idx); });
+}
+
+function openLB(idx) {
+  lbIdx = idx;
+  document.getElementById('lb-img').src = nImg(lbPhotos[idx], 2000, 82);
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLB() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function lbNav(dir) {
+  lbIdx = (lbIdx + dir + lbPhotos.length) % lbPhotos.length;
+  document.getElementById('lb-img').src = nImg(lbPhotos[lbIdx], 2000, 82);
+}
+
+document.getElementById('lightbox').addEventListener('click', function(e){
+  if (e.target === this) closeLB();
+});
+document.getElementById('lb-close').onclick = closeLB;
+document.getElementById('lb-prev').onclick = function(){ lbNav(-1); };
+document.getElementById('lb-next').onclick = function(){ lbNav(1); };
+
+document.addEventListener('keydown', function(e){
+  if (!document.getElementById('lightbox').classList.contains('open')) return;
+  if (e.key === 'Escape') closeLB();
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+// ============ CONTACT FORM ============
+async function submitContact() {
+  var name  = document.getElementById('cf-name').value.trim();
+  var email = document.getElementById('cf-email').value.trim();
+  var phone = document.getElementById('cf-phone').value.trim();
+  var msg   = document.getElementById('cf-msg').value.trim();
+  if (!name || !email) { alert('Vul uw naam en emailadres in'); return; }
+  var btn = document.getElementById('cf-btn');
+  btn.textContent = 'Versturen...';
+  btn.style.opacity = '0.6';
+
+  var listingName = '';
+  var listingPrice = '';
+  var listingId = window.location.pathname.split('/').filter(Boolean).pop();
+  var destination = listingType === 'curacao' ? 'curacao' : 'cotedazur';
+
+  if (cur) {
+    listingName = listingType === 'curacao' ? (cur.name || '') : cleanHTML(cur.name || '');
+    if (listingType === 'curacao') {
+      listingPrice = cur.price_formatted || (cur.price ? fmt(cur.price) : '');
+    } else {
+      var p = parseInt((cur.prices && cur.prices.price) || 0);
+      listingPrice = p > 0 ? fmt(p) : '';
+    }
+  }
+
+  try {
+    await fetch('/api/send-email', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        form_type: 'listing_inquiry',
+        name: name, email: email, phone: phone,
+        message: msg || ('Interesse in: ' + listingName),
+        listing_id: listingId,
+        listing_name: listingName,
+        listing_price: listingPrice,
+        destination: destination
+      })
+    });
+  } catch(e) {}
+  btn.style.display = 'none';
+  document.getElementById('cf-ok').style.display = 'block';
+}
+
+loadListing();
+</script>
+</body>
+</html>

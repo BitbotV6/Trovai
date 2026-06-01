@@ -1,5 +1,7 @@
 [build]
   publish = "."
+  # Pre-render de getoonde listings tot statische HTML (instant openen, geen runtime-fetch).
+  command = "node scripts/build-listings.mjs"
 
 [functions]
   directory = "netlify/functions"
