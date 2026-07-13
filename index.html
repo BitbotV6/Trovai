@@ -58,6 +58,7 @@ nav.scrolled{background:rgba(8,10,15,0.92);border-color:var(--border);backdrop-f
 .nav-links a:hover{color:var(--white)}
 .nav-cta{background:transparent;border:0.5px solid rgba(200,169,106,0.45);color:var(--gold);font-family:'Geist',sans-serif;font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:9px 22px;border-radius:2px;cursor:pointer;text-decoration:none;transition:all 0.2s}
 .nav-cta:hover{background:rgba(200,169,106,0.1)}
+.nav-lang{font-size:11px;letter-spacing:0.1em;color:rgba(244,242,238,0.28)}
 
 /* HERO */
 .hero{min-height:100vh;display:flex;align-items:center;position:relative;overflow:hidden;padding:140px 48px 80px}
@@ -232,8 +233,9 @@ nav.scrolled{background:rgba(8,10,15,0.92);border-color:var(--border);backdrop-f
 
 /* FOOTER */
 footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--border)}
-.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr;gap:60px}
-.footer-logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--gold);margin-bottom:14px;font-style:italic}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px}
+.footer-logo{font-family:'Instrument Serif',serif;font-size:22px;color:var(--gold);margin-bottom:14px;font-style:italic}
+.footer-logo-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:2px}
 .footer-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:280px}
 .footer-col h4{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px}
 .footer-col a{display:block;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:10px;transition:color 0.2s}
@@ -307,8 +309,10 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
   <div class="nav-links">
     <a href="#destinations">Bestemmingen</a>
     <a href="#how">Hoe het werkt</a>
+    <a href="/journal">Journal</a>
     <a href="#about">Over ons</a>
     <a href="#contact">Contact</a>
+    <span class="nav-lang">NL · EN · FR</span>
     <a href="#quiz" class="nav-cta">Vind uw woning</a>
   </div>
 </nav>
@@ -655,6 +659,7 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
             <div class="q-result-title">Uw portfolio is klaar, <span id="qr-name">—</span></div>
             <div class="q-result-text" id="qr-text"></div>
             <div class="q-props" id="qr-props"></div>
+            <div style="text-align:center;margin:4px 0 16px"><a id="qr-portfolio" href="/portfolio" class="btn-gold" style="display:none">Open uw privéportfolio →</a></div>
             <div style="background:rgba(26,155,127,0.08);border:0.5px solid rgba(26,155,127,0.25);border-radius:3px;padding:16px 20px;margin-top:4px">
               <div style="font-size:13px;color:#5FD4C0;font-weight:500;margin-bottom:4px">✓ Bevestigingsmail onderweg</div>
               <div style="font-size:12px;color:var(--muted);line-height:1.6">U ontvangt direct een email met uw persoonlijke selectie. Controleer eventueel uw spam folder.</div>
@@ -767,25 +772,33 @@ footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--b
 <footer>
   <div class="footer-inner">
     <div>
-      <div class="footer-logo">Trovai.</div>
-      <p class="footer-desc">AI-gedreven private buyer's advisory. Côte d'Azur en Curaçao.</p>
+      <div class="footer-logo">Trovai<span class="footer-logo-dot"></span></div>
+      <p class="footer-desc">Onafhankelijke private buyer's advisory. AI-matching voor internationale kopers op de Côte d'Azur en Curaçao — discreet, en uitsluitend in het belang van de koper.</p>
     </div>
     <div class="footer-col">
       <h4>Bestemmingen</h4>
-      <a href="#destinations">Côte d'Azur</a>
-      <a href="#destinations">Curaçao</a>
+      <a href="/cote-dazur">Côte d'Azur</a>
+      <a href="/curacao">Curaçao</a>
       <span style="display:block;margin-top:10px;font-size:11px;letter-spacing:0.06em;color:rgba(244,242,238,0.3)">Binnenkort · Ibiza · Portugal · Dubai</span>
+    </div>
+    <div class="footer-col">
+      <h4>Gidsen</h4>
+      <a href="/frans-koopproces-gids">Frans koopproces</a>
+      <a href="/hypotheek-frankrijk-nederlanders">Hypotheek Frankrijk</a>
+      <a href="/kosten-kopen-frankrijk">Kosten van kopen</a>
+      <a href="/belasting-tweede-woning-nederland">Belasting tweede woning</a>
+      <a href="/journal">Het Journal →</a>
     </div>
     <div class="footer-col">
       <h4>Contact</h4>
       <a href="mailto:info@trovai.nl" style="color:var(--muted);text-decoration:none">info@trovai.nl</a>
       <a href="https://wa.me/31611380562">WhatsApp</a>
-      <a href="https://linkedin.com">LinkedIn</a>
+      <a href="/rendement-calculator">Rendement-calculator</a>
     </div>
   </div>
   <div class="footer-bottom">
-    <p>© 2026 Trovai. AI-gedreven private buyer's advisory. Côte d'Azur · Curaçao.</p>
-    <p>trovai.nl</p>
+    <p>© 2026 Trovai · info@trovai.nl</p>
+    <p>Onafhankelijk &amp; discreet</p>
   </div>
 </footer>
 
@@ -869,6 +882,10 @@ async function submitQ(){
   A.phone=document.getElementById('qi-phone').value.trim();
   document.getElementById('qr-name').textContent=name;
   goQ('qs-result');
+  // Privéportfolio-link: microsite met dezelfde matchparameters, deelbaar met partner/family office
+  const pf=document.getElementById('qr-portfolio');
+  pf.href='/portfolio?'+new URLSearchParams({name,dest:A.destination||'',budget:A.cda_budget||A.cur_budget||'',type:A.cda_type||A.cur_type||'open',area:A.cda_area||''}).toString();
+  pf.style.display='inline-flex';
   document.getElementById('qr-loading').style.display='block';
   document.getElementById('qr-props').innerHTML='';
   document.getElementById('qr-text').textContent='';

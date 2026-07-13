@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="nl">
+<head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BQYEBBMJ69"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-BQYEBBMJ69');
+</script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rendement berekenen: vastgoed op Curaçao | Trovai</title>
+<meta name="description" content="Wat levert een villa op Curaçao werkelijk op? Reken met uw eigen aannames: aankoopprijs, nachtprijs en bezettingsgraad. Directe netto-rendementprojectie.">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://trovai.nl/rendement-calculator">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://trovai.nl/rendement-calculator">
+<meta property="og:title" content="Rendement berekenen: vastgoed op Curaçao | Trovai">
+<meta property="og:description" content="Interactieve rendementprojectie voor verhuurvastgoed op Curaçao. Reken met uw eigen aannames.">
+<meta property="og:image" content="https://trovai.nl/og-image.svg">
+<meta property="og:site_name" content="Trovai">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Rendement berekenen: vastgoed op Curaçao | Trovai">
+<meta name="twitter:description" content="Interactieve rendementprojectie voor verhuurvastgoed op Curaçao.">
+<meta name="twitter:image" content="https://trovai.nl/og-image.svg">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"Trovai","url":"https://trovai.nl","logo":"https://trovai.nl/og-image.svg","description":"AI-gedreven private buyer's advisory voor internationale kopers op de Côte d'Azur en Curaçao.","contactPoint":{"@type":"ContactPoint","email":"info@trovai.nl","contactType":"customer service","availableLanguage":["Dutch","English","French"]}}</script>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23080A0F'/><text x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-family='Georgia,serif' font-size='20' font-style='italic' fill='%23C8A96A'>T</text><circle cx='23' cy='20' r='2.5' fill='%23C8A96A'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#080A0F;--black2:#0C0E14;--black3:#11141C;
+  --white:#F4F2EE;--gold:#C8A96A;--gold2:#A8853A;
+  --muted:rgba(244,242,238,0.45);--faint:rgba(244,242,238,0.2);
+  --border:rgba(244,242,238,0.08);--border2:rgba(244,242,238,0.14);
+  --border-gold:rgba(200,169,106,0.35);--teal-text:#5FD4C0;
+  --f-serif:'Instrument Serif',serif;--f-sans:'Geist',sans-serif;
+}
+body{background:var(--black);color:var(--white);font-family:var(--f-sans);font-weight:300;-webkit-font-smoothing:antialiased}
+a{text-decoration:none}
+nav{position:sticky;top:0;z-index:100;padding:18px 48px;display:flex;justify-content:space-between;align-items:center;background:rgba(8,10,15,0.92);backdrop-filter:blur(12px);border-bottom:0.5px solid var(--border)}
+.logo{display:inline-flex;align-items:baseline;gap:1px;font-family:var(--f-serif);font-size:22px;color:var(--white);letter-spacing:-0.02em}
+.logo i{font-style:normal;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:2px;align-self:flex-end;margin-bottom:3px}
+.nav-links{display:flex;gap:32px;align-items:center}
+.nav-links a{font-size:13px;color:var(--muted);letter-spacing:0.06em;transition:color 0.2s}
+.nav-links a:hover{color:var(--white)}
+.nav-lang{font-size:11px;letter-spacing:0.1em;color:rgba(244,242,238,0.28)}
+.nav-cta{background:rgba(200,169,106,0.08);border:0.5px solid var(--border-gold);color:var(--gold);font-size:12px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:10px 20px;border-radius:2px;transition:all 0.18s}
+.nav-cta:hover{background:rgba(200,169,106,0.15)}
+main{max-width:1000px;margin:0 auto;padding:72px 48px 96px}
+.head{text-align:center;margin-bottom:56px}
+.tag{display:inline-block;font-size:10px;letter-spacing:0.18em;text-transform:uppercase;font-weight:500;color:var(--teal-text);background:rgba(26,155,127,0.15);border:0.5px solid rgba(26,155,127,0.4);padding:4px 11px;border-radius:1px;margin-bottom:20px}
+h1{font-family:var(--f-serif);font-size:clamp(32px,4vw,52px);font-weight:400;line-height:1.15;letter-spacing:-0.02em;margin:0 0 14px}
+h1 em{font-style:italic;color:var(--gold)}
+.sub{font-size:15px;color:var(--muted);line-height:1.75;max-width:520px;margin:0 auto}
+.grid{display:grid;grid-template-columns:1fr 380px;gap:48px;align-items:start}
+.panel{background:var(--black3);border:0.5px solid var(--border);border-radius:4px;padding:36px 40px}
+.srow{margin-bottom:28px}
+.srow-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:10px}
+.slabel{font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted)}
+.sval{font-family:var(--f-serif);font-size:22px;color:var(--gold)}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:linear-gradient(90deg,var(--gold) var(--pct,50%),var(--border) var(--pct,50%));border:none;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--gold);border:2px solid var(--black3);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--black3);cursor:pointer}
+.note{font-size:11px;color:var(--faint);line-height:1.7;margin:0}
+.result{background:var(--black2);border:0.5px solid var(--border-gold);border-radius:4px;padding:32px 36px;position:sticky;top:90px}
+.rlabel{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:24px}
+.ryield{font-family:var(--f-serif);font-size:44px;color:var(--gold);line-height:1}
+.ryield-sub{font-size:12px;color:var(--muted);margin-top:6px;letter-spacing:0.05em}
+.rrows{border-top:0.5px solid var(--border);margin-top:24px;padding-top:20px;display:flex;flex-direction:column;gap:14px}
+.rrow{display:flex;justify-content:space-between;font-size:13px}
+.rrow span:first-child{color:var(--muted)}
+.rrow span:last-child{color:var(--white);font-variant-numeric:tabular-nums}
+.btn-gold{display:flex;width:100%;align-items:center;justify-content:center;gap:10px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:var(--black);font-size:13px;font-weight:500;letter-spacing:0.1em;text-transform:uppercase;padding:14px 28px;border-radius:2px;margin-top:28px;transition:all 0.2s}
+.btn-gold:hover{opacity:0.88;transform:translateY(-1px)}
+.trust{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:48px;flex-wrap:wrap}
+.trust span{font-size:11px;color:rgba(244,242,238,0.28)}
+.trust i{width:3px;height:3px;border-radius:50%;background:rgba(200,169,106,0.25)}
+footer{background:var(--black2);padding:60px 48px;border-top:0.5px solid var(--border)}
+.footer-inner{max-width:1200px;margin:0 auto;display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:60px}
+.footer-logo{font-family:var(--f-serif);font-size:22px;font-style:italic;color:var(--gold)}
+.footer-logo i{font-style:normal;display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--gold);margin-left:2px}
+.footer-desc{font-size:13px;color:var(--muted);line-height:1.7;max-width:280px;margin-top:14px}
+.footer-col h4{font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:var(--gold);margin-bottom:16px;font-weight:500}
+.footer-col a{display:block;font-size:13px;color:var(--muted);margin-bottom:10px;transition:color 0.2s}
+.footer-col a:hover{color:var(--white)}
+.footer-soon{display:block;margin-top:10px;font-size:11px;letter-spacing:0.06em;color:rgba(244,242,238,0.3)}
+.footer-bottom{max-width:1200px;margin:36px auto 0;padding-top:24px;border-top:0.5px solid var(--border);display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.footer-bottom p{font-size:12px;color:var(--faint)}
+@media(max-width:900px){
+  nav{padding:14px 20px}
+  .nav-links a:not(.nav-cta){display:none}
+  .nav-lang{display:none}
+  main{padding:48px 20px 72px}
+  .grid{grid-template-columns:1fr}
+  .panel{padding:26px 22px}
+  .result{position:static;padding:26px 22px}
+  footer{padding:48px 20px}
+  .footer-inner{grid-template-columns:1fr;gap:36px}
+}
+</style>
+</head>
+<body>
+
+<nav aria-label="Hoofdnavigatie">
+  <a href="/" class="logo">Trovai<i></i></a>
+  <div class="nav-links">
+    <a href="/#destinations">Bestemmingen</a>
+    <a href="/#how">Hoe het werkt</a>
+    <a href="/journal">Journal</a>
+    <a href="/#contact">Contact</a>
+    <span class="nav-lang">NL · EN · FR</span>
+    <a href="/#quiz" class="nav-cta">Vind uw woning</a>
+  </div>
+</nav>
+
+<main>
+  <div class="head">
+    <span class="tag">Curaçao · Investeren</span>
+    <h1>Wat levert een villa op Curaçao <em>werkelijk op?</em></h1>
+    <p class="sub">Reken met uw eigen aannames. Nederlands rechtssysteem, jaarrond seizoen, verhuur in euro's of dollars.</p>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="srow">
+        <div class="srow-top"><span class="slabel">Aankoopprijs</span><span class="sval" id="v-price">€ 750.000</span></div>
+        <input type="range" id="s-price" min="300000" max="3000000" step="25000" value="750000">
+      </div>
+      <div class="srow">
+        <div class="srow-top"><span class="slabel">Gemiddelde nachtprijs</span><span class="sval" id="v-nightly">€ 275</span></div>
+        <input type="range" id="s-nightly" min="100" max="800" step="5" value="275">
+      </div>
+      <div class="srow">
+        <div class="srow-top"><span class="slabel">Bezettingsgraad</span><span class="sval" id="v-occ">65%</span></div>
+        <input type="range" id="s-occ" min="30" max="90" step="1" value="65">
+      </div>
+      <p class="note">Indicatief. Aannames: 30% beheer- en schoonmaakkosten, 1% vaste lasten per jaar. Geen financiering of waardestijging meegerekend. Trovai rekent uw dossier exact door.</p>
+    </div>
+
+    <div class="result">
+      <div class="rlabel">Uw projectie</div>
+      <div class="ryield" id="r-netyield">5,1%</div>
+      <div class="ryield-sub">Netto rendement per jaar</div>
+      <div class="rrows">
+        <div class="rrow"><span>Bruto huurinkomsten</span><span id="r-gross">€ 65.244</span></div>
+        <div class="rrow"><span>Kosten (beheer + vast)</span><span id="r-costs">− € 27.073</span></div>
+        <div class="rrow"><span>Netto per jaar</span><span id="r-net">€ 38.171</span></div>
+        <div class="rrow"><span>Bruto rendement</span><span id="r-grossyield">8,7%</span></div>
+      </div>
+      <a href="/#contact" class="btn-gold">Bespreek uw investering →</a>
+    </div>
+  </div>
+
+  <div class="trust">
+    <span>Onafhankelijk</span><i></i>
+    <span>Discreet</span><i></i>
+    <span>Aan verkoopzijde gefinancierd — volledige loyaliteit aan de koper</span>
+  </div>
+</main>
+
+<footer>
+  <div class="footer-inner">
+    <div>
+      <div class="footer-logo">Trovai<i></i></div>
+      <p class="footer-desc">Onafhankelijke private buyer's advisory. AI-matching voor internationale kopers op de Côte d'Azur en Curaçao — discreet, en uitsluitend in het belang van de koper.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Bestemmingen</h4>
+      <a href="/cote-dazur">Côte d'Azur</a>
+      <a href="/curacao">Curaçao</a>
+      <span class="footer-soon">Binnenkort · Ibiza · Portugal · Dubai</span>
+    </div>
+    <div class="footer-col">
+      <h4>Gidsen</h4>
+      <a href="/frans-koopproces-gids">Frans koopproces</a>
+      <a href="/hypotheek-frankrijk-nederlanders">Hypotheek Frankrijk</a>
+      <a href="/kosten-kopen-frankrijk">Kosten van kopen</a>
+      <a href="/belasting-tweede-woning-nederland">Belasting tweede woning</a>
+      <a href="/journal">Het Journal →</a>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <a href="mailto:info@trovai.nl">info@trovai.nl</a>
+      <a href="https://wa.me/31611380562">WhatsApp</a>
+      <a href="/rendement-calculator">Rendement-calculator</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 Trovai · info@trovai.nl</p>
+    <p>Onafhankelijk &amp; discreet</p>
+  </div>
+</footer>
+
+<script>
+const eur = n => '€ ' + Math.round(n).toLocaleString('nl-NL');
+const pctNl = n => n.toFixed(1).replace('.', ',') + '%';
+const S = id => document.getElementById(id);
+
+function paint(sl){
+  const pct = ((sl.value - sl.min) / (sl.max - sl.min)) * 100;
+  sl.style.setProperty('--pct', pct + '%');
+}
+
+function calc(){
+  const price = Number(S('s-price').value);
+  const nightly = Number(S('s-nightly').value);
+  const occ = Number(S('s-occ').value);
+  S('v-price').textContent = eur(price);
+  S('v-nightly').textContent = eur(nightly);
+  S('v-occ').textContent = occ + '%';
+  const gross = nightly * 365 * (occ / 100);
+  const costs = gross * 0.30 + price * 0.01;
+  const net = gross - costs;
+  S('r-gross').textContent = eur(gross);
+  S('r-costs').textContent = '− ' + eur(costs);
+  S('r-net').textContent = eur(net);
+  S('r-grossyield').textContent = pctNl(gross / price * 100);
+  S('r-netyield').textContent = pctNl(net / price * 100);
+}
+
+['s-price','s-nightly','s-occ'].forEach(id => {
+  const sl = S(id);
+  sl.addEventListener('input', () => { paint(sl); calc(); });
+  paint(sl);
+});
+calc();
+</script>
+</body>
+</html>
