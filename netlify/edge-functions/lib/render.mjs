@@ -179,6 +179,16 @@ export function normaliseCuracao(p, canonical) {
   };
 }
 
+function residenceType(cat) {
+  const t = typeLabel(cat);
+  if (t === "Appartement" || t === "Penthouse") return "Apartment";
+  if (t === "Bouwgrond") return "Residence";
+  return "SingleFamilyResidence";
+}
+
+// RealEstateListing i.p.v. Product: vastgoed heeft geen Product-rich-result
+// bij Google, en Product zonder review/shipping-velden riskeert
+// merchant-listing-warnings in Search Console.
 function buildJsonLd(d) {
   const offers = {
     "@type": "Offer",
@@ -188,16 +198,31 @@ function buildJsonLd(d) {
     seller: { "@type": "Organization", name: "Trovai", url: "https://trovai.nl" },
   };
   if (d.price > 0) offers.price = d.price;
+  const about = {
+    "@type": residenceType(d.category),
+    name: d.name,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: d.city || d.region,
+      addressRegion: d.region,
+      addressCountry: d.country,
+    },
+  };
+  const sqm = parseInt(d.surface, 10);
+  if (sqm > 0) about.floorSize = { "@type": "QuantitativeValue", value: sqm, unitCode: "MTK" };
+  const rooms = parseInt(d.rooms, 10);
+  if (rooms > 0) about.numberOfRooms = rooms;
+  const beds = parseInt(d.beds, 10);
+  if (beds > 0) about.numberOfBedrooms = beds;
   return {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "RealEstateListing",
     "@id": d.canonical,
     name: d.name,
     description: d.description || `${d.category} in ${d.city || d.region}. ${d.priceFormatted}.`,
     url: d.canonical,
     image: d.image,
-    category: d.category,
-    brand: { "@type": "Organization", name: "Trovai" },
+    about,
     offers,
   };
 }
@@ -334,6 +359,7 @@ export function renderListingHtml(html, d, opts = {}) {
   let out = html
     .replace(/<title>[^<]*<\/title>/i, "")
     .replace(/<meta\s+name=["']description["'][^>]*>/gi, "")
+    .replace(/<meta\s+name=["']robots["'][^>]*>/gi, "")
     .replace(/<link\s+rel=["']canonical["'][^>]*>/gi, "")
     .replace(/<meta\s+property=["']og:(?:url|title|description|image|type|site_name)["'][^>]*>/gi, "")
     .replace(/<meta\s+name=["']twitter:[^"']+["'][^>]*>/gi, "");

@@ -13,7 +13,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Trovai — luxe woning details</title>
 <meta name="description" content="Bekijk deze luxe woning via Trovai — AI-gedreven private buyer's advisory voor internationale kopers op de Côte d'Azur en Curaçao.">
-<link rel="canonical" href="https://trovai.nl/">
+<!-- Shell-default: noindex zonder canonical. De pre-render (build) en edge-SSR
+     vervangen dit door index,follow + de juiste self-canonical. Zo kan een kale
+     fallback-shell (trage/falende bron-API) nooit als soft-404 met canonical
+     naar de homepage geïndexeerd worden. -->
+<meta name="robots" content="noindex">
 <meta property="og:type" content="product">
 <meta property="og:site_name" content="Trovai">
 <meta property="og:title" content="Trovai — luxe woning details">
@@ -24,6 +28,7 @@
 <meta name="twitter:description" content="AI-gedreven private buyer's advisory voor internationale kopers op de Côte d'Azur en Curaçao.">
 <meta name="twitter:image" content="https://trovai.nl/og-image.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
