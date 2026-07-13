@@ -12,17 +12,20 @@ import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { normaliseLoca, normaliseCuracao, renderListingHtml } from "../netlify/edge-functions/lib/render.mjs";
+import { CDA_IDS, CURACAO_IDS } from "../netlify/shared/listings-manifest.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const ORIGIN = process.env.URL || process.env.DEPLOY_PRIME_URL || "https://trovai.nl";
 const LOCA = "https://www.livingonthecotedazur.com/wp-json/wc/store/v1/products";
 const TIMEOUT_MS = 20000;
 
-// Getoonde woningen (sitemap/showcase). Houd in sync met sitemap.xml.
+// Getoonde woningen (sitemap/showcase) komen uit de gedeelde manifest —
+// dezelfde bron als de sitemap-function, zodat sitemap en pre-render nooit
+// uit elkaar lopen. Houd de manifest in sync met sitemap.xml.
 // CDA: direct bij LOCA via /products/<id> (de ?include-param van de Store-API is kapot).
 // Curaçao: via het eigen API-endpoint (scrape met correcte per-id data).
-const CDA = ["3599285", "3599138", "3599130", "3599203", "3599146"];
-const CURACAO = ["1433459", "1419108", "1421898", "1428687", "1432882", "1420862", "1435441", "1416350", "1436113"];
+const CDA = CDA_IDS;
+const CURACAO = CURACAO_IDS;
 
 async function fetchJson(url) {
   const ctrl = new AbortController();
