@@ -1,5 +1,26 @@
 User-agent: *
 Allow: /
+Disallow: /admin/
+
+# AI-crawlers expliciet welkom (zie ook /llms.txt)
+User-agent: GPTBot
+Allow: /
+Disallow: /admin/
+
+User-agent: OAI-SearchBot
+Allow: /
+Disallow: /admin/
+
+User-agent: ClaudeBot
+Allow: /
+Disallow: /admin/
+
+User-agent: PerplexityBot
+Allow: /
+Disallow: /admin/
+
+User-agent: Google-Extended
+Allow: /
 
 Sitemap: https://trovai.nl/sitemap.xml
 Sitemap: https://trovai.nl/sitemap-listings.xml
