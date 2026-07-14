@@ -13,6 +13,10 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
+<!-- Shell-default: noindex zonder canonical. De pre-render (build) en edge-SSR
+     vervangen dit door index,follow + de juiste self-canonical. Zo kan een kale
+     fallback-shell (trage/falende bron-API) nooit als soft-404 met canonical
+     naar de homepage geïndexeerd worden. -->
 
 
 
@@ -24,6 +28,7 @@
 
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -145,7 +150,7 @@ main{max-width:1200px;margin:0 auto;padding:90px 48px 80px}
 <meta name="twitter:title" content="Nice – beautiful apartment with panoramic view · €875.000">
 <meta name="twitter:description" content="Ideally located on the highly sought-after Port of Nice waterfront, this beautiful three-room apartment of approximately 70 sqm enjoys an exceptional settin">
 <meta name="twitter:image" content="https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg">
-<script type="application/ld+json">{"@context":"https://schema.org","@type":"Product","@id":"https://trovai.nl/listing/3599203","name":"Nice – beautiful apartment with panoramic view","description":"Ideally located on the highly sought-after Port of Nice waterfront, this beautiful three-room apartment of approximately 70 sqm enjoys an exceptional settin","url":"https://trovai.nl/listing/3599203","image":"https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg","category":"Apartment","brand":{"@type":"Organization","name":"Trovai"},"offers":{"@type":"Offer","priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://trovai.nl/listing/3599203","seller":{"@type":"Organization","name":"Trovai","url":"https://trovai.nl"},"price":875000}}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"RealEstateListing","@id":"https://trovai.nl/listing/3599203","name":"Nice – beautiful apartment with panoramic view","description":"Ideally located on the highly sought-after Port of Nice waterfront, this beautiful three-room apartment of approximately 70 sqm enjoys an exceptional settin","url":"https://trovai.nl/listing/3599203","image":"https://media.apimo.pro/cache/198d6f93d1b6be3ecb559bf933f03983_3fffa6625d_1920-original.jpg","about":{"@type":"Apartment","name":"Nice – beautiful apartment with panoramic view","address":{"@type":"PostalAddress","addressLocality":"Nice","addressRegion":"Nice","addressCountry":"France"},"numberOfRooms":3,"numberOfBedrooms":2},"offers":{"@type":"Offer","priceCurrency":"EUR","availability":"https://schema.org/InStock","url":"https://trovai.nl/listing/3599203","seller":{"@type":"Organization","name":"Trovai","url":"https://trovai.nl"},"price":875000}}</script>
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Trovai","item":"https://trovai.nl/"},{"@type":"ListItem","position":2,"name":"Nice","item":"https://trovai.nl/cote-dazur"},{"@type":"ListItem","position":3,"name":"Nice","item":"https://trovai.nl/nice"},{"@type":"ListItem","position":4,"name":"Nice – beautiful apartment with panoramic view","item":"https://trovai.nl/listing/3599203"}]}</script>
 
 <style>
