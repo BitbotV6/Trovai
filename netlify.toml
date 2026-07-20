@@ -1,7 +1,8 @@
 [build]
   publish = "."
-  # Pre-render de getoonde listings tot statische HTML (instant openen, geen runtime-fetch).
-  command = "node scripts/build-listings.mjs"
+  # Pre-render de getoonde listings tot statische HTML (instant openen, geen runtime-fetch),
+  # en houd de sha256-digests van de agent-skills index in sync.
+  command = "node scripts/build-listings.mjs && node scripts/build-agent-skills.mjs"
 
 [functions]
   directory = "netlify/functions"
@@ -54,6 +55,18 @@
   [headers.values]
     Content-Type = "application/openapi+json"
     Cache-Control = "public, max-age=3600"
+
+# Agent Skills Discovery (RFC v0.2.0): index + SKILL.md publiek en CORS-open
+[[headers]]
+  for = "/.well-known/agent-skills/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Cache-Control = "public, max-age=3600"
+
+[[headers]]
+  for = "/.well-known/agent-skills/trovai-listings/SKILL.md"
+  [headers.values]
+    Content-Type = "text/markdown; charset=UTF-8"
 
 # UTF-8 charset
 [[headers]]

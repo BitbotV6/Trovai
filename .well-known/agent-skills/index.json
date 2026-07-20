@@ -1,0 +1,12 @@
+{
+  "$schema": "https://schemas.agentskills.io/discovery/0.2.0/schema.json",
+  "skills": [
+    {
+      "name": "trovai-listings",
+      "type": "skill-md",
+      "description": "Query Trovai's public listings API for luxury real estate on the Côte d'Azur and Curaçao: search by type, budget and area, and fetch per-listing details. Read-only, no authentication required.",
+      "url": "https://trovai.nl/.well-known/agent-skills/trovai-listings/SKILL.md",
+      "digest": "sha256:276e5be94009e256c82d2dfae8eb9cec556a3d5ba5558ae451767710ad05ff70"
+    }
+  ]
+}
